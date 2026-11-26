@@ -1,0 +1,9 @@
+Expected values to be strictly deep-equal:
++ actual - expected
+
+  {
++   body: 'timed-out',
+-   body: 'published-26a0426b3233f47e72e070cd',
+    status: 200
+  }
+

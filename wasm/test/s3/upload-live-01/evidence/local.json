@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "wasmSha256": "db71bb34ba95344e587e41b2ef4858df09b4510a079d2d704ab04d3e820043af",
+  "deniedBeforeDispatch": true,
+  "signatureAndBytes": true,
+  "result": {
+    "status": "stored",
+    "byteLength": 65536,
+    "guestInitialBytes": 4456448,
+    "guestFinalBytes": 4456448,
+    "readBytes": 65536,
+    "writtenBytes": 65536,
+    "operationMs": 3.200052,
+    "firstReadMs": 0.563411,
+    "firstWriteMs": 0.581229,
+    "guestCloseCallsSucceeded": 4,
+    "guestCloseErrors": 0
+  },
+  "scope": "local instrumented artifact; not hosted qualification"
+}

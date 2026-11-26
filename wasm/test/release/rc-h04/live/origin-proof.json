@@ -1,0 +1,176 @@
+{
+  "schemaVersion": "pulse.rc-h04-origin-proof.v1",
+  "status": "passed",
+  "serviceId": "OPA72JHNLv3kKVVXL39w5v",
+  "serviceVersion": 1,
+  "artifact": {
+    "candidate": {
+      "sourceRevision": "d012f547f804af6e272cb1a6aeafe970c22e0b77",
+      "sourceTree": "ae28b53c6a31c77354e06d1e2d8816139b329eb2",
+      "workingTree": ""
+    },
+    "wasmSha256": "4281bb2afb470649b45d905dee4adcbc1d15799bcbe1fbd4e9bba2fa35dfdd69",
+    "wasmBytes": 70526,
+    "target": {
+      "endpoint": "https://us-central-1.object.fastlystorage.app",
+      "region": "us-central-1",
+      "bucket": "catalog-live-20261101-2da36f-objects",
+      "prefix": "pulse-rc-h04/0c151b89-0bef-46fe-87c1-2a5f0e9845cd/"
+    },
+    "origin": "https://memo-keyboards-listing-keith.trycloudflare.com",
+    "operations": [
+      "/put",
+      "/head",
+      "/text",
+      "/body",
+      "/range",
+      "/conditional",
+      "/absent",
+      "/fetch-get",
+      "/fetch-delete",
+      "/fetch-options",
+      "/timeout",
+      "/body-header",
+      "/body-timed",
+      "/network"
+    ],
+    "instrumentation": false
+  },
+  "cases": [
+    {
+      "name": "putText",
+      "status": "passed",
+      "bytes": 4117,
+      "sha256": "c183f4c16de8295a89eea567bb9c4d82ad318dc94d80d01e588d2bf297b1cd5d",
+      "elapsedMs": 4585.625562000001
+    },
+    {
+      "name": "head",
+      "status": "passed",
+      "bytes": 4117,
+      "etag": "\"27cd191a9b7df92facfd01b6d35bc905\""
+    },
+    {
+      "name": "getText",
+      "status": "passed",
+      "sha256": "c183f4c16de8295a89eea567bb9c4d82ad318dc94d80d01e588d2bf297b1cd5d"
+    },
+    {
+      "name": "getBody-text",
+      "status": "passed",
+      "bytes": 4117,
+      "sha256": "c183f4c16de8295a89eea567bb9c4d82ad318dc94d80d01e588d2bf297b1cd5d"
+    },
+    {
+      "name": "missing-object",
+      "status": "passed"
+    },
+    {
+      "name": "fixture-binary-seed",
+      "status": "passed",
+      "bytes": 4096,
+      "sha256": "695fb69684bbdf7f0df73d0cbcf84b46104edfe6504fd3a1dcbd340f628f8d8a",
+      "scope": "direct signed fixture setup; not Pulse upload support"
+    },
+    {
+      "name": "getBody-binary",
+      "status": "passed",
+      "bytes": 4096,
+      "sha256": "695fb69684bbdf7f0df73d0cbcf84b46104edfe6504fd3a1dcbd340f628f8d8a"
+    },
+    {
+      "name": "getBody-range",
+      "status": "passed",
+      "bytes": 6,
+      "contentRange": "bytes 2-7/4096"
+    },
+    {
+      "name": "getBody-conditional",
+      "status": "passed",
+      "httpStatus": 304
+    },
+    {
+      "name": "fetch-GET",
+      "status": "passed",
+      "outcome": {
+        "status": "fulfilled",
+        "value": "origin-GET",
+        "elapsedMs": 358.147976
+      },
+      "clientMs": 548.4214350000038
+    },
+    {
+      "name": "fetch-DELETE",
+      "status": "passed",
+      "outcome": {
+        "status": "fulfilled",
+        "value": "origin-DELETE",
+        "elapsedMs": 123.136698
+      },
+      "clientMs": 143.86160299999756
+    },
+    {
+      "name": "fetch-OPTIONS",
+      "status": "passed",
+      "outcome": {
+        "status": "fulfilled",
+        "value": "origin-OPTIONS",
+        "elapsedMs": 103.870753
+      },
+      "clientMs": 127.11568999999872
+    },
+    {
+      "name": "fetch-timeout",
+      "status": "passed",
+      "outcome": {
+        "status": "rejected",
+        "error": {
+          "code": "PULSE_FETCH_TIMEOUT"
+        },
+        "elapsedMs": 401.04484
+      },
+      "clientMs": 475.92807999999786
+    },
+    {
+      "name": "fetch-network",
+      "status": "passed",
+      "outcome": {
+        "status": "rejected",
+        "error": {
+          "code": "PULSE_FETCH_NETWORK"
+        },
+        "elapsedMs": 266.390584
+      },
+      "clientMs": 471.55747600000177
+    },
+    {
+      "name": "fetch-header-only",
+      "status": "passed",
+      "clientMs": 367.2619210000048
+    },
+    {
+      "name": "fetch-body-timing",
+      "status": "passed",
+      "outcome": {
+        "status": "fulfilled",
+        "value": "late-body",
+        "elapsedMs": 2072.400013
+      },
+      "clientMs": 2304.026568999994
+    }
+  ],
+  "keys": [
+    {
+      "key": "pulse-rc-h04/0c151b89-0bef-46fe-87c1-2a5f0e9845cd/payload.txt",
+      "beforeStatus": 404
+    }
+  ],
+  "before": {
+    "active": true,
+    "filesHash": "2511a428a07f4bd67366721a0a079c0cdf43268aed36de8025a01ff3198080207aa4c703152fdd42f8beb5de49682bc2018f11681d5984a72e0c715ce43a2daa"
+  },
+  "after": {
+    "active": true,
+    "filesHash": "2511a428a07f4bd67366721a0a079c0cdf43268aed36de8025a01ff3198080207aa4c703152fdd42f8beb5de49682bc2018f11681d5984a72e0c715ce43a2daa"
+  }
+}

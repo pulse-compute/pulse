@@ -7,7 +7,7 @@
 ## Install
 
 ```bash
-npm install @pulse-compute/runtime@1.0.0-beta.11
+npm install @pulse-compute/runtime@1.0.0-rc.1
 ```
 
 A project created by `pulse init` depends on the public
@@ -191,7 +191,7 @@ and provider-owned destination at runtime.
 Logging is not a Pulse effect and cannot suspend a handler. Sink failures are
 request-contained, and known request secrets are redacted before managed output.
 Messages are strings only; structured logging and application-significant side
-effects inside message expressions are outside the Beta contract.
+effects inside message expressions are outside the Release Candidate contract.
 
 ## Responses
 
@@ -305,13 +305,13 @@ The runtime contract does not expose:
 
 The compiler rejects unsupported forms rather than treating them as
 provider-dependent behavior. See the
-[Beta scope](../preview-scope.md).
+[Release Candidate scope](../preview-scope.md).
 
 ## Package and installed references
 
 The npm tarball includes:
 
 - `docs/API.md` — the canonical API reference;
-- `docs/preview-scope.md` — the supported and excluded Beta surface.
+- `docs/preview-scope.md` — the supported and excluded Release Candidate surface.
 
 For workflow and project configuration, use [`@pulse-compute/cli`](./cli.md).

@@ -91,4 +91,4 @@ the value inside the shared redaction boundary. There is no ambient endpoint,
 credential, connection state, or automatic fallback. Cross-target conformance
 covers framing, cancellation, bounds, acknowledgements, redaction, and
 deterministic Node/Fastly provider artifacts. GRIP is included in the generally
-available Node JavaScript target in the Beta.
+available Node JavaScript target in the Release Candidate.

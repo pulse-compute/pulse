@@ -69,7 +69,7 @@ Selects the Fastly CLI binary used for external target inspection and local Comp
 | Precedence | An explicit `binary` option wins, then `PULSE_FASTLY_BIN`, then `PATH` discovery. |
 | Consumer | Fastly CLI inspection and the external Compute reality gate. |
 | Secret safety | Not a secret. Do not point it at an untrusted executable. |
-| Stability | Supported Beta tooling override. |
+| Stability | Supported tooling override. |
 | Source owners | `packages/provider-fastly/src/testing/fastly-cli.js` |
 
 <a id="pulse-viceroy-bin"></a>
@@ -85,7 +85,7 @@ Selects an inspected Viceroy executable for direct local Compute execution when 
 | Precedence | An explicit launcher choice wins. Without one, an explicit Fastly CLI path selects CLI ownership; otherwise an explicit `viceroyBinary` or `PULSE_VICEROY_BIN` selects direct Viceroy execution. |
 | Consumer | External Fastly Compute reality gates, either as the direct local engine or as an explicit Fastly CLI engine override. |
 | Secret safety | Not a secret. Do not point it at an untrusted executable. |
-| Stability | Supported Beta tooling override. |
+| Stability | Supported tooling override. |
 | Source owners | `packages/provider-fastly/src/testing/fastly-cli.js` |
 
 ## Contributor and test-only configuration

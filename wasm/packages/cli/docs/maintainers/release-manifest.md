@@ -4,10 +4,10 @@
 
 `release/pulse-release-manifest.json` is the canonical owner of the synchronized release version, documentation origin and exact segment, repository metadata, support tiers, package roles, direct-install guidance, supported entry points, and stability promises.
 
-## Beta candidate
+## Release Candidate candidate
 
-- **Candidate:** Pulse 1.0.0-beta.11 — Beta
-- **Version:** `1.0.0-beta.11`
+- **Candidate:** Pulse 1.0.0-rc.1 — Release Candidate
+- **Version:** `1.0.0-rc.1`
 - **Activation stage:** `documentation-release`
 - **License:** `Apache-2.0`
 - **Supported Node:** `^22.14.0 || ^24.0.0`
@@ -16,13 +16,13 @@
 - **Reproducible publication toolchain:** Node `24.18.0` with npm `11.15.0`
 - **Readiness register:** `release/release-preflight.json`
 - **Documentation inventory:** `release/documentation-inventory.json`
-- **Exact documentation:** `https://pulsecompute.io/v1.0.0-beta.11/`
+- **Exact documentation:** `https://pulsecompute.io/v1.0.0-rc.1/`
 - **Runtime targets:** 3
 - **Packages:** 20
 
 The installed CLI ships the same machine-readable data as
 `release-manifest.json`. The atomic snapshot transaction aligns
-the Beta label, `beta` channel,
+the Release Candidate label, `rc` channel,
 release date, package metadata, and exact-version documentation inputs. Tooling
 can read [the hosted JSON copy](../reference/release-manifest.json) without scraping
 package READMEs.

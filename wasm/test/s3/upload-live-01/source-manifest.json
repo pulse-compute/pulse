@@ -1,0 +1,54 @@
+{
+  "schema": "pulse.upload-live.source-manifest.v1",
+  "baseCommit": "3e1dbfe4afe7a165f7cf99fd65573efff7de400d",
+  "baseTree": "02cded70721d30b6bcb59e36b369b6df6da2aeec",
+  "workingTree": "new wasm/test/s3/upload-live-01 research files; product unchanged",
+  "scope": "Deployed research scaffold, not installed public upload qualification",
+  "artifact": {
+    "kind": "research-scaffold",
+    "target": {
+      "endpoint": "https://us-central-1.object.fastlystorage.app",
+      "region": "us-central-1",
+      "bucket": "catalog-live-20261101-2da36f-objects",
+      "prefix": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/"
+    },
+    "capBytes": 33554432,
+    "operationMs": 10000,
+    "requestMs": 15000,
+    "wasmBytes": 52728,
+    "wasmSha256": "db71bb34ba95344e587e41b2ef4858df09b4510a079d2d704ab04d3e820043af",
+    "publicAdmission": false,
+    "telemetry": "Guest linear memory and successful close calls; not host RSS or pending-request reclamation"
+  },
+  "harnessTiming": "Final reproduction/control harness. Earlier local/packaging failures retained; capacity/smoke/faults used original runner, repeat-max added one selection. No earlier attempt relabelled exact-final-source release acceptance.",
+  "sourceSha256": {
+    "README.md": "057f1ec3914f91ee8b7bde1f0f69e06ba8e0cfd6cdc2939e15085a6463059d74",
+    "build.cjs": "3cc78c25b28b050ae04a9df32f8f78ee4edb5e91c84d8c1404deb44afe739b1e",
+    "cleanup.cjs": "4f5c2c0388bec3bdf26d3c123d2d9a84230ef6ee28a4d5354ffe6bf02fe010de",
+    "control.py": "a59f297543ccc55d8cad518eb31c4ea6e927d937d6522c4a3e0e2f4817d9ee6b",
+    "local.cjs": "1db6ebbb4603c7a411224ff352ccc3565ed60b35ca050bc57b6d8fd111110f15",
+    "metrics.cjs": "114c419099125ac222a2bc9deaa57618bd2f202905a3b14d56b3960014dec3f8",
+    "run.cjs": "231ee6470b4be14cab54e07a422b329f7c6547d60c8d1bd11a107587dbd45657",
+    "verify-absence.cjs": "858cd1fd2d15ff0bc77e5b4058bde973409b31f39666e49c8eefd7148075a659"
+  },
+  "evidenceSha256": {
+    "absence-after-cleanup.json": "cf2953eaed0ea7be1ef704c2ededddbe23f7f968c551c0a8f584dbb70d84d95a",
+    "artifact.json": "96ae05ef50976ef82efde7e50224ac70886f2d50c69bf735915cc8955000c920",
+    "baseline.json": "00f38dbdd3ca338f28844dcc7308d8e9d808f3216813f9a61382b0f8d54c228e",
+    "capacity-summary.json": "9dcb893e43c95eedff54335c4943a7495385ec5dc2eac9721dafb790d2ba7044",
+    "capacity.json": "2a704a50a5b940cfa6053d0270965292fa2bb5a873712e6f5acb873cc46cf118",
+    "cleanup.json": "603d18327efc410e57c1efd43580a66e04e068927c85ad23015ce0cb6f636b96",
+    "deployed-package.tar.gz": "789f659f217dc677f8b74b456b7915e58ae3d7530b41f26915df7325f6cf74bf",
+    "development-attempts.json": "dd59e6bad8bd734dc488b5ac7eecefe144185323ec767d3ab6ddee5997498f83",
+    "faults.json": "8c40708604256168b9776d1e4a0becdf7fa833eb2486874f45d8eff2e3475db1",
+    "identity-after.json": "cb57b4c88d6dff6336f9049215f9fdb4041b7f78f5d5491315206ee693f9a288",
+    "identity-during.json": "cb57b4c88d6dff6336f9049215f9fdb4041b7f78f5d5491315206ee693f9a288",
+    "local.json": "0c7ba9f7713da779887d7b2ab90776f7e141c6e8fbf626010090b2a1a4d56840",
+    "metrics-summary.json": "b11bad9d562a72eef6c0ee9bae664efcad75da8bb47cbd6251477df5aa7b0995",
+    "metrics.json": "e9a01d3e420015af218a4acf1cbdaeaca5365e216383c8ed5162475920e28c87",
+    "repeat-max.json": "19db1c61d646da14f3a1de56ebda569b3b6c08d303ba4c4e281b191774b06503",
+    "resources.json": "14fd9b9c521d9ee4bf41dc9591cceaeb0c4f1c2eedb415cc043f87f995a7b8ff",
+    "smoke-propagation-failure.json": "ca9d5feeb08afd58d75d7dbabbf3d8d222af1fc35fd97a9e954ebe43c05d37ff",
+    "smoke.json": "b6e8235576715c5b9c4a22fcaab45ffbd78a61442dae29256b413f8c4d115aaf"
+  }
+}

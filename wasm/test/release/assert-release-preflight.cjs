@@ -65,6 +65,30 @@ const inventory = JSON.parse(fs.readFileSync(path.join(repoRoot, INVENTORY_FILE)
 const releaseManifest = JSON.parse(fs.readFileSync(path.join(repoRoot, 'release', 'pulse-release-manifest.json'), 'utf8'));
 const rootManifest = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8'));
 const documentationVersions = require('../../../release/documentation-versions.json');
+// Candidate labels are channel-bound; RC admission must not admit arbitrary
+// labels or silently treat a stable/unknown channel as a prerelease.
+const { loadReleaseManifest } = require('../../../scripts/package-support.cjs');
+const labelRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-release-label-'));
+try {
+  const labelFile = path.join(labelRoot, 'manifest.json');
+  for (const [channel, label] of [['beta', 'Beta'], ['rc', 'Release Candidate']]) {
+    const candidate = structuredClone(releaseManifest);
+    candidate.channel = channel;
+    candidate.display.candidateLabel = label;
+    candidate.display.candidateName = `Pulse ${candidate.releaseVersion} — ${label}`;
+    fs.writeFileSync(labelFile, JSON.stringify(candidate));
+    assert.equal(loadReleaseManifest(labelFile).channel, channel);
+    candidate.display.candidateLabel = channel === 'rc' ? 'Beta' : 'Release Candidate';
+    fs.writeFileSync(labelFile, JSON.stringify(candidate));
+    assert.throws(() => loadReleaseManifest(labelFile), /candidate channel/);
+  }
+  for (const channel of ['stable', 'preview', 'toString']) {
+    const candidate = structuredClone(releaseManifest);
+    candidate.channel = channel;
+    fs.writeFileSync(labelFile, JSON.stringify(candidate));
+    assert.throws(() => loadReleaseManifest(labelFile), /candidate channel/);
+  }
+} finally { fs.rmSync(labelRoot, { recursive: true, force: true }); }
 assert.throws(() => parsePreparationArgs(['9.9.9-beta.1', '--archive-current']), /retired/);
 const websitePlan = planRelease(releaseManifest, documentationVersions,
   parsePreparationArgs(['9.9.9-beta.1', '--website-managed', '--date', '2026-09-14']),
@@ -79,15 +103,15 @@ assert.equal([...websitePlan.writes.keys()].some(file => file.includes('document
 assert.equal(websitePlan.nextRelease.releaseVersion, '9.9.9-beta.1');
 assert.deepEqual(websitePlan.nextDocumentationVersions.versions.slice(2), documentationVersions.versions.slice(1));
 const previewManifest = structuredClone(releaseManifest);
-previewManifest.publication.distTag = 'beta';
+previewManifest.publication.distTag = releaseManifest.channel;
 assert.equal(planRelease(previewManifest, documentationVersions,
   parsePreparationArgs(['9.9.9-beta.1', '--website-managed', '--date', '2026-09-14']),
   assertManifestConsistency(previewManifest, documentationVersions),
-  () => ({ sourceTag: `v${previewManifest.releaseVersion}`, tag: 'a'.repeat(40), manifest: previewManifest })).nextRelease.publication.distTag, 'beta');
+  () => ({ sourceTag: `v${previewManifest.releaseVersion}`, tag: 'a'.repeat(40), manifest: previewManifest })).nextRelease.publication.distTag, releaseManifest.channel);
 previewManifest.publication.distTag = 'unreviewed-tag';
 assert.throws(() => assertManifestConsistency(previewManifest, documentationVersions), /explicitly configured latest/);
 assert.equal(websitePlan.nextDocumentationVersions.versions[0].sourceManifest, 'release/pulse-release-manifest.json');
-assert.equal(websitePlan.nextRelease.channel, 'beta');
+assert.equal(websitePlan.nextRelease.channel, releaseManifest.channel);
 assert.equal(websitePlan.nextRelease.publication.distTag, 'latest');
 const docsOptions = parsePreparationArgs(['9.9.9-beta.1', '--replace-unpublished-docs', '--date', '2026-09-26']);
 const docsManifest = structuredClone(releaseManifest);
@@ -151,7 +175,7 @@ const actualReplacementMode = releaseManifest.readiness.versionPreparation.unpub
 const preparation = spawnSync(process.execPath, [
   'scripts/release-prepare.cjs',
   '9.9.9-beta.1',
-  '--channel', 'beta',
+  '--channel', releaseManifest.channel,
   '--date', '2026-08-02',
   `--${actualReplacementMode}`,
   '--dry-run',
@@ -171,8 +195,8 @@ assert.equal(result.status, 'ok');
 assert.deepEqual(result.statuses, { proven: 11, pending: 10, blocked: 0 });
 assert.deepEqual(result.vocabulary, {
   schemaVersion: 'pulse.release-vocabulary.v1',
-  displayLabel: 'Beta',
-  displayName: `Pulse ${releaseManifest.releaseVersion} — Beta`,
+  displayLabel: releaseManifest.display.candidateLabel,
+  displayName: releaseManifest.display.candidateName,
   npmDistTag: 'latest',
   activationStage: 'documentation-release'
 });
@@ -196,10 +220,10 @@ assert.deepEqual(result.conformance, {
 assert.deepEqual(result.snapshot, {
   status: 'applied',
   version: releaseManifest.releaseVersion,
-  channel: 'beta',
+  channel: releaseManifest.channel,
   releasedAt: releaseManifest.releasedAt,
   packages: releaseManifest.packages.length,
-  dependencyRanges: 63
+  dependencyRanges: 65
 });
 assert.deepEqual(result.audits.noticeDisposition, {
   schemaVersion: 'pulse.release-notice-disposition.v1',
@@ -398,7 +422,7 @@ unsnapshotted.releaseCandidate.currentSnapshotChannel = 'alpha';
 unsnapshotted.releaseCandidate.snapshotStatus = 'pending';
 assert.throws(
   () => validatePreflight({ repoRoot, preflight: unsnapshotted, inventory }),
-  /applied Beta snapshot/
+  /applied release snapshot/
 );
 
 const reopenedSnapshot = structuredClone(preflight);

@@ -1,0 +1,92 @@
+{
+  "schema": "pulse.upload05.decision-evidence.v1",
+  "preparedDate": "2026-11-25",
+  "timezone": "America/Denver",
+  "baseCommit": "31b33dfb695e2ee5df2eda74b47e296d5a54c619",
+  "baseTree": "855cdd0e660e87fa6e0c9215d8a6a31c7a3d81d5",
+  "recommendation": "defer-from-rc1",
+  "decisionStatus": "prepared-for-human-review",
+  "uploadQualification": "blocked",
+  "qualifiedPublicUploadMatrix": [],
+  "publicSupportClaim": false,
+  "newExperimentsRun": false,
+  "newLiveWrites": false,
+  "evidence": [
+    {
+      "path": "wasm/test/s3/upload-00/README.md",
+      "sha256": "0c0ba4a0bd875359b4aebb492d414644dd1b2dd76539a61ce9b75c20694b5b42"
+    },
+    {
+      "path": "wasm/test/s3/upload-00/boundary-evidence.json",
+      "sha256": "ea68c742a34ad9bed40dcdb12332782b037f9c1585b62e0a2736337f7d973882"
+    },
+    {
+      "path": "wasm/test/s3/upload-01/README.md",
+      "sha256": "22418967ee3e0cc4f85e2dac07f05f544d67515730203081328b6e7cadf8b75a"
+    },
+    {
+      "path": "wasm/test/s3/upload-01/local-evidence.json",
+      "sha256": "5cbdcde93c664042f69002ba0dfebc9ab23b1a879e85cef9c0b9969d7881ecff"
+    },
+    {
+      "path": "wasm/test/s3/upload-01/live-evidence.json",
+      "sha256": "069a66a813d8fb689a1e2dbaa4c4d3cbb716f9a92eefba0f9de6c8f23d35d434"
+    },
+    {
+      "path": "wasm/test/s3/upload-02/README.md",
+      "sha256": "9fa22951750b1bb68f5f2a6069451d8a66828a79f827052517849a92fb31b87c"
+    },
+    {
+      "path": "wasm/test/s3/upload-02/evidence.json",
+      "sha256": "2d1c2a834bd9c5b0e9711dff5e9c56836a6f41c2d09e5a3a3423d2c0090b330c"
+    },
+    {
+      "path": "wasm/test/s3/upload-03/README.md",
+      "sha256": "643a557d9dd6234ba78b4595785792ff6ddfccb4d8ae64cbbe1a1a11653123cc"
+    },
+    {
+      "path": "wasm/test/s3/upload-03/evidence.json",
+      "sha256": "906bd10e7fa6e7fb78f8a68bb5fa4d6a297e8c9ab8bfafc02cec3e933582bf6f"
+    },
+    {
+      "path": "wasm/test/s3/upload-04/README.md",
+      "sha256": "1f5bad59d30f0f24a16ad757286e0c4a1186520da40f9af0383cd56c1d0cd2a2"
+    },
+    {
+      "path": "wasm/test/s3/upload-04/source-manifest.json",
+      "sha256": "c3207c0cd7f2bb58bcbb3fdbd4008369be87fb850b474b99bc62839f78018f66"
+    },
+    {
+      "path": "wasm/test/s3/upload-04/evidence/artifacts.json",
+      "sha256": "612a3758ab67926552e6ac26d75aca026e4d6464d344cda83a3756ddf5b5112f"
+    },
+    {
+      "path": "wasm/test/s3/upload-04/evidence/baseline.json",
+      "sha256": "8dd6ee93e4b7f471ad2b4ebbb613f0698ee21b85a41880b018049c45918b250d"
+    },
+    {
+      "path": "wasm/test/s3/upload-04/evidence/development-attempts.json",
+      "sha256": "0749fbbcd4ff4bb68f67f998606b8975efcba20ac07f9f4ac8e8c1fbd62c24b5"
+    },
+    {
+      "path": "wasm/test/s3/upload-04/evidence/installed.json",
+      "sha256": "59843e8734f73b2606d13188c175c1f88a2c7895cfdbe5aa3fdc9d28d2b6cbb9"
+    },
+    {
+      "path": "wasm/test/s3/upload-04/evidence/node-capacity.json",
+      "sha256": "3b3d079f536a2c43b65415fa893751715a81d454126e3734ed3c3357cc58df6f"
+    },
+    {
+      "path": "wasm/test/s3/upload-04/evidence/viceroy-capacity.json",
+      "sha256": "b81f211ac20b50a4244486e257b71905661875940c9a59972b7159ad325b1856"
+    },
+    {
+      "path": "wasm/test/s3/upload-04/evidence/viceroy-settlement.json",
+      "sha256": "8bb97b0b5183b2dab6916e42a03c76ac19549c1b9d7658d49a2bf4585dc53ed2"
+    },
+    {
+      "path": "wasm/test/s3/upload-04/evidence/viceroy-slow.json",
+      "sha256": "2d04fa9cd484be39cddb1fd6cd2c3b21dedfba572bafeeda47814504fe30ba11"
+    }
+  ]
+}

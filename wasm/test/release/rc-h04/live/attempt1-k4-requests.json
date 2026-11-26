@@ -1,0 +1,26 @@
+{
+  "identity": {
+    "serviceId": "uOY74euocRuSsuVDcaEtre",
+    "serviceVersion": "1",
+    "storeId": "2j6hwxfe83boksh299d6zf",
+    "moduleSha256": "53304c64a5744242c4f73e8fc7f00a807a01e33cebd6b090c5e0fdb43e575381"
+  },
+  "rows": [
+    {
+      "probe": "probe-iad",
+      "operation": "get",
+      "key": "pulse-k4-f95240b0-ccfa-4c97-9209-0d0cb41dfa3e-absent",
+      "resultStatus": "not-found",
+      "metadata": {
+        "serviceId": "uOY74euocRuSsuVDcaEtre",
+        "serviceVersion": "1",
+        "storeId": "2j6hwxfe83boksh299d6zf",
+        "moduleSha256": "53304c64a5744242c4f73e8fc7f00a807a01e33cebd6b090c5e0fdb43e575381",
+        "pop": "IAD",
+        "requestId": "37da3c83c317456ea319000000000001"
+      },
+      "bytes": 22,
+      "mutationRetried": false
+    }
+  ]
+}

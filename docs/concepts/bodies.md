@@ -372,7 +372,7 @@ transform the body. New applications use the package-root `grip.subscribe` and
 `grip.handoff` framing helpers; the external gateway owns the connection. See
 the [GRIP package guide](../packages/grip.md).
 
-## Not supported in the Beta
+## Not supported in the Release Candidate
 
 The public contract does not include:
 
@@ -384,7 +384,7 @@ The public contract does not include:
 - background consumption after the request completes.
 
 These exclusions are listed in the
-[Beta scope](../preview-scope.md).
+[Release Candidate scope](../preview-scope.md).
 
 ## Related documentation
 

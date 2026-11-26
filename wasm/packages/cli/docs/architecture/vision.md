@@ -1,7 +1,7 @@
 # Pulse Vision
 
 > **Status:** North-star architecture and product direction.  
-> This document describes the intended shape of Pulse from the Beta
+> This document describes the intended shape of Pulse from the Release Candidate
 > toward a compatibility-bearing 1.0. It is directional rather than a
 > compatibility promise for every current release.
 
@@ -453,9 +453,9 @@ Fastly proves native edge execution. ESP32 tests the larger architectural claim.
 
 ## Product milestones
 
-### Beta: explicit execution fluidity
+### Release Candidate: explicit execution fluidity
 
-The Beta proves:
+The Release Candidate proves:
 
 - the public runtime and conventional Pulse application contracts;
 - Router and terminal middleware;
@@ -473,7 +473,7 @@ technical gates does not authorize publication or deployment.
 
 ### 1.0: compatibility-bearing runtime contract
 
-The first stable release begins when the Beta contract has been
+The first stable release begins when the Release Candidate contract has been
 exercised publicly and the runtime, CLI, target-selection, and conformance
 policies are ready to carry compatibility obligations.
 

@@ -2,7 +2,7 @@
 
 Pulse exposes Node Native and Node JavaScript as explicit targets over the same
 provider-neutral application contract. The public `@pulse-compute/provider-node/server`
-integration launches a trusted build in a production HTTP process. The Beta does not install a process manager, create
+integration launches a trusted build in a production HTTP process. The Release Candidate does not install a process manager, create
 infrastructure, or publish a managed Node service.
 
 ## Configure the Node provider

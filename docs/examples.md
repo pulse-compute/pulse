@@ -57,7 +57,7 @@ See [Project lifecycle](./guides/project-lifecycle.md).
 
 Examples 01, 02, 03, 05, 07, 11, and 13 use current package-root application
 surfaces. Example 09 retains the lower-level Router surface. Examples 10 and 12 use
-the synchronized `@pulse-compute/entities` Beta package; executable examples do
+the synchronized `@pulse-compute/entities` Release Candidate package; executable examples do
 not themselves authorize publication. Example 11 is executable only through
 the Node JavaScript/Native reference adapter. It does not claim a public
 listener, delivery, or Fastly/browser/ESP32 event support; see

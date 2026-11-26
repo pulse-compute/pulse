@@ -1,0 +1,50 @@
+{
+  "version": "pulse.terminal-hosted-config.v1",
+  "cli": {
+    "file": "/workspace/scratch/ef4956ac6b89/pulse/.validation-tools/fastly/fastly",
+    "sha256": "56bdd56d086d419ba335488fb3ed814050c75e2b16741c5676af2163bc40bbc1",
+    "version": "Fastly CLI version v16.1.0 (4d64ad67)\nBuilt with go version go1.26.8 linux/amd64 (2026-11-26)\nViceroy version: viceroy 0.22.0\n\nA new version of the Fastly CLI is available.\nCurrent version: 16.1.0\nLatest version: 17.2.0\n\nNote: Please review the release notes for the major version(s) listed below before upgrading.\nVersion 17.0.0: https://github.com/fastly/cli/releases/tag/v17.0.0\nRun `fastly update` to get the latest version."
+  },
+  "cases": [
+    {
+      "id": "fanout",
+      "serviceId": "609EPxSA66AR6cZHuGD6HI",
+      "serviceVersion": 1,
+      "url": "https://pulse-rch04-fanout-62a07b8b.edgecompute.app/",
+      "package": "/tmp/rc-h04-live/fanout/package.tar.gz",
+      "filesHash": "72397ee1ca0d3662061f41cbf1a856bda087ad8dc187d7a94f66dd911460e996b69d45dc461a1c06980d1513a2e8172a82b530ad97ecf935d5b51ade06c91d2e"
+    },
+    {
+      "id": "websocket",
+      "serviceId": "xSuDlkCkO4OHp20d2dx3Im",
+      "serviceVersion": 1,
+      "url": "https://pulse-rch04-websocket-3019debb.edgecompute.app/",
+      "package": "/tmp/rc-h04-live/websocket/package.tar.gz",
+      "filesHash": "8a1628d7973f3f385f55a1a879b8c683e8ee1e14da8a3fddcc683b60c7d294ea769f6d4c289b6f372d08a3636c996f7cddc54e9542f1e49c94ee080b21769277"
+    },
+    {
+      "id": "fanout-router",
+      "serviceId": "1O9UezZV29fxZLE8K0rB5O",
+      "serviceVersion": 1,
+      "url": "https://pulse-rch04-fanout-router-b3df5e10.edgecompute.app/",
+      "package": "/tmp/rc-h04-live/fanout-router/package.tar.gz",
+      "filesHash": "5f0bc16ddbcbcaac992761b1bfa0299f350fc11036e65a60f250179f94ab4ea324662e69d5e603ca569173b7074a45733d527db3a8204c83168abf370b5d0b6f"
+    },
+    {
+      "id": "websocket-router",
+      "serviceId": "OBhRlcClTDRHBu2Igf9x3t",
+      "serviceVersion": 1,
+      "url": "https://pulse-rch04-websocket-router-3dd82282.edgecompute.app/",
+      "package": "/tmp/rc-h04-live/websocket-router/package.tar.gz",
+      "filesHash": "00632e74fc9f0245edf91d2a54b79616217fa9680a6ef54d033307a95bbc73c90a3adefa486cfb848aa25c87ce1c319957056bfe19995506eee3f721ad87e178"
+    },
+    {
+      "id": "independent",
+      "serviceId": "MeEWi8bbqSqUaf7t2Ab2mQ",
+      "serviceVersion": 1,
+      "url": "https://pulse-rch04-independent-af602f13.edgecompute.app/",
+      "package": "/tmp/rc-h04-live/independent/package.tar.gz",
+      "filesHash": "1b6d1a78a8fabfe93043fa693e42765c2ed623e152acb48b7300ba16b999e2952d0ce21abb2977c8dd48b0bd4472adecca27f42c5f5f2358bb290c082dfd8114"
+    }
+  ]
+}

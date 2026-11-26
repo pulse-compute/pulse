@@ -531,7 +531,7 @@ The compiler accepts a deliberately bounded TypeScript subset because every acce
 
 These restrictions are compatibility guarantees, not temporary parser
 accidents. The complete boundary is in the
-[Beta scope](../preview-scope.md).
+[Release Candidate scope](../preview-scope.md).
 
 ## Reading `pulse inspect`
 

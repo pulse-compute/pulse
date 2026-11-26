@@ -1,0 +1,2112 @@
+{
+  "schema": "pulse.upload-live.metrics.v1",
+  "service": "L47lcfUqEbbK5tXC9BTI00",
+  "startedAt": "2026-11-25T21:20:39.408Z",
+  "status": "completed-with-errors",
+  "semantics": "Provider-reported one-second aggregates; compute_ram_used is not a measured host RSS peak",
+  "polls": [
+    {
+      "at": "2026-11-25T21:20:44.562Z",
+      "timestamp": 1795641644,
+      "records": 0
+    },
+    {
+      "at": "2026-11-25T21:20:53.547Z",
+      "timestamp": 1795641653,
+      "records": 0
+    },
+    {
+      "at": "2026-11-25T21:21:03.050Z",
+      "timestamp": 1795641662,
+      "records": 0
+    },
+    {
+      "at": "2026-11-25T21:21:12.803Z",
+      "timestamp": 1795641672,
+      "records": 0
+    },
+    {
+      "at": "2026-11-25T21:21:24.701Z",
+      "timestamp": 1795641684,
+      "records": 0
+    },
+    {
+      "at": "2026-11-25T21:21:36.109Z",
+      "timestamp": 1795641696,
+      "records": 0
+    },
+    {
+      "at": "2026-11-25T21:21:46.090Z",
+      "timestamp": 1795641706,
+      "records": 0
+    },
+    {
+      "at": "2026-11-25T21:21:55.435Z",
+      "timestamp": 1795641715,
+      "records": 0
+    },
+    {
+      "at": "2026-11-25T21:22:04.580Z",
+      "timestamp": 1795641724,
+      "records": 0
+    },
+    {
+      "at": "2026-11-25T21:22:12.965Z",
+      "timestamp": 1795641732,
+      "aggregateDelay": 9,
+      "records": 1
+    },
+    {
+      "at": "2026-11-25T21:22:37.068Z",
+      "timestamp": 1795641757,
+      "aggregateDelay": 9,
+      "records": 1
+    },
+    {
+      "at": "2026-11-25T21:22:45.519Z",
+      "timestamp": 1795641758,
+      "aggregateDelay": 9,
+      "records": 1
+    },
+    {
+      "at": "2026-11-25T21:22:53.594Z",
+      "timestamp": 1795641768,
+      "aggregateDelay": 9,
+      "records": 1
+    },
+    {
+      "at": "2026-11-25T21:23:09.082Z",
+      "timestamp": 1795641789,
+      "aggregateDelay": 9,
+      "records": 1
+    },
+    {
+      "at": "2026-11-25T21:23:17.308Z",
+      "timestamp": 1795641790,
+      "aggregateDelay": 9,
+      "records": 1
+    },
+    {
+      "at": "2026-11-25T21:23:25.534Z",
+      "timestamp": 1795641805,
+      "aggregateDelay": 9,
+      "records": 3
+    },
+    {
+      "at": "2026-11-25T21:23:34.904Z",
+      "timestamp": 1795641806,
+      "aggregateDelay": 9,
+      "records": 1
+    },
+    {
+      "at": "2026-11-25T21:23:42.675Z",
+      "timestamp": 1795641820,
+      "aggregateDelay": 9,
+      "records": 4
+    },
+    {
+      "at": "2026-11-25T21:23:53.054Z",
+      "timestamp": 1795641833,
+      "aggregateDelay": 9,
+      "records": 1
+    },
+    {
+      "at": "2026-11-25T21:24:01.754Z",
+      "timestamp": 1795641834,
+      "aggregateDelay": 9,
+      "records": 1
+    },
+    {
+      "at": "2026-11-25T21:24:14.261Z",
+      "timestamp": 1795641847,
+      "aggregateDelay": 9,
+      "records": 3
+    },
+    {
+      "at": "2026-11-25T21:24:23.182Z",
+      "timestamp": 1795641863,
+      "aggregateDelay": 9,
+      "records": 1
+    },
+    {
+      "at": "2026-11-25T21:24:31.801Z",
+      "timestamp": 1795641868,
+      "aggregateDelay": 9,
+      "records": 5
+    },
+    {
+      "at": "2026-11-25T21:24:45.081Z",
+      "timestamp": 1795641885,
+      "aggregateDelay": 9,
+      "records": 1
+    },
+    {
+      "at": "2026-11-25T21:24:53.333Z",
+      "timestamp": 1795641886,
+      "aggregateDelay": 9,
+      "records": 1
+    },
+    {
+      "at": "2026-11-25T21:25:01.672Z",
+      "timestamp": 1795641901,
+      "aggregateDelay": 9,
+      "records": 6
+    },
+    {
+      "at": "2026-11-25T21:25:15.091Z",
+      "timestamp": 1795641915,
+      "aggregateDelay": 9,
+      "records": 1
+    },
+    {
+      "at": "2026-11-25T21:25:23.710Z",
+      "timestamp": 1795641923,
+      "aggregateDelay": 9,
+      "records": 8
+    },
+    {
+      "at": "2026-11-25T21:25:33.601Z",
+      "timestamp": 1795641924,
+      "aggregateDelay": 9,
+      "records": 1
+    },
+    {
+      "at": "2026-11-25T21:26:02.054Z",
+      "timestamp": 1795641962,
+      "aggregateDelay": 9,
+      "records": 1
+    },
+    {
+      "at": "2026-11-25T21:26:10.078Z",
+      "timestamp": 1795641969,
+      "aggregateDelay": 9,
+      "records": 7
+    },
+    {
+      "at": "2026-11-25T21:26:38.061Z",
+      "timestamp": 1795641998,
+      "aggregateDelay": 9,
+      "records": 1
+    },
+    {
+      "at": "2026-11-25T21:26:48.098Z",
+      "timestamp": 1795642008,
+      "aggregateDelay": 9,
+      "records": 1
+    },
+    {
+      "at": "2026-11-25T21:27:13.081Z",
+      "timestamp": 1795642033,
+      "aggregateDelay": 9,
+      "records": 1
+    },
+    {
+      "at": "2026-11-25T21:27:21.280Z",
+      "timestamp": 1795642034,
+      "aggregateDelay": 9,
+      "records": 1
+    },
+    {
+      "at": "2026-11-25T21:27:39.066Z",
+      "timestamp": 1795642059,
+      "aggregateDelay": 9,
+      "records": 1
+    },
+    {
+      "at": "2026-11-25T21:28:06.082Z",
+      "timestamp": 1795642086,
+      "aggregateDelay": 9,
+      "records": 1
+    },
+    {
+      "at": "2026-11-25T21:28:14.612Z",
+      "timestamp": 1795642087,
+      "aggregateDelay": 9,
+      "records": 1
+    },
+    {
+      "at": "2026-11-25T21:28:42.062Z",
+      "timestamp": 1795642122,
+      "aggregateDelay": 9,
+      "records": 1
+    },
+    {
+      "at": "2026-11-25T21:29:19.174Z",
+      "timestamp": 1795642132,
+      "aggregateDelay": 9,
+      "records": 10
+    },
+    {
+      "at": "2026-11-25T21:29:47.050Z",
+      "error": "metrics-timeout"
+    },
+    {
+      "at": "2026-11-25T21:29:57.094Z",
+      "timestamp": 1795642197,
+      "aggregateDelay": 9,
+      "records": 0
+    },
+    {
+      "at": "2026-11-25T21:30:25.338Z",
+      "error": "metrics-timeout"
+    },
+    {
+      "at": "2026-11-25T21:30:35.427Z",
+      "timestamp": 1795642235,
+      "aggregateDelay": 9,
+      "records": 0
+    },
+    {
+      "at": "2026-11-25T21:31:04.195Z",
+      "error": "metrics-timeout"
+    },
+    {
+      "at": "2026-11-25T21:31:14.259Z",
+      "timestamp": 1795642274,
+      "aggregateDelay": 9,
+      "records": 0
+    },
+    {
+      "at": "2026-11-25T21:31:42.243Z",
+      "error": "metrics-timeout"
+    },
+    {
+      "at": "2026-11-25T21:31:52.336Z",
+      "timestamp": 1795642312,
+      "aggregateDelay": 9,
+      "records": 0
+    },
+    {
+      "at": "2026-11-25T21:32:20.197Z",
+      "error": "metrics-timeout"
+    },
+    {
+      "at": "2026-11-25T21:32:30.295Z",
+      "timestamp": 1795642350,
+      "aggregateDelay": 9,
+      "records": 0
+    },
+    {
+      "at": "2026-11-25T21:32:58.483Z",
+      "error": "metrics-timeout"
+    },
+    {
+      "at": "2026-11-25T21:33:08.578Z",
+      "timestamp": 1795642388,
+      "aggregateDelay": 9,
+      "records": 0
+    },
+    {
+      "at": "2026-11-25T21:33:37.084Z",
+      "error": "metrics-timeout"
+    },
+    {
+      "at": "2026-11-25T21:33:47.122Z",
+      "timestamp": 1795642427,
+      "aggregateDelay": 9,
+      "records": 0
+    },
+    {
+      "at": "2026-11-25T21:34:15.764Z",
+      "error": "metrics-timeout"
+    },
+    {
+      "at": "2026-11-25T21:34:25.846Z",
+      "timestamp": 1795642465,
+      "aggregateDelay": 9,
+      "records": 0
+    },
+    {
+      "at": "2026-11-25T21:34:54.003Z",
+      "error": "metrics-timeout"
+    }
+  ],
+  "records": [
+    {
+      "recorded": 1795641723,
+      "aggregated": {
+        "compute_requests": 1,
+        "compute_execution_time_ms": 1,
+        "compute_ram_used": 4456448,
+        "compute_request_time_ms": 1,
+        "compute_request_time_billed_ms": 50,
+        "compute_req_header_bytes": 613,
+        "compute_resp_header_bytes": 117,
+        "compute_resp_body_bytes": 9,
+        "compute_resp_status_4xx": 1,
+        "compute_resp_status_404": 1,
+        "compute_sandboxes": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 1,
+          "compute_execution_time_ms": 1,
+          "compute_ram_used": 4456448,
+          "compute_request_time_ms": 1,
+          "compute_request_time_billed_ms": 50,
+          "compute_req_header_bytes": 613,
+          "compute_resp_header_bytes": 117,
+          "compute_resp_body_bytes": 9,
+          "compute_resp_status_4xx": 1,
+          "compute_resp_status_404": 1,
+          "compute_sandboxes": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795641748,
+      "aggregated": {
+        "compute_requests": 1,
+        "compute_execution_time_ms": 1,
+        "compute_ram_used": 4456448,
+        "compute_req_header_bytes": 751,
+        "compute_sandboxes": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 1,
+          "compute_execution_time_ms": 1,
+          "compute_ram_used": 4456448,
+          "compute_req_header_bytes": 751,
+          "compute_sandboxes": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795641749,
+      "aggregated": {
+        "compute_execution_time_ms": 11,
+        "compute_request_time_ms": 200,
+        "compute_request_time_billed_ms": 250,
+        "compute_req_body_bytes": 65536,
+        "compute_resp_header_bytes": 125,
+        "compute_resp_body_bytes": 301,
+        "compute_resp_status_2xx": 1,
+        "compute_bereq_header_bytes": 612,
+        "compute_bereq_body_bytes": 65536,
+        "compute_beresp_header_bytes": 243,
+        "compute_bereqs": 1,
+        "compute_resp_status_200": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 11,
+          "compute_request_time_ms": 200,
+          "compute_request_time_billed_ms": 250,
+          "compute_req_body_bytes": 65536,
+          "compute_resp_header_bytes": 125,
+          "compute_resp_body_bytes": 301,
+          "compute_resp_status_2xx": 1,
+          "compute_bereq_header_bytes": 612,
+          "compute_bereq_body_bytes": 65536,
+          "compute_beresp_header_bytes": 243,
+          "compute_bereqs": 1,
+          "compute_resp_status_200": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795641759,
+      "aggregated": {
+        "compute_requests": 1,
+        "compute_execution_time_ms": 13,
+        "compute_ram_used": 4456448,
+        "compute_request_time_ms": 294,
+        "compute_request_time_billed_ms": 300,
+        "compute_req_header_bytes": 753,
+        "compute_req_body_bytes": 1048576,
+        "compute_resp_header_bytes": 125,
+        "compute_resp_body_bytes": 305,
+        "compute_resp_status_2xx": 1,
+        "compute_bereq_header_bytes": 614,
+        "compute_bereq_body_bytes": 1048576,
+        "compute_beresp_header_bytes": 243,
+        "compute_bereqs": 1,
+        "compute_resp_status_200": 1,
+        "compute_sandboxes": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 1,
+          "compute_execution_time_ms": 13,
+          "compute_ram_used": 4456448,
+          "compute_request_time_ms": 294,
+          "compute_request_time_billed_ms": 300,
+          "compute_req_header_bytes": 753,
+          "compute_req_body_bytes": 1048576,
+          "compute_resp_header_bytes": 125,
+          "compute_resp_body_bytes": 305,
+          "compute_resp_status_2xx": 1,
+          "compute_bereq_header_bytes": 614,
+          "compute_bereq_body_bytes": 1048576,
+          "compute_beresp_header_bytes": 243,
+          "compute_bereqs": 1,
+          "compute_resp_status_200": 1,
+          "compute_sandboxes": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795641780,
+      "aggregated": {
+        "compute_requests": 1,
+        "compute_execution_time_ms": 42,
+        "compute_ram_used": 4456448,
+        "compute_req_header_bytes": 753,
+        "compute_req_body_bytes": 8388608,
+        "compute_bereq_header_bytes": 614,
+        "compute_bereq_body_bytes": 8388608,
+        "compute_bereqs": 1,
+        "compute_sandboxes": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 1,
+          "compute_execution_time_ms": 42,
+          "compute_ram_used": 4456448,
+          "compute_req_header_bytes": 753,
+          "compute_req_body_bytes": 8388608,
+          "compute_bereq_header_bytes": 614,
+          "compute_bereq_body_bytes": 8388608,
+          "compute_bereqs": 1,
+          "compute_sandboxes": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795641781,
+      "aggregated": {
+        "compute_request_time_ms": 704,
+        "compute_request_time_billed_ms": 750,
+        "compute_resp_header_bytes": 125,
+        "compute_resp_body_bytes": 305,
+        "compute_resp_status_2xx": 1,
+        "compute_beresp_header_bytes": 243,
+        "compute_resp_status_200": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_request_time_ms": 704,
+          "compute_request_time_billed_ms": 750,
+          "compute_resp_header_bytes": 125,
+          "compute_resp_body_bytes": 305,
+          "compute_resp_status_2xx": 1,
+          "compute_beresp_header_bytes": 243,
+          "compute_resp_status_200": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795641794,
+      "aggregated": {
+        "compute_requests": 1,
+        "compute_execution_time_ms": 8,
+        "compute_ram_used": 4456448,
+        "compute_req_header_bytes": 753,
+        "compute_req_body_bytes": 1196032,
+        "compute_bereq_header_bytes": 614,
+        "compute_bereq_body_bytes": 1196032,
+        "compute_bereqs": 1,
+        "compute_sandboxes": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 1,
+          "compute_execution_time_ms": 8,
+          "compute_ram_used": 4456448,
+          "compute_req_header_bytes": 753,
+          "compute_req_body_bytes": 1196032,
+          "compute_bereq_header_bytes": 614,
+          "compute_bereq_body_bytes": 1196032,
+          "compute_bereqs": 1,
+          "compute_sandboxes": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795641795,
+      "aggregated": {
+        "compute_requests": 7,
+        "compute_execution_time_ms": 159,
+        "compute_ram_used": 31195136,
+        "compute_req_header_bytes": 5271,
+        "compute_req_body_bytes": 27017216,
+        "compute_bereq_header_bytes": 4298,
+        "compute_bereq_body_bytes": 27017216,
+        "compute_bereqs": 7,
+        "compute_sandboxes": 7
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 7,
+          "compute_execution_time_ms": 159,
+          "compute_ram_used": 31195136,
+          "compute_req_header_bytes": 5271,
+          "compute_req_body_bytes": 27017216,
+          "compute_bereq_header_bytes": 4298,
+          "compute_bereq_body_bytes": 27017216,
+          "compute_bereqs": 7,
+          "compute_sandboxes": 7
+        }
+      }
+    },
+    {
+      "recorded": 1795641796,
+      "aggregated": {
+        "compute_execution_time_ms": 183,
+        "compute_request_time_ms": 6373,
+        "compute_request_time_billed_ms": 6500,
+        "compute_req_body_bytes": 38895616,
+        "compute_resp_header_bytes": 625,
+        "compute_resp_body_bytes": 1531,
+        "compute_resp_status_2xx": 5,
+        "compute_bereq_body_bytes": 38895616,
+        "compute_beresp_header_bytes": 1215,
+        "compute_resp_status_200": 5
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 183,
+          "compute_request_time_ms": 6373,
+          "compute_request_time_billed_ms": 6500,
+          "compute_req_body_bytes": 38895616,
+          "compute_resp_header_bytes": 625,
+          "compute_resp_body_bytes": 1531,
+          "compute_resp_status_2xx": 5,
+          "compute_bereq_body_bytes": 38895616,
+          "compute_beresp_header_bytes": 1215,
+          "compute_resp_status_200": 5
+        }
+      }
+    },
+    {
+      "recorded": 1795641797,
+      "aggregated": {
+        "compute_execution_time_ms": 3,
+        "compute_request_time_ms": 4308,
+        "compute_request_time_billed_ms": 4350,
+        "compute_resp_header_bytes": 375,
+        "compute_resp_body_bytes": 923,
+        "compute_resp_status_2xx": 3,
+        "compute_beresp_header_bytes": 729,
+        "compute_resp_status_200": 3
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 3,
+          "compute_request_time_ms": 4308,
+          "compute_request_time_billed_ms": 4350,
+          "compute_resp_header_bytes": 375,
+          "compute_resp_body_bytes": 923,
+          "compute_resp_status_2xx": 3,
+          "compute_beresp_header_bytes": 729,
+          "compute_resp_status_200": 3
+        }
+      }
+    },
+    {
+      "recorded": 1795641808,
+      "aggregated": {
+        "compute_requests": 12,
+        "compute_execution_time_ms": 107,
+        "compute_ram_used": 53477376,
+        "compute_req_header_bytes": 9036,
+        "compute_req_body_bytes": 11714559,
+        "compute_bereq_header_bytes": 7368,
+        "compute_bereq_body_bytes": 11649024,
+        "compute_bereqs": 12,
+        "compute_sandboxes": 12
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 12,
+          "compute_execution_time_ms": 107,
+          "compute_ram_used": 53477376,
+          "compute_req_header_bytes": 9036,
+          "compute_req_body_bytes": 11714559,
+          "compute_bereq_header_bytes": 7368,
+          "compute_bereq_body_bytes": 11649024,
+          "compute_bereqs": 12,
+          "compute_sandboxes": 12
+        }
+      }
+    },
+    {
+      "recorded": 1795641809,
+      "aggregated": {
+        "compute_execution_time_ms": 310,
+        "compute_req_body_bytes": 54198273,
+        "compute_bereq_body_bytes": 54263808
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 310,
+          "compute_req_body_bytes": 54198273,
+          "compute_bereq_body_bytes": 54263808
+        }
+      }
+    },
+    {
+      "recorded": 1795641810,
+      "aggregated": {
+        "compute_requests": 4,
+        "compute_execution_time_ms": 296,
+        "compute_ram_used": 17825792,
+        "compute_request_time_ms": 17814,
+        "compute_request_time_billed_ms": 18050,
+        "compute_req_header_bytes": 3012,
+        "compute_req_body_bytes": 61538303,
+        "compute_resp_header_bytes": 1250,
+        "compute_resp_body_bytes": 3065,
+        "compute_resp_status_2xx": 10,
+        "compute_bereq_header_bytes": 2456,
+        "compute_bereq_body_bytes": 61538303,
+        "compute_beresp_header_bytes": 2430,
+        "compute_bereqs": 4,
+        "compute_resp_status_200": 10,
+        "compute_sandboxes": 4
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 4,
+          "compute_execution_time_ms": 296,
+          "compute_ram_used": 17825792,
+          "compute_request_time_ms": 17814,
+          "compute_request_time_billed_ms": 18050,
+          "compute_req_header_bytes": 3012,
+          "compute_req_body_bytes": 61538303,
+          "compute_resp_header_bytes": 1250,
+          "compute_resp_body_bytes": 3065,
+          "compute_resp_status_2xx": 10,
+          "compute_bereq_header_bytes": 2456,
+          "compute_bereq_body_bytes": 61538303,
+          "compute_beresp_header_bytes": 2430,
+          "compute_bereqs": 4,
+          "compute_resp_status_200": 10,
+          "compute_sandboxes": 4
+        }
+      }
+    },
+    {
+      "recorded": 1795641811,
+      "aggregated": {
+        "compute_execution_time_ms": 29,
+        "compute_request_time_ms": 10137,
+        "compute_request_time_billed_ms": 10350,
+        "compute_req_body_bytes": 6766593,
+        "compute_resp_header_bytes": 750,
+        "compute_resp_body_bytes": 1833,
+        "compute_resp_status_2xx": 6,
+        "compute_bereq_body_bytes": 6766593,
+        "compute_beresp_header_bytes": 1458,
+        "compute_resp_status_200": 6
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 29,
+          "compute_request_time_ms": 10137,
+          "compute_request_time_billed_ms": 10350,
+          "compute_req_body_bytes": 6766593,
+          "compute_resp_header_bytes": 750,
+          "compute_resp_body_bytes": 1833,
+          "compute_resp_status_2xx": 6,
+          "compute_bereq_body_bytes": 6766593,
+          "compute_beresp_header_bytes": 1458,
+          "compute_resp_status_200": 6
+        }
+      }
+    },
+    {
+      "recorded": 1795641824,
+      "aggregated": {
+        "compute_requests": 1,
+        "compute_execution_time_ms": 6,
+        "compute_ram_used": 4456448,
+        "compute_req_header_bytes": 754,
+        "compute_req_body_bytes": 770047,
+        "compute_bereq_header_bytes": 615,
+        "compute_bereq_body_bytes": 770047,
+        "compute_bereqs": 1,
+        "compute_sandboxes": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 1,
+          "compute_execution_time_ms": 6,
+          "compute_ram_used": 4456448,
+          "compute_req_header_bytes": 754,
+          "compute_req_body_bytes": 770047,
+          "compute_bereq_header_bytes": 615,
+          "compute_bereq_body_bytes": 770047,
+          "compute_bereqs": 1,
+          "compute_sandboxes": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795641825,
+      "aggregated": {
+        "compute_execution_time_ms": 62,
+        "compute_request_time_ms": 686,
+        "compute_request_time_billed_ms": 700,
+        "compute_req_body_bytes": 16007169,
+        "compute_resp_header_bytes": 125,
+        "compute_resp_body_bytes": 308,
+        "compute_resp_status_2xx": 1,
+        "compute_bereq_body_bytes": 16007169,
+        "compute_beresp_header_bytes": 243,
+        "compute_resp_status_200": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 62,
+          "compute_request_time_ms": 686,
+          "compute_request_time_billed_ms": 700,
+          "compute_req_body_bytes": 16007169,
+          "compute_resp_header_bytes": 125,
+          "compute_resp_body_bytes": 308,
+          "compute_resp_status_2xx": 1,
+          "compute_bereq_body_bytes": 16007169,
+          "compute_beresp_header_bytes": 243,
+          "compute_resp_status_200": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795641836,
+      "aggregated": {
+        "compute_requests": 8,
+        "compute_execution_time_ms": 227,
+        "compute_ram_used": 35651584,
+        "compute_req_header_bytes": 6032,
+        "compute_req_body_bytes": 45203456,
+        "compute_bereq_header_bytes": 4920,
+        "compute_bereq_body_bytes": 45203456,
+        "compute_bereqs": 8,
+        "compute_sandboxes": 8
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 8,
+          "compute_execution_time_ms": 227,
+          "compute_ram_used": 35651584,
+          "compute_req_header_bytes": 6032,
+          "compute_req_body_bytes": 45203456,
+          "compute_bereq_header_bytes": 4920,
+          "compute_bereq_body_bytes": 45203456,
+          "compute_bereqs": 8,
+          "compute_sandboxes": 8
+        }
+      }
+    },
+    {
+      "recorded": 1795641837,
+      "aggregated": {
+        "compute_execution_time_ms": 356,
+        "compute_req_body_bytes": 71057408,
+        "compute_bereq_body_bytes": 70975488
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 356,
+          "compute_req_body_bytes": 71057408,
+          "compute_bereq_body_bytes": 70975488
+        }
+      }
+    },
+    {
+      "recorded": 1795641838,
+      "aggregated": {
+        "compute_execution_time_ms": 211,
+        "compute_request_time_ms": 19041,
+        "compute_request_time_billed_ms": 19200,
+        "compute_req_body_bytes": 17956864,
+        "compute_resp_header_bytes": 1000,
+        "compute_resp_body_bytes": 2474,
+        "compute_resp_status_2xx": 8,
+        "compute_bereq_body_bytes": 18038784,
+        "compute_beresp_header_bytes": 1944,
+        "compute_resp_status_200": 8
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 211,
+          "compute_request_time_ms": 19041,
+          "compute_request_time_billed_ms": 19200,
+          "compute_req_body_bytes": 17956864,
+          "compute_resp_header_bytes": 1000,
+          "compute_resp_body_bytes": 2474,
+          "compute_resp_status_2xx": 8,
+          "compute_bereq_body_bytes": 18038784,
+          "compute_beresp_header_bytes": 1944,
+          "compute_resp_status_200": 8
+        }
+      }
+    },
+    {
+      "recorded": 1795641854,
+      "aggregated": {
+        "compute_requests": 12,
+        "compute_execution_time_ms": 161,
+        "compute_ram_used": 53477376,
+        "compute_req_header_bytes": 9048,
+        "compute_req_body_bytes": 24608768,
+        "compute_bereq_header_bytes": 7380,
+        "compute_bereq_body_bytes": 24608768,
+        "compute_bereqs": 12,
+        "compute_sandboxes": 12
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 12,
+          "compute_execution_time_ms": 161,
+          "compute_ram_used": 53477376,
+          "compute_req_header_bytes": 9048,
+          "compute_req_body_bytes": 24608768,
+          "compute_bereq_header_bytes": 7380,
+          "compute_bereq_body_bytes": 24608768,
+          "compute_bereqs": 12,
+          "compute_sandboxes": 12
+        }
+      }
+    },
+    {
+      "recorded": 1795641855,
+      "aggregated": {
+        "compute_execution_time_ms": 309,
+        "compute_req_body_bytes": 47808512,
+        "compute_bereq_body_bytes": 47808512
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 309,
+          "compute_req_body_bytes": 47808512,
+          "compute_bereq_body_bytes": 47808512
+        }
+      }
+    },
+    {
+      "recorded": 1795641856,
+      "aggregated": {
+        "compute_execution_time_ms": 217,
+        "compute_req_body_bytes": 44318720,
+        "compute_bereq_body_bytes": 44318720
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 217,
+          "compute_req_body_bytes": 44318720,
+          "compute_bereq_body_bytes": 44318720
+        }
+      }
+    },
+    {
+      "recorded": 1795641857,
+      "aggregated": {
+        "compute_requests": 2,
+        "compute_execution_time_ms": 311,
+        "compute_ram_used": 8912896,
+        "compute_request_time_ms": 10618,
+        "compute_request_time_billed_ms": 10700,
+        "compute_req_header_bytes": 1508,
+        "compute_req_body_bytes": 63078397,
+        "compute_resp_header_bytes": 375,
+        "compute_resp_body_bytes": 927,
+        "compute_resp_status_2xx": 3,
+        "compute_bereq_header_bytes": 1230,
+        "compute_bereq_body_bytes": 63078397,
+        "compute_beresp_header_bytes": 729,
+        "compute_bereqs": 2,
+        "compute_resp_status_200": 3,
+        "compute_sandboxes": 2
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 2,
+          "compute_execution_time_ms": 311,
+          "compute_ram_used": 8912896,
+          "compute_request_time_ms": 10618,
+          "compute_request_time_billed_ms": 10700,
+          "compute_req_header_bytes": 1508,
+          "compute_req_body_bytes": 63078397,
+          "compute_resp_header_bytes": 375,
+          "compute_resp_body_bytes": 927,
+          "compute_resp_status_2xx": 3,
+          "compute_bereq_header_bytes": 1230,
+          "compute_bereq_body_bytes": 63078397,
+          "compute_beresp_header_bytes": 729,
+          "compute_bereqs": 2,
+          "compute_resp_status_200": 3,
+          "compute_sandboxes": 2
+        }
+      }
+    },
+    {
+      "recorded": 1795641858,
+      "aggregated": {
+        "compute_requests": 2,
+        "compute_execution_time_ms": 300,
+        "compute_ram_used": 8912896,
+        "compute_request_time_ms": 12811,
+        "compute_request_time_billed_ms": 12950,
+        "compute_req_header_bytes": 1508,
+        "compute_req_body_bytes": 68976641,
+        "compute_resp_header_bytes": 500,
+        "compute_resp_body_bytes": 1234,
+        "compute_resp_status_2xx": 4,
+        "compute_bereq_header_bytes": 1230,
+        "compute_bereq_body_bytes": 68976641,
+        "compute_beresp_header_bytes": 972,
+        "compute_bereqs": 2,
+        "compute_resp_status_200": 4,
+        "compute_sandboxes": 2
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 2,
+          "compute_execution_time_ms": 300,
+          "compute_ram_used": 8912896,
+          "compute_request_time_ms": 12811,
+          "compute_request_time_billed_ms": 12950,
+          "compute_req_header_bytes": 1508,
+          "compute_req_body_bytes": 68976641,
+          "compute_resp_header_bytes": 500,
+          "compute_resp_body_bytes": 1234,
+          "compute_resp_status_2xx": 4,
+          "compute_bereq_header_bytes": 1230,
+          "compute_bereq_body_bytes": 68976641,
+          "compute_beresp_header_bytes": 972,
+          "compute_bereqs": 2,
+          "compute_resp_status_200": 4,
+          "compute_sandboxes": 2
+        }
+      }
+    },
+    {
+      "recorded": 1795641859,
+      "aggregated": {
+        "compute_execution_time_ms": 121,
+        "compute_request_time_ms": 32525,
+        "compute_request_time_billed_ms": 32800,
+        "compute_req_body_bytes": 19644418,
+        "compute_resp_header_bytes": 1125,
+        "compute_resp_body_bytes": 2777,
+        "compute_resp_status_2xx": 9,
+        "compute_bereq_body_bytes": 19644418,
+        "compute_beresp_header_bytes": 2187,
+        "compute_resp_status_200": 9
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 121,
+          "compute_request_time_ms": 32525,
+          "compute_request_time_billed_ms": 32800,
+          "compute_req_body_bytes": 19644418,
+          "compute_resp_header_bytes": 1125,
+          "compute_resp_body_bytes": 2777,
+          "compute_resp_status_2xx": 9,
+          "compute_bereq_body_bytes": 19644418,
+          "compute_beresp_header_bytes": 2187,
+          "compute_resp_status_200": 9
+        }
+      }
+    },
+    {
+      "recorded": 1795641876,
+      "aggregated": {
+        "compute_requests": 1,
+        "compute_execution_time_ms": 143,
+        "compute_ram_used": 4456448,
+        "compute_req_header_bytes": 754,
+        "compute_req_body_bytes": 19611648,
+        "compute_bereq_header_bytes": 615,
+        "compute_bereq_body_bytes": 19611648,
+        "compute_bereqs": 1,
+        "compute_sandboxes": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 1,
+          "compute_execution_time_ms": 143,
+          "compute_ram_used": 4456448,
+          "compute_req_header_bytes": 754,
+          "compute_req_body_bytes": 19611648,
+          "compute_bereq_header_bytes": 615,
+          "compute_bereq_body_bytes": 19611648,
+          "compute_bereqs": 1,
+          "compute_sandboxes": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795641877,
+      "aggregated": {
+        "compute_execution_time_ms": 86,
+        "compute_request_time_ms": 931,
+        "compute_request_time_billed_ms": 950,
+        "compute_req_body_bytes": 13942784,
+        "compute_resp_header_bytes": 125,
+        "compute_resp_body_bytes": 308,
+        "compute_resp_status_2xx": 1,
+        "compute_bereq_body_bytes": 13942784,
+        "compute_beresp_header_bytes": 243,
+        "compute_resp_status_200": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 86,
+          "compute_request_time_ms": 931,
+          "compute_request_time_billed_ms": 950,
+          "compute_req_body_bytes": 13942784,
+          "compute_resp_header_bytes": 125,
+          "compute_resp_body_bytes": 308,
+          "compute_resp_status_2xx": 1,
+          "compute_bereq_body_bytes": 13942784,
+          "compute_beresp_header_bytes": 243,
+          "compute_resp_status_200": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795641887,
+      "aggregated": {
+        "compute_requests": 3,
+        "compute_execution_time_ms": 59,
+        "compute_ram_used": 13369344,
+        "compute_req_header_bytes": 2262,
+        "compute_req_body_bytes": 8650752,
+        "compute_bereq_header_bytes": 1845,
+        "compute_bereq_body_bytes": 8650752,
+        "compute_bereqs": 3,
+        "compute_sandboxes": 3
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 3,
+          "compute_execution_time_ms": 59,
+          "compute_ram_used": 13369344,
+          "compute_req_header_bytes": 2262,
+          "compute_req_body_bytes": 8650752,
+          "compute_bereq_header_bytes": 1845,
+          "compute_bereq_body_bytes": 8650752,
+          "compute_bereqs": 3,
+          "compute_sandboxes": 3
+        }
+      }
+    },
+    {
+      "recorded": 1795641888,
+      "aggregated": {
+        "compute_requests": 5,
+        "compute_execution_time_ms": 357,
+        "compute_ram_used": 22282240,
+        "compute_req_header_bytes": 3770,
+        "compute_req_body_bytes": 57753600,
+        "compute_bereq_header_bytes": 3075,
+        "compute_bereq_body_bytes": 57720832,
+        "compute_bereqs": 5,
+        "compute_sandboxes": 5
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 5,
+          "compute_execution_time_ms": 357,
+          "compute_ram_used": 22282240,
+          "compute_req_header_bytes": 3770,
+          "compute_req_body_bytes": 57753600,
+          "compute_bereq_header_bytes": 3075,
+          "compute_bereq_body_bytes": 57720832,
+          "compute_bereqs": 5,
+          "compute_sandboxes": 5
+        }
+      }
+    },
+    {
+      "recorded": 1795641889,
+      "aggregated": {
+        "compute_execution_time_ms": 336,
+        "compute_req_body_bytes": 65945600,
+        "compute_bereq_body_bytes": 65945600
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 336,
+          "compute_req_body_bytes": 65945600,
+          "compute_bereq_body_bytes": 65945600
+        }
+      }
+    },
+    {
+      "recorded": 1795641890,
+      "aggregated": {
+        "compute_execution_time_ms": 239,
+        "compute_req_body_bytes": 49086464,
+        "compute_bereq_body_bytes": 49102848
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 239,
+          "compute_req_body_bytes": 49086464,
+          "compute_bereq_body_bytes": 49102848
+        }
+      }
+    },
+    {
+      "recorded": 1795641891,
+      "aggregated": {
+        "compute_execution_time_ms": 251,
+        "compute_request_time_ms": 8383,
+        "compute_request_time_billed_ms": 8450,
+        "compute_req_body_bytes": 63438848,
+        "compute_resp_header_bytes": 250,
+        "compute_resp_body_bytes": 618,
+        "compute_resp_status_2xx": 2,
+        "compute_bereq_body_bytes": 63455232,
+        "compute_beresp_header_bytes": 486,
+        "compute_resp_status_200": 2
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 251,
+          "compute_request_time_ms": 8383,
+          "compute_request_time_billed_ms": 8450,
+          "compute_req_body_bytes": 63438848,
+          "compute_resp_header_bytes": 250,
+          "compute_resp_body_bytes": 618,
+          "compute_resp_status_2xx": 2,
+          "compute_bereq_body_bytes": 63455232,
+          "compute_beresp_header_bytes": 486,
+          "compute_resp_status_200": 2
+        }
+      }
+    },
+    {
+      "recorded": 1795641892,
+      "aggregated": {
+        "compute_execution_time_ms": 114,
+        "compute_request_time_ms": 24781,
+        "compute_request_time_billed_ms": 24850,
+        "compute_req_body_bytes": 23560192,
+        "compute_resp_header_bytes": 750,
+        "compute_resp_body_bytes": 1854,
+        "compute_resp_status_2xx": 6,
+        "compute_bereq_body_bytes": 23560192,
+        "compute_beresp_header_bytes": 1458,
+        "compute_resp_status_200": 6
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 114,
+          "compute_request_time_ms": 24781,
+          "compute_request_time_billed_ms": 24850,
+          "compute_req_body_bytes": 23560192,
+          "compute_resp_header_bytes": 750,
+          "compute_resp_body_bytes": 1854,
+          "compute_resp_status_2xx": 6,
+          "compute_bereq_body_bytes": 23560192,
+          "compute_beresp_header_bytes": 1458,
+          "compute_resp_status_200": 6
+        }
+      }
+    },
+    {
+      "recorded": 1795641906,
+      "aggregated": {
+        "compute_requests": 12,
+        "compute_execution_time_ms": 119,
+        "compute_ram_used": 53477376,
+        "compute_req_header_bytes": 9048,
+        "compute_req_body_bytes": 14974976,
+        "compute_bereq_header_bytes": 7380,
+        "compute_bereq_body_bytes": 14974976,
+        "compute_bereqs": 12,
+        "compute_sandboxes": 12
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 12,
+          "compute_execution_time_ms": 119,
+          "compute_ram_used": 53477376,
+          "compute_req_header_bytes": 9048,
+          "compute_req_body_bytes": 14974976,
+          "compute_bereq_header_bytes": 7380,
+          "compute_bereq_body_bytes": 14974976,
+          "compute_bereqs": 12,
+          "compute_sandboxes": 12
+        }
+      }
+    },
+    {
+      "recorded": 1795641907,
+      "aggregated": {
+        "compute_execution_time_ms": 281,
+        "compute_req_body_bytes": 51249152,
+        "compute_bereq_body_bytes": 51249152
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 281,
+          "compute_req_body_bytes": 51249152,
+          "compute_bereq_body_bytes": 51249152
+        }
+      }
+    },
+    {
+      "recorded": 1795641908,
+      "aggregated": {
+        "compute_execution_time_ms": 285,
+        "compute_req_body_bytes": 49840128,
+        "compute_bereq_body_bytes": 49840128
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 285,
+          "compute_req_body_bytes": 49840128,
+          "compute_bereq_body_bytes": 49840128
+        }
+      }
+    },
+    {
+      "recorded": 1795641909,
+      "aggregated": {
+        "compute_execution_time_ms": 290,
+        "compute_req_body_bytes": 53624832,
+        "compute_bereq_body_bytes": 53624832
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 290,
+          "compute_req_body_bytes": 53624832,
+          "compute_bereq_body_bytes": 53624832
+        }
+      }
+    },
+    {
+      "recorded": 1795641910,
+      "aggregated": {
+        "compute_execution_time_ms": 324,
+        "compute_req_body_bytes": 62816256,
+        "compute_bereq_body_bytes": 62808064
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 324,
+          "compute_req_body_bytes": 62816256,
+          "compute_bereq_body_bytes": 62808064
+        }
+      }
+    },
+    {
+      "recorded": 1795641911,
+      "aggregated": {
+        "compute_requests": 1,
+        "compute_execution_time_ms": 327,
+        "compute_ram_used": 4456448,
+        "compute_request_time_ms": 4548,
+        "compute_request_time_billed_ms": 4550,
+        "compute_req_header_bytes": 754,
+        "compute_req_body_bytes": 62881792,
+        "compute_resp_header_bytes": 125,
+        "compute_resp_body_bytes": 309,
+        "compute_resp_status_2xx": 1,
+        "compute_bereq_header_bytes": 615,
+        "compute_bereq_body_bytes": 62889984,
+        "compute_beresp_header_bytes": 243,
+        "compute_bereqs": 1,
+        "compute_resp_status_200": 1,
+        "compute_sandboxes": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 1,
+          "compute_execution_time_ms": 327,
+          "compute_ram_used": 4456448,
+          "compute_request_time_ms": 4548,
+          "compute_request_time_billed_ms": 4550,
+          "compute_req_header_bytes": 754,
+          "compute_req_body_bytes": 62881792,
+          "compute_resp_header_bytes": 125,
+          "compute_resp_body_bytes": 309,
+          "compute_resp_status_2xx": 1,
+          "compute_bereq_header_bytes": 615,
+          "compute_bereq_body_bytes": 62889984,
+          "compute_beresp_header_bytes": 243,
+          "compute_bereqs": 1,
+          "compute_resp_status_200": 1,
+          "compute_sandboxes": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795641912,
+      "aggregated": {
+        "compute_requests": 1,
+        "compute_execution_time_ms": 401,
+        "compute_ram_used": 4456448,
+        "compute_request_time_ms": 11399,
+        "compute_request_time_billed_ms": 11450,
+        "compute_req_header_bytes": 754,
+        "compute_req_body_bytes": 80429056,
+        "compute_resp_header_bytes": 250,
+        "compute_resp_body_bytes": 617,
+        "compute_resp_status_2xx": 2,
+        "compute_bereq_header_bytes": 615,
+        "compute_bereq_body_bytes": 80429056,
+        "compute_beresp_header_bytes": 486,
+        "compute_bereqs": 1,
+        "compute_resp_status_200": 2,
+        "compute_sandboxes": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 1,
+          "compute_execution_time_ms": 401,
+          "compute_ram_used": 4456448,
+          "compute_request_time_ms": 11399,
+          "compute_request_time_billed_ms": 11450,
+          "compute_req_header_bytes": 754,
+          "compute_req_body_bytes": 80429056,
+          "compute_resp_header_bytes": 250,
+          "compute_resp_body_bytes": 617,
+          "compute_resp_status_2xx": 2,
+          "compute_bereq_header_bytes": 615,
+          "compute_bereq_body_bytes": 80429056,
+          "compute_beresp_header_bytes": 486,
+          "compute_bereqs": 1,
+          "compute_resp_status_200": 2,
+          "compute_sandboxes": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795641913,
+      "aggregated": {
+        "compute_requests": 2,
+        "compute_execution_time_ms": 286,
+        "compute_ram_used": 8912896,
+        "compute_request_time_ms": 27763,
+        "compute_request_time_billed_ms": 27900,
+        "compute_req_header_bytes": 1508,
+        "compute_req_body_bytes": 59441150,
+        "compute_resp_header_bytes": 500,
+        "compute_resp_body_bytes": 1235,
+        "compute_resp_status_2xx": 4,
+        "compute_bereq_header_bytes": 1230,
+        "compute_bereq_body_bytes": 59441150,
+        "compute_beresp_header_bytes": 972,
+        "compute_bereqs": 2,
+        "compute_resp_status_200": 4,
+        "compute_sandboxes": 2
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 2,
+          "compute_execution_time_ms": 286,
+          "compute_ram_used": 8912896,
+          "compute_request_time_ms": 27763,
+          "compute_request_time_billed_ms": 27900,
+          "compute_req_header_bytes": 1508,
+          "compute_req_body_bytes": 59441150,
+          "compute_resp_header_bytes": 500,
+          "compute_resp_body_bytes": 1235,
+          "compute_resp_status_2xx": 4,
+          "compute_bereq_header_bytes": 1230,
+          "compute_bereq_body_bytes": 59441150,
+          "compute_beresp_header_bytes": 972,
+          "compute_bereqs": 2,
+          "compute_resp_status_200": 4,
+          "compute_sandboxes": 2
+        }
+      }
+    },
+    {
+      "recorded": 1795641914,
+      "aggregated": {
+        "compute_execution_time_ms": 243,
+        "compute_request_time_ms": 29410,
+        "compute_request_time_billed_ms": 29550,
+        "compute_req_body_bytes": 61734912,
+        "compute_resp_header_bytes": 625,
+        "compute_resp_body_bytes": 1544,
+        "compute_resp_status_2xx": 5,
+        "compute_bereq_body_bytes": 61734912,
+        "compute_beresp_header_bytes": 1215,
+        "compute_resp_status_200": 5
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 243,
+          "compute_request_time_ms": 29410,
+          "compute_request_time_billed_ms": 29550,
+          "compute_req_body_bytes": 61734912,
+          "compute_resp_header_bytes": 625,
+          "compute_resp_body_bytes": 1544,
+          "compute_resp_status_2xx": 5,
+          "compute_bereq_body_bytes": 61734912,
+          "compute_beresp_header_bytes": 1215,
+          "compute_resp_status_200": 5
+        }
+      }
+    },
+    {
+      "recorded": 1795641915,
+      "aggregated": {
+        "compute_execution_time_ms": 143,
+        "compute_request_time_ms": 20780,
+        "compute_request_time_billed_ms": 20850,
+        "compute_req_body_bytes": 39878658,
+        "compute_resp_header_bytes": 500,
+        "compute_resp_body_bytes": 1235,
+        "compute_resp_status_2xx": 4,
+        "compute_bereq_body_bytes": 39878658,
+        "compute_beresp_header_bytes": 972,
+        "compute_resp_status_200": 4
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 143,
+          "compute_request_time_ms": 20780,
+          "compute_request_time_billed_ms": 20850,
+          "compute_req_body_bytes": 39878658,
+          "compute_resp_header_bytes": 500,
+          "compute_resp_body_bytes": 1235,
+          "compute_resp_status_2xx": 4,
+          "compute_bereq_body_bytes": 39878658,
+          "compute_beresp_header_bytes": 972,
+          "compute_resp_status_200": 4
+        }
+      }
+    },
+    {
+      "recorded": 1795641953,
+      "aggregated": {
+        "compute_requests": 1,
+        "compute_execution_time_ms": 5,
+        "compute_ram_used": 4456448,
+        "compute_req_header_bytes": 753,
+        "compute_req_body_bytes": 688128,
+        "compute_bereq_header_bytes": 614,
+        "compute_bereq_body_bytes": 688128,
+        "compute_bereqs": 1,
+        "compute_sandboxes": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 1,
+          "compute_execution_time_ms": 5,
+          "compute_ram_used": 4456448,
+          "compute_req_header_bytes": 753,
+          "compute_req_body_bytes": 688128,
+          "compute_bereq_header_bytes": 614,
+          "compute_bereq_body_bytes": 688128,
+          "compute_bereqs": 1,
+          "compute_sandboxes": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795641954,
+      "aggregated": {
+        "compute_execution_time_ms": 8,
+        "compute_req_body_bytes": 1327104,
+        "compute_bereq_body_bytes": 1327104
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 8,
+          "compute_req_body_bytes": 1327104,
+          "compute_bereq_body_bytes": 1327104
+        }
+      }
+    },
+    {
+      "recorded": 1795641955,
+      "aggregated": {
+        "compute_execution_time_ms": 10,
+        "compute_req_body_bytes": 1228800,
+        "compute_bereq_body_bytes": 1228800
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 10,
+          "compute_req_body_bytes": 1228800,
+          "compute_bereq_body_bytes": 1228800
+        }
+      }
+    },
+    {
+      "recorded": 1795641956,
+      "aggregated": {
+        "compute_execution_time_ms": 9,
+        "compute_req_body_bytes": 1343488,
+        "compute_bereq_body_bytes": 1343488
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 9,
+          "compute_req_body_bytes": 1343488,
+          "compute_bereq_body_bytes": 1343488
+        }
+      }
+    },
+    {
+      "recorded": 1795641957,
+      "aggregated": {
+        "compute_execution_time_ms": 19,
+        "compute_req_body_bytes": 1343488,
+        "compute_bereq_body_bytes": 1343488
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 19,
+          "compute_req_body_bytes": 1343488,
+          "compute_bereq_body_bytes": 1343488
+        }
+      }
+    },
+    {
+      "recorded": 1795641958,
+      "aggregated": {
+        "compute_execution_time_ms": 8,
+        "compute_req_body_bytes": 1310720,
+        "compute_bereq_body_bytes": 1310720
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 8,
+          "compute_req_body_bytes": 1310720,
+          "compute_bereq_body_bytes": 1310720
+        }
+      }
+    },
+    {
+      "recorded": 1795641959,
+      "aggregated": {
+        "compute_execution_time_ms": 8,
+        "compute_req_body_bytes": 1146880,
+        "compute_bereq_body_bytes": 1146880
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 8,
+          "compute_req_body_bytes": 1146880,
+          "compute_bereq_body_bytes": 1146880
+        }
+      }
+    },
+    {
+      "recorded": 1795641960,
+      "aggregated": {
+        "compute_execution_time_ms": 1,
+        "compute_request_time_ms": 6611,
+        "compute_request_time_billed_ms": 6650,
+        "compute_resp_header_bytes": 125,
+        "compute_resp_body_bytes": 306,
+        "compute_resp_status_2xx": 1,
+        "compute_beresp_header_bytes": 243,
+        "compute_resp_status_200": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 1,
+          "compute_request_time_ms": 6611,
+          "compute_request_time_billed_ms": 6650,
+          "compute_resp_header_bytes": 125,
+          "compute_resp_body_bytes": 306,
+          "compute_resp_status_2xx": 1,
+          "compute_beresp_header_bytes": 243,
+          "compute_resp_status_200": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795641989,
+      "aggregated": {
+        "compute_requests": 1,
+        "compute_execution_time_ms": 2,
+        "compute_ram_used": 4456448,
+        "compute_req_header_bytes": 753,
+        "compute_req_body_bytes": 65536,
+        "compute_bereq_header_bytes": 614,
+        "compute_bereq_body_bytes": 65536,
+        "compute_bereqs": 1,
+        "compute_sandboxes": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 1,
+          "compute_execution_time_ms": 2,
+          "compute_ram_used": 4456448,
+          "compute_req_header_bytes": 753,
+          "compute_req_body_bytes": 65536,
+          "compute_bereq_header_bytes": 614,
+          "compute_bereq_body_bytes": 65536,
+          "compute_bereqs": 1,
+          "compute_sandboxes": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795641999,
+      "aggregated": {
+        "compute_execution_time_ms": 1,
+        "compute_request_time_ms": 10004,
+        "compute_request_time_billed_ms": 10050,
+        "compute_resp_header_bytes": 125,
+        "compute_resp_body_bytes": 256,
+        "compute_resp_status_2xx": 1,
+        "compute_service_bereq_error": 1,
+        "compute_bereq_errors": 1,
+        "compute_resp_status_200": 1,
+        "compute_service_bereq_conn_other_error": 1,
+        "compute_service_bereq_conn_error": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 1,
+          "compute_request_time_ms": 10004,
+          "compute_request_time_billed_ms": 10050,
+          "compute_resp_header_bytes": 125,
+          "compute_resp_body_bytes": 256,
+          "compute_resp_status_2xx": 1,
+          "compute_service_bereq_error": 1,
+          "compute_bereq_errors": 1,
+          "compute_resp_status_200": 1,
+          "compute_service_bereq_conn_other_error": 1,
+          "compute_service_bereq_conn_error": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795642024,
+      "aggregated": {
+        "compute_requests": 1,
+        "compute_execution_time_ms": 3,
+        "compute_ram_used": 4456448,
+        "compute_req_header_bytes": 753,
+        "compute_req_body_bytes": 65536,
+        "compute_bereq_header_bytes": 614,
+        "compute_bereq_body_bytes": 65536,
+        "compute_bereqs": 1,
+        "compute_sandboxes": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 1,
+          "compute_execution_time_ms": 3,
+          "compute_ram_used": 4456448,
+          "compute_req_header_bytes": 753,
+          "compute_req_body_bytes": 65536,
+          "compute_bereq_header_bytes": 614,
+          "compute_bereq_body_bytes": 65536,
+          "compute_bereqs": 1,
+          "compute_sandboxes": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795642025,
+      "aggregated": {
+        "compute_request_time_ms": 862,
+        "compute_request_time_billed_ms": 900,
+        "compute_service_bereq_error": 1,
+        "compute_bereq_errors": 1,
+        "compute_service_bereq_conn_other_error": 1,
+        "compute_service_bereq_conn_error": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_request_time_ms": 862,
+          "compute_request_time_billed_ms": 900,
+          "compute_service_bereq_error": 1,
+          "compute_bereq_errors": 1,
+          "compute_service_bereq_conn_other_error": 1,
+          "compute_service_bereq_conn_error": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795642050,
+      "aggregated": {
+        "compute_requests": 1,
+        "compute_execution_time_ms": 4,
+        "compute_ram_used": 4456448,
+        "compute_request_time_ms": 6,
+        "compute_request_time_billed_ms": 50,
+        "compute_req_header_bytes": 754,
+        "compute_resp_header_bytes": 125,
+        "compute_resp_body_bytes": 233,
+        "compute_resp_status_2xx": 1,
+        "compute_resp_status_200": 1,
+        "compute_sandboxes": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 1,
+          "compute_execution_time_ms": 4,
+          "compute_ram_used": 4456448,
+          "compute_request_time_ms": 6,
+          "compute_request_time_billed_ms": 50,
+          "compute_req_header_bytes": 754,
+          "compute_resp_header_bytes": 125,
+          "compute_resp_body_bytes": 233,
+          "compute_resp_status_2xx": 1,
+          "compute_resp_status_200": 1,
+          "compute_sandboxes": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795642077,
+      "aggregated": {
+        "compute_requests": 1,
+        "compute_execution_time_ms": 7,
+        "compute_ram_used": 4456448,
+        "compute_req_header_bytes": 753,
+        "compute_req_body_bytes": 1277951,
+        "compute_bereq_header_bytes": 614,
+        "compute_bereq_body_bytes": 1261567,
+        "compute_bereqs": 1,
+        "compute_sandboxes": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 1,
+          "compute_execution_time_ms": 7,
+          "compute_ram_used": 4456448,
+          "compute_req_header_bytes": 753,
+          "compute_req_body_bytes": 1277951,
+          "compute_bereq_header_bytes": 614,
+          "compute_bereq_body_bytes": 1261567,
+          "compute_bereqs": 1,
+          "compute_sandboxes": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795642078,
+      "aggregated": {
+        "compute_execution_time_ms": 45,
+        "compute_request_time_ms": 655,
+        "compute_request_time_billed_ms": 700,
+        "compute_req_body_bytes": 7110657,
+        "compute_resp_header_bytes": 125,
+        "compute_resp_body_bytes": 303,
+        "compute_resp_status_2xx": 1,
+        "compute_bereq_body_bytes": 7127041,
+        "compute_beresp_header_bytes": 243,
+        "compute_resp_status_200": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 45,
+          "compute_request_time_ms": 655,
+          "compute_request_time_billed_ms": 700,
+          "compute_req_body_bytes": 7110657,
+          "compute_resp_header_bytes": 125,
+          "compute_resp_body_bytes": 303,
+          "compute_resp_status_2xx": 1,
+          "compute_bereq_body_bytes": 7127041,
+          "compute_beresp_header_bytes": 243,
+          "compute_resp_status_200": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795642113,
+      "aggregated": {
+        "compute_requests": 1,
+        "compute_execution_time_ms": 16,
+        "compute_ram_used": 4456448,
+        "compute_req_header_bytes": 754,
+        "compute_req_body_bytes": 1867776,
+        "compute_bereq_header_bytes": 615,
+        "compute_bereq_body_bytes": 1867776,
+        "compute_bereqs": 1,
+        "compute_sandboxes": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 1,
+          "compute_execution_time_ms": 16,
+          "compute_ram_used": 4456448,
+          "compute_req_header_bytes": 754,
+          "compute_req_body_bytes": 1867776,
+          "compute_bereq_header_bytes": 615,
+          "compute_bereq_body_bytes": 1867776,
+          "compute_bereqs": 1,
+          "compute_sandboxes": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795642114,
+      "aggregated": {
+        "compute_requests": 11,
+        "compute_execution_time_ms": 179,
+        "compute_ram_used": 49020928,
+        "compute_req_header_bytes": 8294,
+        "compute_req_body_bytes": 29884416,
+        "compute_bereq_header_bytes": 6765,
+        "compute_bereq_body_bytes": 29884416,
+        "compute_bereqs": 11,
+        "compute_sandboxes": 11
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 11,
+          "compute_execution_time_ms": 179,
+          "compute_ram_used": 49020928,
+          "compute_req_header_bytes": 8294,
+          "compute_req_body_bytes": 29884416,
+          "compute_bereq_header_bytes": 6765,
+          "compute_bereq_body_bytes": 29884416,
+          "compute_bereqs": 11,
+          "compute_sandboxes": 11
+        }
+      }
+    },
+    {
+      "recorded": 1795642115,
+      "aggregated": {
+        "compute_execution_time_ms": 312,
+        "compute_req_body_bytes": 54853632,
+        "compute_bereq_body_bytes": 54853632
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 312,
+          "compute_req_body_bytes": 54853632,
+          "compute_bereq_body_bytes": 54853632
+        }
+      }
+    },
+    {
+      "recorded": 1795642116,
+      "aggregated": {
+        "compute_execution_time_ms": 283,
+        "compute_req_body_bytes": 46874624,
+        "compute_bereq_body_bytes": 46874624
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 283,
+          "compute_req_body_bytes": 46874624,
+          "compute_bereq_body_bytes": 46874624
+        }
+      }
+    },
+    {
+      "recorded": 1795642117,
+      "aggregated": {
+        "compute_execution_time_ms": 302,
+        "compute_req_body_bytes": 58851328,
+        "compute_bereq_body_bytes": 58843136
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 302,
+          "compute_req_body_bytes": 58851328,
+          "compute_bereq_body_bytes": 58843136
+        }
+      }
+    },
+    {
+      "recorded": 1795642118,
+      "aggregated": {
+        "compute_execution_time_ms": 360,
+        "compute_req_body_bytes": 61046784,
+        "compute_bereq_body_bytes": 61054976
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 360,
+          "compute_req_body_bytes": 61046784,
+          "compute_bereq_body_bytes": 61054976
+        }
+      }
+    },
+    {
+      "recorded": 1795642119,
+      "aggregated": {
+        "compute_requests": 1,
+        "compute_execution_time_ms": 483,
+        "compute_ram_used": 4456448,
+        "compute_request_time_ms": 5330,
+        "compute_request_time_billed_ms": 5350,
+        "compute_req_header_bytes": 754,
+        "compute_req_body_bytes": 64897024,
+        "compute_resp_header_bytes": 125,
+        "compute_resp_body_bytes": 309,
+        "compute_resp_status_2xx": 1,
+        "compute_bereq_header_bytes": 615,
+        "compute_bereq_body_bytes": 64888832,
+        "compute_beresp_header_bytes": 243,
+        "compute_bereqs": 1,
+        "compute_resp_status_200": 1,
+        "compute_sandboxes": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 1,
+          "compute_execution_time_ms": 483,
+          "compute_ram_used": 4456448,
+          "compute_request_time_ms": 5330,
+          "compute_request_time_billed_ms": 5350,
+          "compute_req_header_bytes": 754,
+          "compute_req_body_bytes": 64897024,
+          "compute_resp_header_bytes": 125,
+          "compute_resp_body_bytes": 309,
+          "compute_resp_status_2xx": 1,
+          "compute_bereq_header_bytes": 615,
+          "compute_bereq_body_bytes": 64888832,
+          "compute_beresp_header_bytes": 243,
+          "compute_bereqs": 1,
+          "compute_resp_status_200": 1,
+          "compute_sandboxes": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795642120,
+      "aggregated": {
+        "compute_requests": 2,
+        "compute_execution_time_ms": 449,
+        "compute_ram_used": 8912896,
+        "compute_request_time_ms": 18675,
+        "compute_request_time_billed_ms": 18750,
+        "compute_req_header_bytes": 1508,
+        "compute_req_body_bytes": 78594048,
+        "compute_resp_header_bytes": 375,
+        "compute_resp_body_bytes": 927,
+        "compute_resp_status_2xx": 3,
+        "compute_bereq_header_bytes": 1230,
+        "compute_bereq_body_bytes": 78536704,
+        "compute_beresp_header_bytes": 729,
+        "compute_bereqs": 2,
+        "compute_resp_status_200": 3,
+        "compute_sandboxes": 2
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 2,
+          "compute_execution_time_ms": 449,
+          "compute_ram_used": 8912896,
+          "compute_request_time_ms": 18675,
+          "compute_request_time_billed_ms": 18750,
+          "compute_req_header_bytes": 1508,
+          "compute_req_body_bytes": 78594048,
+          "compute_resp_header_bytes": 375,
+          "compute_resp_body_bytes": 927,
+          "compute_resp_status_2xx": 3,
+          "compute_bereq_header_bytes": 1230,
+          "compute_bereq_body_bytes": 78536704,
+          "compute_beresp_header_bytes": 729,
+          "compute_bereqs": 2,
+          "compute_resp_status_200": 3,
+          "compute_sandboxes": 2
+        }
+      }
+    },
+    {
+      "recorded": 1795642121,
+      "aggregated": {
+        "compute_requests": 1,
+        "compute_execution_time_ms": 390,
+        "compute_ram_used": 4456448,
+        "compute_request_time_ms": 22708,
+        "compute_request_time_billed_ms": 22800,
+        "compute_req_header_bytes": 754,
+        "compute_req_body_bytes": 73383935,
+        "compute_resp_header_bytes": 375,
+        "compute_resp_body_bytes": 927,
+        "compute_resp_status_2xx": 3,
+        "compute_bereq_header_bytes": 615,
+        "compute_bereq_body_bytes": 73449471,
+        "compute_beresp_header_bytes": 729,
+        "compute_bereqs": 1,
+        "compute_resp_status_200": 3,
+        "compute_sandboxes": 1
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_requests": 1,
+          "compute_execution_time_ms": 390,
+          "compute_ram_used": 4456448,
+          "compute_request_time_ms": 22708,
+          "compute_request_time_billed_ms": 22800,
+          "compute_req_header_bytes": 754,
+          "compute_req_body_bytes": 73383935,
+          "compute_resp_header_bytes": 375,
+          "compute_resp_body_bytes": 927,
+          "compute_resp_status_2xx": 3,
+          "compute_bereq_header_bytes": 615,
+          "compute_bereq_body_bytes": 73449471,
+          "compute_beresp_header_bytes": 729,
+          "compute_bereqs": 1,
+          "compute_resp_status_200": 3,
+          "compute_sandboxes": 1
+        }
+      }
+    },
+    {
+      "recorded": 1795642122,
+      "aggregated": {
+        "compute_execution_time_ms": 274,
+        "compute_request_time_ms": 39877,
+        "compute_request_time_billed_ms": 40100,
+        "compute_req_body_bytes": 65454081,
+        "compute_resp_header_bytes": 875,
+        "compute_resp_body_bytes": 2164,
+        "compute_resp_status_2xx": 7,
+        "compute_bereq_body_bytes": 65454081,
+        "compute_beresp_header_bytes": 1701,
+        "compute_resp_status_200": 7
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 274,
+          "compute_request_time_ms": 39877,
+          "compute_request_time_billed_ms": 40100,
+          "compute_req_body_bytes": 65454081,
+          "compute_resp_header_bytes": 875,
+          "compute_resp_body_bytes": 2164,
+          "compute_resp_status_2xx": 7,
+          "compute_bereq_body_bytes": 65454081,
+          "compute_beresp_header_bytes": 1701,
+          "compute_resp_status_200": 7
+        }
+      }
+    },
+    {
+      "recorded": 1795642123,
+      "aggregated": {
+        "compute_execution_time_ms": 7,
+        "compute_request_time_ms": 10396,
+        "compute_request_time_billed_ms": 10450,
+        "compute_req_body_bytes": 1163264,
+        "compute_resp_header_bytes": 250,
+        "compute_resp_body_bytes": 617,
+        "compute_resp_status_2xx": 2,
+        "compute_bereq_body_bytes": 1163264,
+        "compute_beresp_header_bytes": 486,
+        "compute_resp_status_200": 2
+      },
+      "datacenter": {
+        "CHI": {
+          "compute_execution_time_ms": 7,
+          "compute_request_time_ms": 10396,
+          "compute_request_time_billed_ms": 10450,
+          "compute_req_body_bytes": 1163264,
+          "compute_resp_header_bytes": 250,
+          "compute_resp_body_bytes": 617,
+          "compute_resp_status_2xx": 2,
+          "compute_bereq_body_bytes": 1163264,
+          "compute_beresp_header_bytes": 486,
+          "compute_resp_status_200": 2
+        }
+      }
+    }
+  ],
+  "finishedAt": "2026-11-25T21:34:54.004Z"
+}

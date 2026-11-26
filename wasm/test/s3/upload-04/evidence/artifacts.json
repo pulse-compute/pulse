@@ -1,0 +1,22 @@
+{
+  "kind": "research-artifacts",
+  "capBytes": 33554432,
+  "operationMs": 10000,
+  "requestMs": 15000,
+  "artifacts": {
+    "node": {
+      "file": "/tmp/upload04-artifacts-framing/node.native",
+      "bytes": 116329,
+      "sha256": "708932edcd50432d57d161b54d980a9fcb09152a20e4f1b9d3dc54ad6aacffab",
+      "wasmBytes": 6695,
+      "wasmSha256": "d9f897210cc9cb9c0ad1f2ab04a64c1776da9e207fdfa85888b6233de3e08bfb"
+    },
+    "fastly": {
+      "file": "/tmp/upload04-artifacts-framing/fastly.wasm",
+      "bytes": 51974,
+      "sha256": "9666980b967acc3e39b7596f6030e8bbda2e88ac4ddeb4d30878f9dd295a19ab",
+      "wasmBytes": 51974,
+      "wasmSha256": "9666980b967acc3e39b7596f6030e8bbda2e88ac4ddeb4d30878f9dd295a19ab"
+    }
+  }
+}

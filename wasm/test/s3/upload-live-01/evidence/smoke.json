@@ -1,0 +1,132 @@
+{
+  "schema": "pulse.upload-live.v1",
+  "status": "passed-with-limitations",
+  "selection": "smoke",
+  "startedAt": "2026-11-25T21:22:21.575Z",
+  "service": "L47lcfUqEbbK5tXC9BTI00",
+  "version": 1,
+  "domain": "pulse-upload-live-ed259ae1cb.edgecompute.app",
+  "artifact": {
+    "kind": "research-scaffold",
+    "target": {
+      "endpoint": "https://us-central-1.object.fastlystorage.app",
+      "region": "us-central-1",
+      "bucket": "catalog-live-20261101-2da36f-objects",
+      "prefix": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/"
+    },
+    "capBytes": 33554432,
+    "operationMs": 10000,
+    "requestMs": 15000,
+    "wasmBytes": 52728,
+    "wasmSha256": "db71bb34ba95344e587e41b2ef4858df09b4510a079d2d704ab04d3e820043af",
+    "publicAdmission": false,
+    "telemetry": "Guest linear memory and successful close calls; not host RSS or pending-request reclamation"
+  },
+  "networkRoute": "environment-proxy",
+  "cases": [
+    {
+      "size": 65536,
+      "concurrency": 1,
+      "status": "passed",
+      "startedAt": "2026-11-25T21:22:21.576Z",
+      "uploadWallMs": 7654.549326,
+      "keys": [
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/6430906c-71d0-4731-a021-b79c612ab869"
+      ],
+      "errors": [],
+      "p50Ms": 3846.44679,
+      "p95Ms": 3846.44679,
+      "finishedAt": "2026-11-25T21:22:33.137Z"
+    },
+    {
+      "size": 1048576,
+      "concurrency": 1,
+      "status": "passed",
+      "startedAt": "2026-11-25T21:22:33.137Z",
+      "uploadWallMs": 6702.3113779999985,
+      "keys": [
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/ced5490f-d97a-49bb-bcd4-fa940bf19175"
+      ],
+      "errors": [],
+      "p50Ms": 3396.0758030000015,
+      "p95Ms": 3396.0758030000015,
+      "finishedAt": "2026-11-25T21:22:43.159Z"
+    }
+  ],
+  "keys": [
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/6430906c-71d0-4731-a021-b79c612ab869",
+      "size": 65536,
+      "declared": 65536,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:22:25.383Z",
+      "sentBytes": 65536,
+      "producerEofMs": 3190.2459799999997,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 3845.9406790000003,
+        "result": {
+          "status": "stored",
+          "etag": "\"f16d02efc131f89b56988d8ab8a2653a\"",
+          "byteLength": 65536,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 65536,
+          "writtenBytes": 65536,
+          "operationMs": 192.957029,
+          "firstReadMs": 12.351636,
+          "firstWriteMs": 12.376806,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100082-CHI",
+        "elapsedMs": 3846.44679,
+        "sentBytes": 65536
+      },
+      "readback": {
+        "status": 200,
+        "length": 65536,
+        "bytes": 65536,
+        "sha256": "3dcea1e1a0f4b3488ecb5b90375d9d9534cc24997424331bb0059aef8ba78844"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/ced5490f-d97a-49bb-bcd4-fa940bf19175",
+      "size": 1048576,
+      "declared": 1048576,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:22:36.443Z",
+      "sentBytes": 1048576,
+      "producerEofMs": 2902.736590999999,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 3395.749098000002,
+        "result": {
+          "status": "stored",
+          "etag": "\"e4ed21ab0582f4c73e9c1a1187422d20\"",
+          "byteLength": 1048576,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 1048576,
+          "writtenBytes": 1048576,
+          "operationMs": 286.880198,
+          "firstReadMs": 6.423629,
+          "firstWriteMs": 6.622983,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 3396.0758030000015,
+        "sentBytes": 1048576
+      },
+      "readback": {
+        "status": 200,
+        "length": 1048576,
+        "bytes": 1048576,
+        "sha256": "dc6e5c46329e7019fca98b07fa2ddc98de06454448c457a47cf00922c9006deb"
+      }
+    }
+  ],
+  "publicAdmission": false,
+  "finishedAt": "2026-11-25T21:22:43.159Z"
+}

@@ -5,11 +5,11 @@
 > **Audience:** Pulse compiler, runtime, provider, and package-lowering maintainers.<br>
 > **Install directly:** Provider toolchain authors may install it for the versioned bootstrap contract; application projects receive it transitively.<br>
 > **Supported entry points:** `@pulse-compute/wasm-contracts/provider/toolchain`<br>
-> **Stability:** The provider toolchain contract is versioned and supported for the Beta; other protocol and proof interfaces remain internal.<br>
+> **Stability:** The provider toolchain contract is versioned and supported for the Release Candidate; other protocol and proof interfaces remain internal.<br>
 > **npm:** [`@pulse-compute/wasm-contracts`](https://www.npmjs.com/package/@pulse-compute/wasm-contracts)<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.11/packages/implementation-packages/)
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-rc.1/packages/implementation-packages/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.11` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-rc.1` package policy.
 <!-- pulse-package-status:end -->
 
 This package owns stable data contracts shared by the compiler, runtime, and providers.

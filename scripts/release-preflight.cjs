@@ -275,7 +275,7 @@ function validateReleaseVocabulary(preflight) {
     'Documented behavior is intentional and evidence-backed.',
     'Unsupported behavior fails explicitly.',
     'No execution target silently falls back.',
-    'Public surfaces may still change deliberately during beta before the stable 1.0.0 release.',
+    `Public surfaces may still change deliberately during ${RELEASE_MANIFEST.channel === 'beta' ? 'beta' : 'prereleases'} before the stable 1.0.0 release.`,
     'Implementation and historical subpaths do not gain accidental compatibility guarantees.',
     'Package names, release artifacts, and published versions remain immutable once released.'
   ];
@@ -447,14 +447,14 @@ function validateSnapshotTransaction(preflight, root = repoRoot) {
     || candidate.snapshotStatus !== 'applied'
     || candidate.snapshotAppliedAt !== RELEASE_MANIFEST.releasedAt
   ) {
-    fail('release candidate must record the applied Beta snapshot');
+    fail('release candidate must record the applied release snapshot');
   }
   if (
     RELEASE_MANIFEST.channel !== candidate.currentSnapshotChannel
     || PUBLICATION.distTag !== candidate.publicationTag
     || RELEASE_MANIFEST.releasedAt !== candidate.snapshotAppliedAt
   ) {
-    fail('release manifest does not match the applied Beta snapshot');
+    fail('release manifest does not match the applied release snapshot');
   }
 
   const versions = readJson('release/documentation-versions.json', root);
@@ -470,7 +470,7 @@ function validateSnapshotTransaction(preflight, root = repoRoot) {
     || current[0].releasedAt !== candidate.snapshotAppliedAt
     || current[0].sourceManifest !== 'release/pulse-release-manifest.json'
   ) {
-    fail('documentation versions do not match the applied Beta snapshot');
+    fail('documentation versions do not match the applied release snapshot');
   }
 
   const rootPackage = readJson('package.json', root);
@@ -480,17 +480,17 @@ function validateSnapshotTransaction(preflight, root = repoRoot) {
     || rootPackage.engines?.pnpm !== PUBLICATION.pnpmDevelopmentRange
     || Object.hasOwn(rootPackage, 'packageManager')
   ) {
-    fail('root package metadata does not match the Beta release contract');
+    fail('root package metadata does not match the release contract');
   }
 
   let dependencyRanges = 0;
   for (const entry of PACKAGE_SET) {
     const manifest = readJson(`${entry.dir}/package.json`, root);
     if (manifest.name !== entry.name || manifest.version !== candidate.version || manifest.license !== LICENSE) {
-      fail(`${entry.name} package metadata does not match the applied Beta snapshot`);
+      fail(`${entry.name} package metadata does not match the applied release snapshot`);
     }
     if (manifest.engines?.node !== PUBLICATION.nodeEngines) {
-      fail(`${entry.name} Node engines do not match the Beta release contract`);
+      fail(`${entry.name} Node engines do not match the release contract`);
     }
     for (const section of ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']) {
       for (const [name, range] of Object.entries(manifest[section] || {})) {
@@ -505,7 +505,7 @@ function validateSnapshotTransaction(preflight, root = repoRoot) {
 
   const changelog = fs.readFileSync(path.join(root, 'CHANGELOG.md'), 'utf8');
   if (!changelog.includes(`## ${candidate.version} — ${candidate.label} (${candidate.snapshotAppliedAt})`)) {
-    fail('CHANGELOG does not identify the applied Beta snapshot');
+    fail('CHANGELOG does not identify the applied release snapshot');
   }
   if (/^## Current source candidate$/m.test(changelog)) fail('CHANGELOG still describes the release as an unsnapshotted source candidate');
 
@@ -541,7 +541,7 @@ function validatePreflight(options = {}) {
     fail('release candidate framing must match the manifest-owned version, label, and publication tag');
   }
   if (RELEASE_VERSION !== candidate.version) {
-    fail('current release manifest version no longer matches the Beta candidate');
+    fail('current release manifest version no longer matches the release candidate');
   }
   if (
     LICENSE !== 'Apache-2.0'

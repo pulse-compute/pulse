@@ -10,7 +10,7 @@ and support tiers.
 
 1. [Getting started](./getting-started.md) — install and create a first project.
 2. [Project lifecycle](./guides/project-lifecycle.md) — the normal `init → doctor → test → dev → build` journey and the advanced `inspect`/`compile` branches.
-3. [Beta scope](./preview-scope.md) — what the release guarantees and deliberately excludes.
+3. [Release Candidate scope](./preview-scope.md) — what the release guarantees and deliberately excludes.
 4. [Canonical examples](./examples.md) — source-bound projects,
    including Entities, events, and the resource-backed Pulse context MCP server.
 

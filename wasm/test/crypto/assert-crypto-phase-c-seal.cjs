@@ -69,7 +69,7 @@ function assertDocumentation() {
     path.join(repoRoot, 'docs', 'reference', 'compatibility-matrix.md'),
     'utf8'
   );
-  assert.match(compatibility, /^## JWT and crypto Beta packages$/m);
+  assert.match(compatibility, /^## JWT and crypto packages$/m);
   assert.match(compatibility, /\| HS256 MAC verification \| `runtime-builtin` \| `runtime-builtin` \| `guest-source:pulse-hmac-as` \| `guest-source:pulse-hmac-as` \|/);
   assert.match(compatibility, /\| JWT verification \| HS256, ES256 \| HS256, ES256 \| HS256, ES256 \| HS256, ES256 \|/);
 

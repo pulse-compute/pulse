@@ -39,12 +39,13 @@ function main(kind = 'both') {
       request: { method: 'POST', headers: [['content-type', 'application/json']], body: JSON.stringify(input) },
       fixtures: { [`${input.method} https://origin.test/users`]: { status: 200, body: 'stored' } },
     });
-    for (const method of ['POST', 'PUT', 'PATCH']) {
+    for (const method of ['POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']) {
       for (const json of [true, false]) {
         for (const headers of [
           { 'x-request-id': method }, [['x-request-id', method]],
           { 'Content-Type': 'application/custom', 'x-empty': '' },
           [['Content-Type', 'application/custom'], ['x-empty', '']],
+          [['Content-Type', '']],
           [['x-repeat', 'first'], ['X-Repeat', 'second'], ['x-empty', '']],
           [['Content-Type', 'first/type'], ['content-type', 'second/type']],
           {}, [], undefined,

@@ -68,8 +68,10 @@ function loadReleaseManifest(file = RELEASE_MANIFEST_FILE) {
   const display = raw.display;
   if (!display || typeof display !== 'object' || Array.isArray(display)) fail('release manifest display is required');
   for (const field of ['productName', 'candidateLabel', 'candidateName', 'activationStage']) nonEmpty(display[field], `display.${field}`);
-  if (display.productName !== 'Pulse' || display.candidateLabel !== 'Beta') {
-    fail('release manifest display must identify the Pulse Beta candidate');
+  const candidateLabels = { beta: 'Beta', rc: 'Release Candidate' };
+  if (display.productName !== 'Pulse' || !Object.hasOwn(candidateLabels, raw.channel)
+    || display.candidateLabel !== candidateLabels[raw.channel]) {
+    fail('release manifest display must match its beta or rc candidate channel');
   }
   if (display.candidateName !== `${display.productName} ${raw.releaseVersion} — ${display.candidateLabel}`) {
     fail('release manifest display.candidateName must derive from productName, releaseVersion, and candidateLabel');

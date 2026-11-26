@@ -23,7 +23,7 @@ readers into `/latest/` for current browsing.
 ## Exact release URLs
 
 Diagnostics, package status blocks and package metadata use exact-version
-URLs, such as `https://pulsecompute.io/v1.0.0-beta.11/`. This binds guidance to
+URLs, such as `https://pulsecompute.io/v1.0.0-rc.1/`. This binds guidance to
 its release rather than silently opening a newer contract. Historical rendered
 bytes and their assets retain their original delivery identities; current
 source cleanup does not rebuild or restyle those snapshots.
@@ -60,7 +60,7 @@ It reads the previous release manifest from its exact Git tag and retains that
 metadata under `release/documentation-release-history/`, bound to the tag commit
 and a content digest. It never installs the prior release, builds its website,
 or creates a new historical HTML archive. Local preparation uses
-`release:prepare -- <version> --channel beta --website-managed`.
+`release:prepare -- <version> --channel rc --website-managed`.
 
 Product versions, package ranges, changelog history, CLI metadata and generated
 references still advance together. Historical catalog entries keep their exact
@@ -119,7 +119,7 @@ For that explicit exception, select `replace-unpublished-docs` in the preparatio
 workflow, or use the local command:
 
 ```bash
-node scripts/release-prepare.cjs "$NEXT_VERSION" --channel beta --replace-unpublished-docs
+node scripts/release-prepare.cjs "$NEXT_VERSION" --channel rc --replace-unpublished-docs
 ```
 
 This replaces the current hosted-docs entry without building or committing its

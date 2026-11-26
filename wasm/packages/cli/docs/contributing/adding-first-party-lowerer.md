@@ -315,7 +315,7 @@ A lowerer is ready for the synchronized release only when all answers are yes:
 - Does ordinary JavaScript execution use the real package implementation?
 - Does packed dependency discovery work without workspace paths?
 - Are public failures catalogued and documented?
-- Is the Beta boundary narrower than or equal to what tests prove?
+- Is the Release Candidate boundary narrower than or equal to what tests prove?
 
 ## Related documentation
 

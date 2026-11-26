@@ -7,7 +7,7 @@ pulse-doc-meta:end -->
 
 # Maintainer charter
 
-Pulse is released as a narrow Beta. Public use should create useful
+Pulse is released as a narrow Release Candidate. Public use should create useful
 pressure on correctness, diagnostics, packaging, and documentation without
 allowing routine support pressure to silently redefine the product.
 

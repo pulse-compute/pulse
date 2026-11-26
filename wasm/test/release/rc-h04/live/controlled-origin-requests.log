@@ -1,0 +1,6 @@
+{"number":1,"method":"GET","path":"/echo"}
+{"number":2,"method":"DELETE","path":"/echo"}
+{"number":3,"method":"OPTIONS","path":"/echo"}
+{"number":4,"method":"GET","path":"/slow"}
+{"number":5,"method":"GET","path":"/body"}
+{"number":6,"method":"GET","path":"/body"}

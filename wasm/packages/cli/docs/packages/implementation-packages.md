@@ -4,7 +4,7 @@
 
 These packages are synchronized parts of the release set for compiler, provider, runtime, and package-lowering maintainers. They are not general application-author SDKs. Explicitly listed supported entry points are exceptions with their stated bounds: in particular, @pulse-compute/provider-node/server is the finite production HTTP integration, and /toolchain serves the CLI. Other exports remain internal.
 
-The package status and supported entry-point lists below come from the synchronized Pulse 1.0.0-beta.11 release policy.
+The package status and supported entry-point lists below come from the synchronized Pulse 1.0.0-rc.1 release policy.
 
 ## `@pulse-compute/wasm-build-support`
 
@@ -49,7 +49,7 @@ Pulse compiler, runtime, provider, and package-lowering maintainers.
 
 - **npm:** [`@pulse-compute/wasm-contracts`](https://www.npmjs.com/package/@pulse-compute/wasm-contracts)
 - **Install directly:** Provider toolchain authors may install it for the versioned bootstrap contract; application projects receive it transitively.
-- **Stability:** The provider toolchain contract is versioned and supported for the Beta; other protocol and proof interfaces remain internal.
+- **Stability:** The provider toolchain contract is versioned and supported for the Release Candidate; other protocol and proof interfaces remain internal.
 
 ### Supported entry points
 

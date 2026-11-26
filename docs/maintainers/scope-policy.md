@@ -107,6 +107,6 @@ npm run maintainer:check
 
 A request for a new provider, npm compatibility, streaming primitive, lowerer
 API, agent facility, or host capability is not rejected merely because it is
-outside the Beta. It is labeled and retained as evidence.
+outside the Release Candidate. It is labeled and retained as evidence.
 Implementation begins only when the human authority chooses the product and
 architectural direction.

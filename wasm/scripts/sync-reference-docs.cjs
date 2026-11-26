@@ -199,7 +199,7 @@ Providers are explicitly selected by a bare host ID or exact scoped package name
 
 ## Installed documentation
 
-${inlineCode('@pulse-compute/runtime')} ships its canonical API reference and Beta scope. ${inlineCode('@pulse-compute/cli')} ships the public documentation hierarchy, CLI/config/diagnostic references, bounded compatibility material, and runnable example sources. Package README links must resolve either inside their own tarball or to an exact-version hosted Pulse documentation URL.
+${inlineCode('@pulse-compute/runtime')} ships its canonical API reference and ${DISPLAY.candidateLabel} scope. ${inlineCode('@pulse-compute/cli')} ships the public documentation hierarchy, CLI/config/diagnostic references, bounded compatibility material, and runnable example sources. Package README links must resolve either inside their own tarball or to an exact-version hosted Pulse documentation URL.
 `);
 }
 
@@ -465,7 +465,7 @@ ${GENERATED_NOTICE}
 
 \`release/pulse-release-manifest.json\` is the canonical owner of the synchronized release version, documentation origin and exact segment, repository metadata, support tiers, package roles, direct-install guidance, supported entry points, and stability promises.
 
-## Beta candidate
+## ${DISPLAY.candidateLabel} candidate
 
 - **Candidate:** ${DISPLAY.candidateName}
 - **Version:** ${inlineCode(RELEASE_MANIFEST.releaseVersion)}
@@ -483,7 +483,7 @@ ${GENERATED_NOTICE}
 
 The installed CLI ships the same machine-readable data as
 ${inlineCode('release-manifest.json')}. The atomic snapshot transaction aligns
-the Beta label, ${inlineCode(RELEASE_MANIFEST.channel)} channel,
+the ${DISPLAY.candidateLabel} label, ${inlineCode(RELEASE_MANIFEST.channel)} channel,
 release date, package metadata, and exact-version documentation inputs. Tooling
 can read [the hosted JSON copy](../reference/release-manifest.json) without scraping
 package READMEs.
@@ -894,6 +894,9 @@ function filesUnder(root, predicate = () => true, out = []) {
 
 function transformCliCopy(sourceRelative, content) {
   let out = content;
+  if (sourceRelative === 'docs/guides/project-lifecycle.md') {
+    out = out.replaceAll('../../README.md#start-here', '../../README.md#install-and-create-a-project');
+  }
   if (sourceRelative === 'docs/README.md') {
     out = out.replaceAll(
       '[PulseWasm package boundaries](../wasm/docs/PACKAGE-BOUNDARIES.md)',
@@ -941,6 +944,7 @@ function transformApiCopy(sourceRelative, content) {
   }
   if (sourceRelative === 'docs/preview-scope.md') {
     return stable(content
+      .replaceAll('../API.md', './API.md')
       .replaceAll('concepts/compilation-and-lowering.md', publicCliDoc('docs/concepts/compilation-and-lowering.md'))
       .replaceAll('concepts/bodies.md', publicCliDoc('docs/concepts/bodies.md'))
       .replaceAll('./reference/handler-authoring.md', publicCliDoc('docs/reference/handler-authoring.md'))

@@ -10,7 +10,7 @@ provider-neutral runtime contract.
 ## Install
 
 ```bash
-npm install @pulse-compute/pulse@1.0.0-beta.11
+npm install @pulse-compute/pulse@1.0.0-rc.1
 ```
 
 The package exposes two supported entry points:

@@ -1,0 +1,420 @@
+{
+  "schemaVersion": "pulse.rc-h04-deployed-proof.v1",
+  "status": "passed",
+  "candidate": {
+    "sourceRevision": "d012f547f804af6e272cb1a6aeafe970c22e0b77",
+    "sourceTree": "ae28b53c6a31c77354e06d1e2d8816139b329eb2",
+    "workingTree": ""
+  },
+  "packagesMatchInitialK4Pack": true,
+  "localTerminal": {
+    "status": "passed",
+    "cases": 15,
+    "runId": 45882718724,
+    "artifactId": 15147862429,
+    "archiveSha256": "6e20b50908ab8f11b7d8fa1e77a52c9d666d16efa53d3f3fb9312b7ec183331c"
+  },
+  "hostedTerminal": {
+    "status": "passed",
+    "cases": 15,
+    "winningAttempt": "terminal-hosted-4.json",
+    "priorAttemptResults": [
+      "config incomplete before traffic",
+      "13 cells then 502 Route not found",
+      "14 cells then held response timed out; cause not established"
+    ],
+    "assertionsRelaxed": false
+  },
+  "deployedK4": {
+    "status": "passed",
+    "requests": 58,
+    "locations": [
+      "IAD",
+      "LHR"
+    ],
+    "schedules": 3,
+    "mutationRetries": 0,
+    "readVisibilityBudgetMs": 30000,
+    "clientResponseLoss": true,
+    "typedKvUnknown": false,
+    "priorAttempt": "Read-only admission deadline; no writes dispatched"
+  },
+  "liveOrigin": {
+    "status": "passed",
+    "cases": 16,
+    "pulseWrites": "bounded putText only",
+    "binarySeed": "direct signed fixture setup, not a public upload operation"
+  },
+  "originWorkflow": {
+    "runId": 45887243043,
+    "sourceRevision": "c09ce541072a06a4383407eabbba086cecbd3458",
+    "finalArtifactId": 15150143557,
+    "finalArchiveSha256": "7e4ad8abca8694b9a7bd879670b1760caba0f97f75da1d84dbb60a5b7770f021",
+    "status": "completed",
+    "conclusion": "success",
+    "cleanupStep": "success"
+  },
+  "cleanup": {
+    "status": "passed",
+    "services": 9,
+    "stores": 2,
+    "kvKeys": 4,
+    "objects": 1,
+    "scopedObjectKeyRevoked": true,
+    "managementTokenRevoked": false
+  },
+  "limits": [
+    "Bounded current-package provider proof, not an aggregate release seal",
+    "No exhaustive global KV consistency, durability or freshness promise",
+    "Known Viceroy missing-key discrepancy remains a raw local semantic failure under its existing disposition",
+    "No upload/list/delete S3 support or public feature promotion",
+    "Complete winning terminal replay does not erase the retained earlier hold timeout; no causal diagnosis is claimed"
+  ],
+  "files": [
+    {
+      "path": "attempt1-k4-deployed.log",
+      "bytes": 64,
+      "sha256": "6b00e2f77d462749f1f78b075a3b5c913a380bb1667859ab6e0943e49a403df2"
+    },
+    {
+      "path": "attempt1-k4-identity.json",
+      "bytes": 1064,
+      "sha256": "f36e9c4ac8a1309226569ebbffdfa7b69c7b341b01e9324da3b519d9a923e94f"
+    },
+    {
+      "path": "attempt1-k4-requests.json",
+      "bytes": 781,
+      "sha256": "c3896164ce23bbbf3cae134e8933a0132972a61c6bd0d5588b3baaabc55d32c2"
+    },
+    {
+      "path": "build-k4-failed-key-guard.log",
+      "bytes": 2040,
+      "sha256": "1a52568be3f8d7dd47418545b70a977ca8de4f4c74274772368578f1b7fa41fa"
+    },
+    {
+      "path": "build-origin-failed-options.log",
+      "bytes": 2395,
+      "sha256": "e7fa24812a63980faa94fb3c5e643e5064bffcafb616217e60fbe77343fa7613"
+    },
+    {
+      "path": "cleanup-resources.log",
+      "bytes": 1533,
+      "sha256": "6a22a9ea6865951a727848d35a5645ca9f538e3f90f6b8ddb7892441cf5ad609"
+    },
+    {
+      "path": "cleanup.json",
+      "bytes": 5282,
+      "sha256": "9eb414ff42b414f79a9ad26915370b77393d794083aaff54abae963b0791ad70"
+    },
+    {
+      "path": "cloudflared-identity.json",
+      "bytes": 211,
+      "sha256": "9d2fdf27b34eb5a16a49352e8b64e652d502be308e1e5fc2d8fd7ae0e26d756e"
+    },
+    {
+      "path": "controlled-origin-cleanup.txt",
+      "bytes": 51,
+      "sha256": "3dcdd314c93bf1a09825313f2700453abfa61f4adbec694080eb7baca8aebf61"
+    },
+    {
+      "path": "controlled-origin-requests.log",
+      "bytes": 265,
+      "sha256": "6b70cb96a957efc30aeda4633b9f066d3fee19b21a91f1092e77921dfb283ea4"
+    },
+    {
+      "path": "controlled-origin.cjs",
+      "bytes": 1161,
+      "sha256": "6fd66700cea221179423fb1ab379769355a68a481c628bfe6a6e988c93f2f524"
+    },
+    {
+      "path": "harness/build-k4.cjs",
+      "bytes": 4703,
+      "sha256": "abacdbc347b22d3b3ba0d46584d01fe9fc339dc47e8af52a2d8ebd2c7293c69a"
+    },
+    {
+      "path": "harness/build-origin.cjs",
+      "bytes": 4214,
+      "sha256": "50e3a03e3d208d2f407eaee01c720d439d118105d1693995e999d0e1899a087c"
+    },
+    {
+      "path": "harness/cleanup-resources.py",
+      "bytes": 2938,
+      "sha256": "aeebf44fd4189f3b1b2076d01b79469584559f3ed569e35661c39b7469c6510a"
+    },
+    {
+      "path": "harness/control.py",
+      "bytes": 3892,
+      "sha256": "871e341bb51a866e5970649a9a20642ab814ec535362f0cb7314b7155590079b"
+    },
+    {
+      "path": "harness/deactivate-origin.py",
+      "bytes": 746,
+      "sha256": "0b724cf141a7b3d8a89ff6fd35629ee41b771ded6a371a336550b6a8bb1072a4"
+    },
+    {
+      "path": "harness/deploy-terminal.py",
+      "bytes": 1197,
+      "sha256": "b54c5a004f83b1ac3197bc44c8249a9066aa4cd4b793f8929f7de67ed002d784"
+    },
+    {
+      "path": "harness/install-consumer.cjs",
+      "bytes": 1471,
+      "sha256": "2745d0c46308c274dbc3f895e492f5d218fed7f891bb8d30f7f8a6e7ffb1d750"
+    },
+    {
+      "path": "harness/k4-driver.cjs",
+      "bytes": 4753,
+      "sha256": "09c9c91b35e3b8760fe5f614ca17ae53036058e1ccf74b8b31ed895ea58fb198"
+    },
+    {
+      "path": "harness/k4-local.cjs",
+      "bytes": 1639,
+      "sha256": "05e97de42360c3decd53baf77e367e1704029cf6b013c87a7ad1254da6a0560c"
+    },
+    {
+      "path": "harness/origin-proof.cjs",
+      "bytes": 5638,
+      "sha256": "47192aede2fee941d18c8fdd9c0358683ec39bc9210163a9fe061a178b57ab53"
+    },
+    {
+      "path": "harness/origin-workflow.yml",
+      "bytes": 4647,
+      "sha256": "0971804515853ea42182261a871d5b6f66ef538982f3817261637c126faae925"
+    },
+    {
+      "path": "harness/probe-ready.py",
+      "bytes": 1166,
+      "sha256": "a731203d4ffdb6a224a2f842095e467939beb72c3f1f3e3d7f4f30ff3c254aa4"
+    },
+    {
+      "path": "harness/provision-kv.py",
+      "bytes": 925,
+      "sha256": "2f2e03d12f8a5804be7a54b06397c0736e3b98687659c1a60e5fe2e380de273a"
+    },
+    {
+      "path": "harness/provision-origin.py",
+      "bytes": 1295,
+      "sha256": "0acfe2323e49b5505620f7b126a47f1bce00b7d4b619d211aa0a3196a26342bd"
+    },
+    {
+      "path": "harness/provision-relays.py",
+      "bytes": 1107,
+      "sha256": "1b12ac0cfac97f25336773597c8daf42f178e73e25081759d44049b9908ded39"
+    },
+    {
+      "path": "harness/retire-services.py",
+      "bytes": 360,
+      "sha256": "4d916725877c4dd961b685f39ae3319278054c6ff5b68db1004d082e661f24ec"
+    },
+    {
+      "path": "harness/retire-terminal.py",
+      "bytes": 440,
+      "sha256": "8dbb73d0880be4b39a16464146612dfd7b64319c6291cec469b7f9fbe5a7684f"
+    },
+    {
+      "path": "harness/trace-fetch.cjs",
+      "bytes": 608,
+      "sha256": "c0eed41b9a2ce64540e1d38ad78d26d614a206f93fb76f63c19cdec3b179eacb"
+    },
+    {
+      "path": "harness/verify-retirement.py",
+      "bytes": 1801,
+      "sha256": "14c310fac1a57168fc34ea1ba0bd9fed2b11ec2460026fc50834b37ae583b02f"
+    },
+    {
+      "path": "hosted-1.log",
+      "bytes": 167,
+      "sha256": "b9c089520453402d47583007780f5aa933f8cb870ca9a88530a1b3ebdbfdc64e"
+    },
+    {
+      "path": "hosted-2.log",
+      "bytes": 165,
+      "sha256": "bf56620defae6ab7445380913228dd2d176afac3eaf1eeb0997e769ec0385566"
+    },
+    {
+      "path": "hosted-3.log",
+      "bytes": 160,
+      "sha256": "6b881d86f52453d34e152da46b0117f724f29d02a4b5054a30e83489f6d36810"
+    },
+    {
+      "path": "hosted-4.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "k4-artifact.json",
+      "bytes": 1108,
+      "sha256": "52f6e579bd6f4df37b5df474a66e0077c2d9b1928074c4e62f89d9a9456966a6"
+    },
+    {
+      "path": "k4-consumer.ts",
+      "bytes": 1944,
+      "sha256": "fae88224b1a624c8916285bbb4defa10c50e6283258d2d76452e7c8840f1f7a0"
+    },
+    {
+      "path": "k4-deployed.json",
+      "bytes": 1308,
+      "sha256": "e5583850fb82420ef465d773de00d88d9661b3196f5ba624432f9f8bbf6631b6"
+    },
+    {
+      "path": "k4-identity.json",
+      "bytes": 1064,
+      "sha256": "f36e9c4ac8a1309226569ebbffdfa7b69c7b341b01e9324da3b519d9a923e94f"
+    },
+    {
+      "path": "k4-instrumented-local.json",
+      "bytes": 2133,
+      "sha256": "5369086b598aa176daed19ead4a48ef8ae4ecb2e7ac2212927f5caeac7cab4ae"
+    },
+    {
+      "path": "k4-local-manifest-failure.log",
+      "bytes": 973,
+      "sha256": "46d3cc71af4fd01c4d931e1b640724ecb257cacb030b4b87e6a4951303ab6858"
+    },
+    {
+      "path": "k4-requests.json",
+      "bytes": 32863,
+      "sha256": "2047f12cd368a27bafdb2fbc2191ac07d5bbb61168eb448ce76049c035be7c9d"
+    },
+    {
+      "path": "kv-before-teardown.json",
+      "bytes": 1038,
+      "sha256": "db0bf0402936aee58aa69ee264413b4c00919e4e539298d7374a3d4d27f105d1"
+    },
+    {
+      "path": "origin-artifact.json",
+      "bytes": 868,
+      "sha256": "dd9bcc8dd1b8fc5e32c014e7ce75decb44f084a40e89915ecd652a50df259a21"
+    },
+    {
+      "path": "origin-consumer.ts",
+      "bytes": 4438,
+      "sha256": "c8bea4c1ea3e0e940581b7ab6d12daf2f0a9b4614d2b4b4f64bd200771c10ee9"
+    },
+    {
+      "path": "origin-proof.json",
+      "bytes": 4558,
+      "sha256": "af6567902985ed940651b26613336a804f7e8dc0f918f5bf31cc8fd84c82873d"
+    },
+    {
+      "path": "origin-readiness.json",
+      "bytes": 48,
+      "sha256": "cdd581482045c904e864710c98c9cf913bfd041a6c8239dbeef234aab775ebde"
+    },
+    {
+      "path": "packages/fanout-router.tar.gz",
+      "bytes": 15090,
+      "sha256": "9f2071b979b1da2d94e4a2d5607766ed3fcedee806032eb7c1f4391cc9804c79"
+    },
+    {
+      "path": "packages/fanout.tar.gz",
+      "bytes": 14315,
+      "sha256": "95b80deb022eca5c4bec53ea17eb86a1a60d66a643f585b1a9d97da91e54443e"
+    },
+    {
+      "path": "packages/independent.tar.gz",
+      "bytes": 14318,
+      "sha256": "2f10a5bf495be81aac2104b6b50f22a6ffe145216164859f388bbdb408be9c06"
+    },
+    {
+      "path": "packages/kv.tar.gz",
+      "bytes": 22760,
+      "sha256": "166069f33d48b5b161c000c21ce40190d41a4141de21a7e57433fc9a35c51478"
+    },
+    {
+      "path": "packages/origins.tar.gz",
+      "bytes": 31716,
+      "sha256": "4298b14981007458fcfbad93ad68db1dba72cd96331df9a6c9175049b84c2c3a"
+    },
+    {
+      "path": "packages/websocket-router.tar.gz",
+      "bytes": 15093,
+      "sha256": "df1144d9215783d75ebbb8002c13e1e6e045cc655e6c3780bf721ab48bc2cfc8"
+    },
+    {
+      "path": "packages/websocket.tar.gz",
+      "bytes": 14319,
+      "sha256": "7de1e0824222ff776319fb22445edb22d88fcc01d8378b9f9e171a2481b2e910"
+    },
+    {
+      "path": "probe-readiness.json",
+      "bytes": 453,
+      "sha256": "392aaf139905d531b2af17914a67877bdf7b6cec5678fbdbf4fbc2a44bfd1801"
+    },
+    {
+      "path": "provision-relays-missing-dynamic.log",
+      "bytes": 757,
+      "sha256": "74d7adeab1800e1ab1e3c82e71ed083ee76c4836e65cee3ea837a62d2c990d3e"
+    },
+    {
+      "path": "s3-absence.json",
+      "bytes": 528,
+      "sha256": "f0df380168a0d456200f7c3d695bdf388537377a4cd62038eaf705001e194435"
+    },
+    {
+      "path": "s3-cleanup.json",
+      "bytes": 664,
+      "sha256": "9f723f2fd38d598fc88925f74f35cc1b256d0a884ce85f0f2b5e8aa48c9e49d0"
+    },
+    {
+      "path": "terminal-fetch-trace.json",
+      "bytes": 9685,
+      "sha256": "4e3e5095119d3938888e18b9b0c9f25d4f66f7ae4097b8a5fe2656d1215ebe4c"
+    },
+    {
+      "path": "terminal-hosted-1.json",
+      "bytes": 422,
+      "sha256": "2b6e975c60644f8e3a579397cf303b4e67bc0e1e3437ed0f9a026d0d406821cd"
+    },
+    {
+      "path": "terminal-hosted-2.json",
+      "bytes": 5754,
+      "sha256": "4fb67ed9235fcc343ab3c243c35dab502efa2ccc3a865db37fed954fb85c8995"
+    },
+    {
+      "path": "terminal-hosted-3.json",
+      "bytes": 5933,
+      "sha256": "c339d5c069240778c47791487e1eeb683adf183453b3434dfcef4bb7b0601d33"
+    },
+    {
+      "path": "terminal-hosted-4.json",
+      "bytes": 5941,
+      "sha256": "70a0679600b7296b5427b62df9ab5b125fef937c2ba1a6f1ec89f814b4004c39"
+    },
+    {
+      "path": "terminal-hosted-config.json",
+      "bytes": 2707,
+      "sha256": "98a113a23f99f2088f5106f6d47ec70f2e6891d7ee065634cfa2509931ceb078"
+    },
+    {
+      "path": "terminal-installed.json",
+      "bytes": 10323,
+      "sha256": "9df4b0c7e407ca5d8fad267efa216e88ec78b874879307330b7824210a84d697"
+    },
+    {
+      "path": "terminal-local.json",
+      "bytes": 10298,
+      "sha256": "d837cebb7d479ae7cc02f79641597c7c450a3d927bb67bcbfeac7d42e89746c5"
+    },
+    {
+      "path": "terminal-qualification.json",
+      "bytes": 604,
+      "sha256": "bb782ad8a7aada30d0541da3e90b0dd2a580f6d135914f11fb123240ab0d8161"
+    },
+    {
+      "path": "terminal-readiness.json",
+      "bytes": 79,
+      "sha256": "50498dcc1a5e49c74e0129be74b8fe0ad0ed76c317b9c68395a90a64ee2fe2b6"
+    },
+    {
+      "path": "tunnel.log",
+      "bytes": 875,
+      "sha256": "7e7b5f8ec96692cda3c4c71f7026cb1249d120338cc37d8a2f594bd710c0ee6c"
+    },
+    {
+      "path": "verify-retirement.log",
+      "bytes": 83,
+      "sha256": "660e6c5c7c57ff26554987fb88c5fe104efa528fed134814d9a1ce065a5f8820"
+    }
+  ]
+}

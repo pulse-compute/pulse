@@ -1,0 +1,141 @@
+{
+  "version": "pulse.terminal-transport.v1",
+  "lane": "hosted",
+  "status": "failed",
+  "bundleSha256": "9df4b0c7e407ca5d8fad267efa216e88ec78b874879307330b7824210a84d697",
+  "cases": [
+    {
+      "id": "fanout",
+      "scenario": "ordinary",
+      "status": "passed",
+      "artifactSha256": "cd789e57b8b7be4c8ab2fd51cbff81eb7a409e015a72179c7c30f90cdab6175a"
+    },
+    {
+      "id": "fanout",
+      "scenario": "handoff",
+      "status": "passed",
+      "artifactSha256": "cd789e57b8b7be4c8ab2fd51cbff81eb7a409e015a72179c7c30f90cdab6175a"
+    },
+    {
+      "id": "fanout",
+      "scenario": "hold-publish",
+      "status": "passed",
+      "artifactSha256": "cd789e57b8b7be4c8ab2fd51cbff81eb7a409e015a72179c7c30f90cdab6175a"
+    },
+    {
+      "id": "websocket",
+      "scenario": "ordinary",
+      "status": "passed",
+      "artifactSha256": "a776b28019661b673fcb0faa96fa9b63946276245e0662000f6eb509158c208a"
+    },
+    {
+      "id": "websocket",
+      "scenario": "handoff",
+      "status": "passed",
+      "artifactSha256": "a776b28019661b673fcb0faa96fa9b63946276245e0662000f6eb509158c208a"
+    },
+    {
+      "id": "websocket",
+      "scenario": "bidirectional-websocket",
+      "status": "passed",
+      "artifactSha256": "a776b28019661b673fcb0faa96fa9b63946276245e0662000f6eb509158c208a"
+    },
+    {
+      "id": "fanout-router",
+      "scenario": "ordinary",
+      "status": "passed",
+      "artifactSha256": "ac7db50a833fa62a59f38007558e063abea6234412a0b95eb7362276c625f807"
+    },
+    {
+      "id": "fanout-router",
+      "scenario": "handoff",
+      "status": "passed",
+      "artifactSha256": "ac7db50a833fa62a59f38007558e063abea6234412a0b95eb7362276c625f807"
+    },
+    {
+      "id": "fanout-router",
+      "scenario": "hold-publish",
+      "status": "passed",
+      "artifactSha256": "ac7db50a833fa62a59f38007558e063abea6234412a0b95eb7362276c625f807"
+    },
+    {
+      "id": "websocket-router",
+      "scenario": "ordinary",
+      "status": "passed",
+      "artifactSha256": "408f00a5e866042760f7b07257da628cb1cd6a6aa6c0a732584911dabe8e33a6"
+    },
+    {
+      "id": "websocket-router",
+      "scenario": "handoff",
+      "status": "passed",
+      "artifactSha256": "408f00a5e866042760f7b07257da628cb1cd6a6aa6c0a732584911dabe8e33a6"
+    },
+    {
+      "id": "websocket-router",
+      "scenario": "bidirectional-websocket",
+      "status": "passed",
+      "artifactSha256": "408f00a5e866042760f7b07257da628cb1cd6a6aa6c0a732584911dabe8e33a6"
+    },
+    {
+      "id": "independent",
+      "scenario": "ordinary",
+      "status": "passed",
+      "artifactSha256": "6cb1231c4582aab621f60436d8537252f490ae09180647013d7580ce1fbad364"
+    },
+    {
+      "id": "independent",
+      "scenario": "handoff",
+      "status": "passed",
+      "artifactSha256": "6cb1231c4582aab621f60436d8537252f490ae09180647013d7580ce1fbad364"
+    }
+  ],
+  "deployments": [
+    {
+      "id": "fanout",
+      "serviceId": "609EPxSA66AR6cZHuGD6HI",
+      "serviceVersion": 1,
+      "filesHash": "72397ee1ca0d3662061f41cbf1a856bda087ad8dc187d7a94f66dd911460e996b69d45dc461a1c06980d1513a2e8172a82b530ad97ecf935d5b51ade06c91d2e",
+      "packageSha256": "95b80deb022eca5c4bec53ea17eb86a1a60d66a643f585b1a9d97da91e54443e",
+      "artifactSha256": "cd789e57b8b7be4c8ab2fd51cbff81eb7a409e015a72179c7c30f90cdab6175a"
+    },
+    {
+      "id": "websocket",
+      "serviceId": "xSuDlkCkO4OHp20d2dx3Im",
+      "serviceVersion": 1,
+      "filesHash": "8a1628d7973f3f385f55a1a879b8c683e8ee1e14da8a3fddcc683b60c7d294ea769f6d4c289b6f372d08a3636c996f7cddc54e9542f1e49c94ee080b21769277",
+      "packageSha256": "7de1e0824222ff776319fb22445edb22d88fcc01d8378b9f9e171a2481b2e910",
+      "artifactSha256": "a776b28019661b673fcb0faa96fa9b63946276245e0662000f6eb509158c208a"
+    },
+    {
+      "id": "fanout-router",
+      "serviceId": "1O9UezZV29fxZLE8K0rB5O",
+      "serviceVersion": 1,
+      "filesHash": "5f0bc16ddbcbcaac992761b1bfa0299f350fc11036e65a60f250179f94ab4ea324662e69d5e603ca569173b7074a45733d527db3a8204c83168abf370b5d0b6f",
+      "packageSha256": "9f2071b979b1da2d94e4a2d5607766ed3fcedee806032eb7c1f4391cc9804c79",
+      "artifactSha256": "ac7db50a833fa62a59f38007558e063abea6234412a0b95eb7362276c625f807"
+    },
+    {
+      "id": "websocket-router",
+      "serviceId": "OBhRlcClTDRHBu2Igf9x3t",
+      "serviceVersion": 1,
+      "filesHash": "00632e74fc9f0245edf91d2a54b79616217fa9680a6ef54d033307a95bbc73c90a3adefa486cfb848aa25c87ce1c319957056bfe19995506eee3f721ad87e178",
+      "packageSha256": "df1144d9215783d75ebbb8002c13e1e6e045cc655e6c3780bf721ab48bc2cfc8",
+      "artifactSha256": "408f00a5e866042760f7b07257da628cb1cd6a6aa6c0a732584911dabe8e33a6"
+    },
+    {
+      "id": "independent",
+      "serviceId": "MeEWi8bbqSqUaf7t2Ab2mQ",
+      "serviceVersion": 1,
+      "filesHash": "1b6d1a78a8fabfe93043fa693e42765c2ed623e152acb48b7300ba16b999e2952d0ce21abb2977c8dd48b0bd4472adecca27f42c5f5f2358bb290c082dfd8114",
+      "packageSha256": "2f10a5bf495be81aac2104b6b50f22a6ffe145216164859f388bbdb408be9c06",
+      "artifactSha256": "6cb1231c4582aab621f60436d8537252f490ae09180647013d7580ce1fbad364"
+    }
+  ],
+  "cleanup": true,
+  "cli": {
+    "version": "Fastly CLI version v16.1.0 (4d64ad67)\nBuilt with go version go1.26.8 linux/amd64 (2026-11-26)\nViceroy version: viceroy 0.22.0\n\nA new version of the Fastly CLI is available.\nCurrent version: 16.1.0\nLatest version: 17.2.0\n\nNote: Please review the release notes for the major version(s) listed below before upgrading.\nVersion 17.0.0: https://github.com/fastly/cli/releases/tag/v17.0.0\nRun `fastly update` to get the latest version.",
+    "sha256": "56bdd56d086d419ba335488fb3ed814050c75e2b16741c5676af2163bc40bbc1"
+  },
+  "configSha256": "98a113a23f99f2088f5106f6d47ec70f2e6891d7ee065634cfa2509931ceb078",
+  "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n+   body: 'timed-out',\n-   body: 'published-26a0426b3233f47e72e070cd',\n    status: 200\n  }\n"
+}

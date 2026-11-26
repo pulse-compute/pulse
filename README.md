@@ -10,10 +10,10 @@ explicitly selects a provider and a Native or JavaScript target.
 
 Use Node.js 22.14 or newer on the 22.x line, or Node.js 24.x, with npm.
 
-Create a project with the published Beta CLI:
+Create a project with the Release Candidate CLI once published:
 
 ```bash
-npm exec --package=@pulse-compute/cli@1.0.0-beta.11 -- pulse init ./my-app
+npm exec --package=@pulse-compute/cli@1.0.0-rc.1 -- pulse init ./my-app
 cd ./my-app
 npm install
 npm run doctor
@@ -104,7 +104,7 @@ canonical TypeScript
 └→ JavaScript: reachable source graph → live packages → Node or Fastly lifecycle
 ```
 
-## Implemented Beta surface
+## Implemented Release Candidate surface
 
 Pulse currently supports:
 
@@ -127,7 +127,7 @@ All four modes share one conformance corpus and never substitute targets
 automatically. Candidate validation is offline: it does not deploy, activate, or
 publish a Fastly service.
 
-The Beta deliberately does **not** expose general Promise-based Native
+The Release Candidate deliberately does **not** expose general Promise-based Native
 semantics, provider SDKs, ambient environment authority, arbitrary binary
 inspection, general userland stream transforms, background tasks, or raw sockets.
 The separate experimental Node finite-output and UTF-8 transform opt-ins retain
@@ -135,7 +135,7 @@ their documented limits and qualification status; see [body handling](docs/conce
 
 ## Public packages
 
-The public `1.0.0-beta.11` catalog is defined by the release manifest.
+The public `1.0.0-rc.1` catalog is defined by the release manifest.
 
 
 | Package | Role |
@@ -160,7 +160,7 @@ never changes targets automatically.
 
 ## Documentation
 
-The [public Pulse site](https://pulsecompute.io/) introduces the compiler and links into the layered documentation. [Exact hosted documentation](https://pulsecompute.io/v1.0.0-beta.11/) is release-pinned; repository Markdown remains the reviewable source.
+The [public Pulse site](https://pulsecompute.io/) introduces the compiler and links into the layered documentation. [Exact hosted documentation](https://pulsecompute.io/v1.0.0-rc.1/) is release-pinned; repository Markdown remains the reviewable source.
 
 - [Documentation index](./docs/README.md)
 - [Changelog](./CHANGELOG.md)
@@ -170,7 +170,7 @@ The [public Pulse site](https://pulsecompute.io/) introduces the compiler and li
 - [Handler authoring and target compatibility](./docs/reference/handler-authoring.md)
 - [Node build and execution](./docs/guides/deploying-node.md)
 - [Fastly deployment candidates](./docs/guides/deploying-fastly.md)
-- [Beta scope](./docs/preview-scope.md)
+- [Release Candidate scope](./docs/preview-scope.md)
 - [Task-oriented guides](./docs/README.md#2-follow-a-task-oriented-guide)
 - [Concepts: lowering, effects, bodies, and providers](./docs/README.md#3-understand-the-model)
 - [Package guides and support policy](./docs/README.md#4-use-a-package-directly)

@@ -32,5 +32,15 @@ module.exports = function assertInstalledFetchMethodTypes(repoRoot) {
       ts.flattenDiagnosticMessageText(entry.messageText, '\n')), [], 'installed runtime fetch method types');
     assert.ok(program.getSourceFiles().some(source => source.fileName === path.join(installed, 'src/index.d.ts')),
       'consumer must resolve the installed declaration without workspace aliases');
+    const consumerScript = path.join(root, 'fetch-method-installed-http.cjs');
+    fs.copyFileSync(path.join(__dirname, 'fetch-method-installed-http.cjs'), consumerScript);
+    const env = { ...process.env };
+    delete env.NODE_PATH;
+    delete env.NODE_OPTIONS;
+    const result = JSON.parse(execFileSync(process.execPath, [consumerScript], { ...options, env }));
+    assert.equal(result.status, 'passed');
+    assert.equal(result.cells, 6);
+    assert.equal(result.requests, 6);
+    console.log(`ok - installed runtime DELETE/OPTIONS: ${result.cells} real HTTP cells and ${result.deniedBeforeDispatch} pre-dispatch rejections`);
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 };
