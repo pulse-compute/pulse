@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/tmp/rc-h04-live/provision-relays.py", line 8, in <module>
+    api(path,'POST',{'name':'rc_guard','type':'recv','priority':10,'content':'if (req.http.x-probe-token != "'+s['probeToken']+'") { error 403; }\n'})
+  File "/tmp/rc-h04-live/control.py", line 15, in api
+    except urllib.error.HTTPError as e:raise RuntimeError('Fastly '+str(e.code)+' '+path+' '+e.read(1500).decode().replace(key,'[redacted]')) from None
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Fastly 400 /service/5GymZ6SqUl2vmNK5n7UYIo/version/1/snippet {"msg":"Bad request","detail":"No value for required field 'dynamic'"}

@@ -1,0 +1,354 @@
+[
+  {
+    "host": "api.fastly.com",
+    "path": "/service/609EPxSA66AR6cZHuGD6HI/version/1",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:08.240Z",
+    "status": 200,
+    "headersMs": 4574.3434099999995
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/609EPxSA66AR6cZHuGD6HI/version/1/domain",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:12.818Z",
+    "status": 200,
+    "headersMs": 140.61119199999848
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/609EPxSA66AR6cZHuGD6HI/version/1/package",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:12.959Z",
+    "status": 200,
+    "headersMs": 2223.068810999999
+  },
+  {
+    "host": "pulse-rch04-fanout-62a07b8b.edgecompute.app",
+    "path": "/ordinary",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:15.183Z",
+    "status": 200,
+    "headersMs": 3875.1237800000017
+  },
+  {
+    "host": "pulse-rch04-fanout-62a07b8b.edgecompute.app",
+    "path": "/handoff",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:19.059Z",
+    "status": 200,
+    "headersMs": 3378.9164789999995
+  },
+  {
+    "host": "pulse-rch04-fanout-62a07b8b.edgecompute.app",
+    "path": "/handoff",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:22.439Z",
+    "status": 200,
+    "headersMs": 4160.136049000001
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/609EPxSA66AR6cZHuGD6HI/publish/",
+    "method": "POST",
+    "startedAt": "2026-11-26T20:07:23.440Z",
+    "status": 200,
+    "headersMs": 3155.5199680000005
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/609EPxSA66AR6cZHuGD6HI/version/1",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:26.600Z",
+    "status": 200,
+    "headersMs": 131.0379439999997
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/609EPxSA66AR6cZHuGD6HI/version/1/domain",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:26.732Z",
+    "status": 200,
+    "headersMs": 182.27838100000008
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/609EPxSA66AR6cZHuGD6HI/version/1/package",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:26.915Z",
+    "status": 200,
+    "headersMs": 319.53758899999957
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/xSuDlkCkO4OHp20d2dx3Im/version/1",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:30.426Z",
+    "status": 200,
+    "headersMs": 119.82032300000355
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/xSuDlkCkO4OHp20d2dx3Im/version/1/domain",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:30.546Z",
+    "status": 200,
+    "headersMs": 149.1080120000006
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/xSuDlkCkO4OHp20d2dx3Im/version/1/package",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:30.696Z",
+    "status": 200,
+    "headersMs": 399.3138429999999
+  },
+  {
+    "host": "pulse-rch04-websocket-3019debb.edgecompute.app",
+    "path": "/ordinary",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:31.096Z",
+    "status": 200,
+    "headersMs": 4404.957737999997
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/xSuDlkCkO4OHp20d2dx3Im/version/1",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:39.681Z",
+    "status": 200,
+    "headersMs": 3394.439424999997
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/xSuDlkCkO4OHp20d2dx3Im/version/1/domain",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:43.077Z",
+    "status": 200,
+    "headersMs": 136.59220500000083
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/xSuDlkCkO4OHp20d2dx3Im/version/1/package",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:43.214Z",
+    "status": 200,
+    "headersMs": 313.4440439999962
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/1O9UezZV29fxZLE8K0rB5O/version/1",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:47.013Z",
+    "status": 200,
+    "headersMs": 139.38872399999673
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/1O9UezZV29fxZLE8K0rB5O/version/1/domain",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:47.153Z",
+    "status": 200,
+    "headersMs": 160.05133899999782
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/1O9UezZV29fxZLE8K0rB5O/version/1/package",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:47.314Z",
+    "status": 200,
+    "headersMs": 344.8436909999946
+  },
+  {
+    "host": "pulse-rch04-fanout-router-b3df5e10.edgecompute.app",
+    "path": "/ordinary",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:47.664Z",
+    "status": 200,
+    "headersMs": 3223.1790420000034
+  },
+  {
+    "host": "pulse-rch04-fanout-router-b3df5e10.edgecompute.app",
+    "path": "/handoff",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:50.889Z",
+    "status": 200,
+    "headersMs": 3302.469782
+  },
+  {
+    "host": "pulse-rch04-fanout-router-b3df5e10.edgecompute.app",
+    "path": "/handoff",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:54.192Z",
+    "status": 200,
+    "headersMs": 4644.607834999995
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/1O9UezZV29fxZLE8K0rB5O/publish/",
+    "method": "POST",
+    "startedAt": "2026-11-26T20:07:55.193Z",
+    "status": 200,
+    "headersMs": 3640.5980199999976
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/1O9UezZV29fxZLE8K0rB5O/version/1",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:58.837Z",
+    "status": 200,
+    "headersMs": 91.873434000001
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/1O9UezZV29fxZLE8K0rB5O/version/1/domain",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:58.977Z",
+    "status": 200,
+    "headersMs": 139.66838399999688
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/1O9UezZV29fxZLE8K0rB5O/version/1/package",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:07:59.117Z",
+    "status": 200,
+    "headersMs": 298.3087180000002
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/OBhRlcClTDRHBu2Igf9x3t/version/1",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:08:02.958Z",
+    "status": 200,
+    "headersMs": 115.36801800000103
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/OBhRlcClTDRHBu2Igf9x3t/version/1/domain",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:08:03.074Z",
+    "status": 200,
+    "headersMs": 134.45601600000373
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/OBhRlcClTDRHBu2Igf9x3t/version/1/package",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:08:03.209Z",
+    "status": 200,
+    "headersMs": 337.12192300000606
+  },
+  {
+    "host": "pulse-rch04-websocket-router-3dd82282.edgecompute.app",
+    "path": "/ordinary",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:08:03.547Z",
+    "status": 200,
+    "headersMs": 3192.9845600000044
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/OBhRlcClTDRHBu2Igf9x3t/version/1",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:08:10.320Z",
+    "status": 200,
+    "headersMs": 3402.3720780000003
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/OBhRlcClTDRHBu2Igf9x3t/version/1/domain",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:08:13.723Z",
+    "status": 200,
+    "headersMs": 119.85090000000491
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/OBhRlcClTDRHBu2Igf9x3t/version/1/package",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:08:13.844Z",
+    "status": 200,
+    "headersMs": 321.8637410000083
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/MeEWi8bbqSqUaf7t2Ab2mQ/version/1",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:08:17.930Z",
+    "status": 200,
+    "headersMs": 113.75773899999331
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/MeEWi8bbqSqUaf7t2Ab2mQ/version/1/domain",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:08:18.044Z",
+    "status": 200,
+    "headersMs": 146.33598000000347
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/MeEWi8bbqSqUaf7t2Ab2mQ/version/1/package",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:08:18.191Z",
+    "status": 200,
+    "headersMs": 441.04734899998584
+  },
+  {
+    "host": "pulse-rch04-independent-af602f13.edgecompute.app",
+    "path": "/ordinary",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:08:18.633Z",
+    "status": 200,
+    "headersMs": 3909.6818369999964
+  },
+  {
+    "host": "pulse-rch04-independent-af602f13.edgecompute.app",
+    "path": "/handoff",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:08:22.543Z",
+    "status": 200,
+    "headersMs": 3728.396894000005
+  },
+  {
+    "host": "pulse-rch04-independent-af602f13.edgecompute.app",
+    "path": "/handoff",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:08:26.276Z",
+    "status": 200,
+    "headersMs": 4941.285252999995
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/MeEWi8bbqSqUaf7t2Ab2mQ/publish/",
+    "method": "POST",
+    "startedAt": "2026-11-26T20:08:27.279Z",
+    "status": 200,
+    "headersMs": 3931.2709529999993
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/MeEWi8bbqSqUaf7t2Ab2mQ/version/1",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:08:31.218Z",
+    "status": 200,
+    "headersMs": 88.86415799999668
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/MeEWi8bbqSqUaf7t2Ab2mQ/version/1/domain",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:08:31.307Z",
+    "status": 200,
+    "headersMs": 590.6041339999938
+  },
+  {
+    "host": "api.fastly.com",
+    "path": "/service/MeEWi8bbqSqUaf7t2Ab2mQ/version/1/package",
+    "method": "GET",
+    "startedAt": "2026-11-26T20:08:31.899Z",
+    "status": 200,
+    "headersMs": 338.38634899999306
+  }
+]
