@@ -1,0 +1,1101 @@
+{
+  "schemaVersion": "pulse.release-packages.v3",
+  "releaseVersion": "1.0.0-rc.1",
+  "channel": "rc",
+  "releasedAt": "2026-11-26",
+  "legal": {
+    "licenseFile": "LICENSE",
+    "noticeFile": "NOTICE",
+    "noticeSha256": "8af1d352fb8a9d3ba372767b310fa53e28f2424ee052ead7cabbce547186bb6f",
+    "packageFiles": [
+      "LICENSE",
+      "NOTICE"
+    ],
+    "packagePolicy": "exact-root-files-in-every-publishable-tarball"
+  },
+  "sourceCatalog": {
+    "schemaVersion": "pulse.release-catalog.v1",
+    "path": "release/pulse-release-manifest.json",
+    "sha256": "826d9ebc0e3547f22c25212e3a3c692032fc7a962e661c61328e623ce1b0a3a3"
+  },
+  "documentation": {
+    "origin": "https://pulsecompute.io",
+    "basePath": "/",
+    "version": "v1.0.0-rc.1",
+    "latestAlias": "latest",
+    "source": "docs/README.md"
+  },
+  "context": {
+    "schemaVersion": "pulse.release-context-pack.v1",
+    "freshnessSha256": "ea32b1890635fc01100f3554c66a95683dede517df78bfffc91fb3a8ea016c87",
+    "files": [
+      {
+        "path": ".gitignore",
+        "byteLength": 51,
+        "sha256": "d244370f47222decd3a49031dd368bea7bdd34521dcf95c431dd50bcf5cb6d9a"
+      },
+      {
+        "path": ".pulse/config.ts",
+        "byteLength": 462,
+        "sha256": "b8313e95b4390e5dd5970158a95aab4767eacd68ad333a89f184a1083f22f62b"
+      },
+      {
+        "path": "application/.gitignore",
+        "byteLength": 89,
+        "sha256": "739bef7a7a0eb829bdabfaa95238ac4e901ad3604441131d12cb6eaec2b0b3f3"
+      },
+      {
+        "path": "application/.pulse/config.template.ts",
+        "byteLength": 1257,
+        "sha256": "b2469ddd8d149ad61efd327d2b72c271e48d78f695acffa908fcef7a50aecb36"
+      },
+      {
+        "path": "application/.pulse/config.ts",
+        "byteLength": 854384,
+        "sha256": "3fb4548814e5752a799421901b8887e9cd017bc005ce11eacb24d6329f7bd425"
+      },
+      {
+        "path": "application/package.json",
+        "byteLength": 625,
+        "sha256": "b1c2727ae7f4b4f4ac87d6bb4f851c3146ad022dff151fb3c0dbf5c0154e5959"
+      },
+      {
+        "path": "application/src/diagnostic.ts",
+        "byteLength": 590137,
+        "sha256": "0048dff216dab2175c0c12dd4e351ad632106768af378e5658d20be50f3ef0a2"
+      },
+      {
+        "path": "application/src/example.ts",
+        "byteLength": 43843,
+        "sha256": "986e2798f2afc44a448dfbf802dcd4693662300db5b316f62485239feedbbe62"
+      },
+      {
+        "path": "application/src/index.template.ts",
+        "byteLength": 2486,
+        "sha256": "3abf1fd1fade2bbd47a142eefa036db4a281e1f961feb0eefebc35493176bba1"
+      },
+      {
+        "path": "application/src/index.ts",
+        "byteLength": 3627,
+        "sha256": "dd27a4798141332f6d55c90ffd090119561e1b9238534772305572488f2def36"
+      },
+      {
+        "path": "application/src/read.template.ts",
+        "byteLength": 2869,
+        "sha256": "29723ab773b2ca9f6cffe00c339bb96ebf40d7aa5a514f2906f3209f091c1a15"
+      },
+      {
+        "path": "application/src/read.ts",
+        "byteLength": 255987,
+        "sha256": "a5b9455ff52f651f3a3bc88f8fa4f4a68608352ffbf3bace9046d2209db5c0e6"
+      },
+      {
+        "path": "application/src/scalars.ts",
+        "byteLength": 871,
+        "sha256": "53dd6e1574e33cc79edc6e88d6b066f22fbacadf6cc1b690b797304d4fc1c9d2"
+      },
+      {
+        "path": "application/src/schemas.ts",
+        "byteLength": 4584,
+        "sha256": "7604b57777062c122fa23c7745bad8925b5082c938b9ccfa1d05a1a7bf1f3ffc"
+      },
+      {
+        "path": "application/src/search.template.ts",
+        "byteLength": 6180,
+        "sha256": "86a3d3433a3bf2199d3e365afe64f87a9894fdd7594b916221bed7bc51ac4d09"
+      },
+      {
+        "path": "application/src/search.ts",
+        "byteLength": 236367,
+        "sha256": "fd575b77cec0b7d454f8f75508b0b3880f327008568b0a00a04dffc92e8b1616"
+      },
+      {
+        "path": "application/src/start.template.ts",
+        "byteLength": 1315,
+        "sha256": "10217ec1941733eaf56ba24378f29630de6d7c06cdac75e3b977bba23ee0251d"
+      },
+      {
+        "path": "application/src/start.ts",
+        "byteLength": 72020,
+        "sha256": "73d1ea0fc3a8dbb2533857730c9a5f00afd273b186db07b55362fd50240678a2"
+      },
+      {
+        "path": "application/tsconfig.json",
+        "byteLength": 262,
+        "sha256": "870348caaa76610de9affec90c32623f1f3baab68f553ba3fd4d5be43048fcef"
+      },
+      {
+        "path": "client/request.cjs",
+        "byteLength": 2042,
+        "sha256": "c5aaa7b6822c1242384c5beb736b81af2296e6214d7e1e05dc41eb97c6c34da1"
+      },
+      {
+        "path": "context-corpus.ts",
+        "byteLength": 587828,
+        "sha256": "c34cdfda943189288e198c2507c62e1b0ca3410dae006b3e9cb719f506898523"
+      },
+      {
+        "path": "context-data/context-manifest.json",
+        "byteLength": 29099,
+        "sha256": "a908b4a5d818ac1e9db2b174a09eb23dc928c7adeb0b294aa7e7c0787b9ec0a6"
+      },
+      {
+        "path": "context-data/context-metadata.ts",
+        "byteLength": 31084,
+        "sha256": "dd29555a182cbb6257fd196d5c99666196bb0d080bacb4e149df7ac400271064"
+      },
+      {
+        "path": "context-data/metadata.bin",
+        "byteLength": 222190,
+        "sha256": "44470faecd5ca23b3c348ca058c815c82618a87f5c0a7b08ad4f2c7976f7cff5"
+      },
+      {
+        "path": "context-data/resource-manifest.json",
+        "byteLength": 853091,
+        "sha256": "943d75469d1784e77fd488c40d770a981c9766e59fa7697b3899951e28debfe7"
+      },
+      {
+        "path": "context-data/text.bin",
+        "byteLength": 238776,
+        "sha256": "8f04c945412ca25bd1dbc886a76c8926bd16d197c75830c68b68498409ae1151"
+      },
+      {
+        "path": "context-data/vector.bin",
+        "byteLength": 178361,
+        "sha256": "156057fbf872dd38ebf5654d0dc9e18974a474a89dc7eba6908d785c49e4b915"
+      },
+      {
+        "path": "corpus-version.ts",
+        "byteLength": 469,
+        "sha256": "fdc6e3805c5964bde7785a5bab19bdb266479a8b540a4654d3471523fdc66097"
+      },
+      {
+        "path": "host/artifacts.cjs",
+        "byteLength": 5245,
+        "sha256": "ef3aee628b6d82ccfcfcf6a7259b530c2ebb829ee23e00060187592c5c9346aa"
+      },
+      {
+        "path": "host/prepare.cjs",
+        "byteLength": 1575,
+        "sha256": "d28abbb22398a158e8a79c0308bfea3c76a0af3cc084762fca472727ee0c475d"
+      },
+      {
+        "path": "host/server.cjs",
+        "byteLength": 9638,
+        "sha256": "18ef205a4799ce1560e8fccbd855303a2e339363119d486cf6d5ba06987ed7ee"
+      },
+      {
+        "path": "host/start.cjs",
+        "byteLength": 2064,
+        "sha256": "17f8e25c8775511c32304a20dcddcbc3e72d896c967f80ce50214249bb21875b"
+      },
+      {
+        "path": "package.json",
+        "byteLength": 626,
+        "sha256": "142e703c7d7e5579c00018e3355edad841a1d1825c70dc6fa73d406381102146"
+      },
+      {
+        "path": "README.md",
+        "byteLength": 10252,
+        "sha256": "ec6cc826797b95fcab0073609db6d4be9a943864aeec6d717c2359e3644e9a7b"
+      },
+      {
+        "path": "src/handlers.ts",
+        "byteLength": 20742,
+        "sha256": "da7e1c3f9b814c98133434ef0f484ead845806c87bb48945fcea477f90471552"
+      },
+      {
+        "path": "src/index.ts",
+        "byteLength": 2436,
+        "sha256": "1a27446f8e363a88b12d20ea425ec9c274d28f5828d394a45b6b24fa7072a7a0"
+      },
+      {
+        "path": "src/schemas.ts",
+        "byteLength": 4584,
+        "sha256": "7604b57777062c122fa23c7745bad8925b5082c938b9ccfa1d05a1a7bf1f3ffc"
+      },
+      {
+        "path": "tests/pulse.harness.ts",
+        "byteLength": 1673,
+        "sha256": "c847398188aa6b35da31f78ae02b606f268a642b22555e035ae544d851fc9173"
+      },
+      {
+        "path": "tsconfig.json",
+        "byteLength": 266,
+        "sha256": "7eff017e26e75fae8f4fd78d16cee1ef99ed3778381daee64ba5fa83eb3113c1"
+      }
+    ]
+  },
+  "packageCount": 20,
+  "packages": [
+    {
+      "name": "@pulse-compute/runtime",
+      "version": "1.0.0-rc.1",
+      "role": "public-runtime",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "supportTier": "canonical-application",
+      "documentation": "docs/packages/runtime.md",
+      "directInstall": "Yes. Install it in every Pulse application.",
+      "entryPoints": [
+        "@pulse-compute/runtime"
+      ],
+      "stability": "Supported application authoring and execution contract.",
+      "tarball": "pulse-compute-runtime-1.0.0-rc.1.tgz",
+      "bytes": 99893,
+      "sha256": "c8c3be5a43ca5a85c17ed83aacd444e0294836f4ab343230d9e21bdfd6a340d9",
+      "sha512": "9e7e71ec246aab822ba9be7f6c5332eea3968498840c86492c65395754f0694987f3f70c11fa69eda6110ba4265a2a91c918a312ccade46239377a7ce8962f22",
+      "integrity": "sha512-nn5x7CRqq4Irqb5/bFMy7qOWhJiEDIZJLGU5V1TwaUmH8/cMEfpp7aYRC6QmWiqRyRijEsyt5GI5N3p86JYvIg==",
+      "shasum": "4dc27e516c802052177a199fd8a33c7f52dc1017",
+      "files": 39,
+      "pulseDependencies": []
+    },
+    {
+      "name": "@pulse-compute/pulse",
+      "version": "1.0.0-rc.1",
+      "role": "public-api",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "supportTier": "canonical-application",
+      "documentation": "docs/packages/pulse.md",
+      "directInstall": "Yes. Install it in every conventional Pulse project.",
+      "entryPoints": [
+        "@pulse-compute/pulse",
+        "@pulse-compute/pulse/schema"
+      ],
+      "stability": "Supported conventional application, project-configuration, and schema-authoring contract.",
+      "tarball": "pulse-compute-pulse-1.0.0-rc.1.tgz",
+      "bytes": 15535,
+      "sha256": "58ac9bc7880b45571fe816d0e267f494571f85e11947c32a7a68a5e01c674d9a",
+      "sha512": "74fc39d5afe6be10cae927cca8d3f21c437566219d9d96a2f7b4c87c4ac3db53b51c74d5a1105bb5b6cbfd0c1d65799127cc76ac74f910d8fe017492997b0919",
+      "integrity": "sha512-dPw51a/mvhDK6SfMqNPyHEN1ZiGdnZai97TIfErD21O1HHTVoRBbtbbL/QwdZXmRJ8x2rHT5ENj+AXSSmXsJGQ==",
+      "shasum": "ea82bed0105cb065ec3260fc7f4cd8a30fae969d",
+      "files": 11,
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "name": "@pulse-compute/cli",
+      "version": "1.0.0-rc.1",
+      "role": "public-cli",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "supportTier": "canonical-application",
+      "documentation": "docs/packages/cli.md",
+      "directInstall": "Yes. Install the package globally or as a project development dependency.",
+      "entryPoints": [
+        "pulse binary",
+        "@pulse-compute/cli",
+        "@pulse-compute/cli/workflow",
+        "@pulse-compute/cli/project-config",
+        "@pulse-compute/cli/project-execution",
+        "@pulse-compute/cli/project-config-schema",
+        "@pulse-compute/cli/diagnostics",
+        "@pulse-compute/cli/project-config.schema.json",
+        "@pulse-compute/cli/cli-spec.json",
+        "@pulse-compute/cli/release-manifest.json",
+        "@pulse-compute/cli/documentation-versions.json",
+        "@pulse-compute/cli/documentation-site.json"
+      ],
+      "stability": "Supported Release Candidate workflow and project-configuration contract.",
+      "tarball": "pulse-compute-cli-1.0.0-rc.1.tgz",
+      "bytes": 1479364,
+      "sha256": "e9f2d6772ac30df4caf14475c032282388a99a18eb2d359d26e198987607db69",
+      "sha512": "16eb01237523f3da5c97a0055b831bcaea2ca0c4427c0af351f6725a89fb3138af219a225e47ae37acc3a7e59b8b4f8c8f0207f7dc36a448a70e3ffc6caa09c4",
+      "integrity": "sha512-FusBI3Uj89pcl6AFW4MbyuosoMRCfArzUfZyWon7MTivIZoiXkeuN6zDp+Wbi0+MjwIH99w2pEinDj/8bKoJxA==",
+      "shasum": "c99330a28a586aa3d4b0e5c64b77e18ba78be51b",
+      "files": 305,
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/provider-fastly",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/provider-node",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-build-support",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-compiler",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-host-runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-schema-json",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "name": "@pulse-compute/provider-fastly",
+      "version": "1.0.0-rc.1",
+      "role": "public-provider",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "supportTier": "supported-extension",
+      "documentation": "docs/packages/provider-fastly.md",
+      "directInstall": "Yes, for Fastly projects. Node-only projects do not need to import it directly.",
+      "entryPoints": [
+        "@pulse-compute/provider-fastly",
+        "@pulse-compute/provider-fastly/contract",
+        "@pulse-compute/provider-fastly/toolchain",
+        "@pulse-compute/provider-fastly/config-schema",
+        "@pulse-compute/provider-fastly/runtime/canonical-api-runtime",
+        "@pulse-compute/provider-fastly/build/canonical-target",
+        "@pulse-compute/provider-fastly/testing/fastly-cli"
+      ],
+      "stability": "The listed entry points are supported for the Release Candidate; all other exported subpaths are implementation-only.",
+      "tarball": "pulse-compute-provider-fastly-1.0.0-rc.1.tgz",
+      "bytes": 284486,
+      "sha256": "5e1c5d5c075495396f01dd2ee15c780144099cb28aef38a09b10fb4ff6bf284c",
+      "sha512": "d96b171e4793a6aa7dbc043a5a61b7bb86f4610fb18c5a2e411841659600a413e5374b1498ac46228664a4821982390c299ba4f619027b50559283cffcb65471",
+      "integrity": "sha512-2WsXHkeTpqp9vAQ6WmG3u4b0YQ+xjFouQRhBZZYApBPlN0sUmKxGIoZkpIIZgjkMKZuk9hkCe1BVkoPP/LZUcQ==",
+      "shasum": "1ca53b7b1da25ba4a2a448bbd7d08859fb5c7e01",
+      "files": 119,
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/crypto",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/jwt",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/s3",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-build-support",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-guest-link",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-host-runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-runtime-core-as",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "name": "@pulse-compute/grip",
+      "version": "1.0.0-rc.1",
+      "role": "public-extension",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "supportTier": "supported-extension",
+      "documentation": "docs/packages/grip.md",
+      "directInstall": "Yes, only when the application uses GRIP/Fanout behavior.",
+      "entryPoints": [
+        "@pulse-compute/grip"
+      ],
+      "stability": "The package root has bounded JavaScript and Native HTTP-framing realization plus configured Node/Fastly broadcast; /pulsewasm remains compatibility-only.",
+      "tarball": "pulse-compute-grip-1.0.0-rc.1.tgz",
+      "bytes": 27130,
+      "sha256": "782e6906b114345e9998cab633526de4993c1e5c9e6247e9a8c9af17ada09edf",
+      "sha512": "6b87ae3d5f983cfde3c1b7b027de842fb3af72cca4c49de04afe0d4f5d730a5efe659062db7c336405bae30f6c79c43848508c8948c22da7393fe90a63294bc9",
+      "integrity": "sha512-a4euPV+YPP3jwbewJ96EL7OvcsykxJ3gSv4NT11zCl7+ZZBi23wzZAW64w9secQ4SFCMiUjCLac5P+kKYylLyQ==",
+      "shasum": "5106bb6b1d37424630f1a8c395d3278ceb228925",
+      "files": 24,
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "name": "@pulse-compute/assets",
+      "version": "1.0.0-rc.1",
+      "role": "public-extension",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "supportTier": "supported-extension",
+      "documentation": "docs/packages/assets.md",
+      "directInstall": "Yes, only when the application uses the assets capability.",
+      "entryPoints": [
+        "@pulse-compute/assets"
+      ],
+      "stability": "The package root is the supported JavaScript API and canonical Native authoring surface, including bounded embedded Assets bytes on their qualified targets. /pulsewasm remains a compatibility subpath; manifest/compiler subpaths are toolchain integration. No application binary inspection is exposed.",
+      "tarball": "pulse-compute-assets-1.0.0-rc.1.tgz",
+      "bytes": 50318,
+      "sha256": "2271b6b58a26a41568864b03df76b854f42dabf6e184d0d48aa996cb193c49fd",
+      "sha512": "0314f1884a64646faf9f9ea17114eeb11524656d766642df7d7c30b9ddb31c806c29a9d0b7e6a90b1223aa22caaba0f93264dbe1496d703159fa85f6ce43afc9",
+      "integrity": "sha512-AxTxiEpkZG+vn56hcRTusRUkZW12ZkLffXwwud2zHIBsKanQt+apCxIjqiLKq6D5MmTb4UltcDFZ+oX2zkOvyQ==",
+      "shasum": "63db46ceec7b2f051a61ab8f6c71e25fac0a8071",
+      "files": 58,
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/s3",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "name": "@pulse-compute/crypto",
+      "version": "1.0.0-rc.1",
+      "role": "public-extension",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "supportTier": "supported-extension",
+      "documentation": "docs/packages/crypto.md",
+      "directInstall": "Yes, when an application uses verification or digestText directly; JWT applications receive it transitively.",
+      "entryPoints": [
+        "@pulse-compute/crypto"
+      ],
+      "stability": "The package root supports bounded verification and request-owned exact-text digests; provider, manifest/compiler and Native integration subpaths remain toolchain-only.",
+      "tarball": "pulse-compute-crypto-1.0.0-rc.1.tgz",
+      "bytes": 233216,
+      "sha256": "353941f9ec2e11e34516e1dea6f28fb9c5efbc80f9015099f22ec6727a0d6f67",
+      "sha512": "2ad03cf53cb3dbedde57c5c513d1d6407d894294dc8f0382e36149e42e473fbfdac3386bb7f6e9a80694972f99b483a0addd139bcc913abcf192704911bfc0a8",
+      "integrity": "sha512-KtA89Tyz2+3eV8XFE9HWQH2JQpTcjwOC42FJ5C5HP7/awzhrt/bpqAaUly+ZtIOgrd0Tm8yROrzxknBJEb/AqA==",
+      "shasum": "d390774d58eb68ed003ee5e32a750b715069bee5",
+      "files": 105,
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "name": "@pulse-compute/jwt",
+      "version": "1.0.0-rc.1",
+      "role": "public-extension",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "supportTier": "supported-extension",
+      "documentation": "docs/packages/jwt.md",
+      "directInstall": "Yes, when an application verifies or signs JWTs.",
+      "entryPoints": [
+        "@pulse-compute/jwt"
+      ],
+      "stability": "The package root supports provider-neutral verification and bounded HS256/ES256/RS256 signing; provider and compiler integration subpaths are not application APIs.",
+      "tarball": "pulse-compute-jwt-1.0.0-rc.1.tgz",
+      "bytes": 65790,
+      "sha256": "be5c06b78c2d76681a49f9692ecd88e6b63db4fc16a1a173f4b0fcbce2d8e2be",
+      "sha512": "3c78b4f65ec666dade8ffb782a11d9824f3d6fc95710e2d662a4d94f4e0429753c44fb8857cbb378f40fda4a12ec715a3535263050537d9167e9483d8b03a9d4",
+      "integrity": "sha512-PHi09l7GZtrej/t4KhHZgk89b8lXEOLWYqTZT04EKXU8RPuIV8uzePQP2koS7HFaNTUmMFBTfZFn6Ug9iwOp1A==",
+      "shasum": "ae2773dbafc9fa0c7993fdeb346c148caad0edad",
+      "files": 67,
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/crypto",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "name": "@pulse-compute/entities",
+      "version": "1.0.0-rc.1",
+      "role": "public-extension",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "supportTier": "supported-extension",
+      "documentation": "docs/packages/entities.md",
+      "directInstall": "Yes, when an application declares entity operations.",
+      "entryPoints": [
+        "@pulse-compute/entities"
+      ],
+      "stability": "The package root and first-party JSON-RPC adapter are supported Release Candidate contracts; compiler integration subpaths remain toolchain-only.",
+      "tarball": "pulse-compute-entities-1.0.0-rc.1.tgz",
+      "bytes": 51777,
+      "sha256": "7da4d563146a683491401ba2ed4e45b6711e0a35f5a23171c01b3c001a7f1f2c",
+      "sha512": "68427469e2f36616e3f9a5c10b02dda692a56ce8fae8d59b47b5f6c8b7c178274a080cd23709b71dd22d3280a20e96a633cb893c3b1f3dc2613239d8a34e8435",
+      "integrity": "sha512-aEJ0aeLzZhbj+aXBCwLdppKlbOj66NWbR7X2yLfBeCdKCAzSNwm3HdItMoCiDpamM8uJPDsfPcJhMjnYo06ENQ==",
+      "shasum": "48475def1a7891d641c94b9ef9793cf3593037e1",
+      "files": 40,
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "name": "@pulse-compute/mcp",
+      "version": "1.0.0-rc.1",
+      "role": "public-extension",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "supportTier": "supported-extension",
+      "documentation": "docs/packages/mcp.md",
+      "directInstall": "Yes, for the host adapters or the static /pulse binding.",
+      "entryPoints": [
+        "@pulse-compute/mcp",
+        "@pulse-compute/mcp/node",
+        "@pulse-compute/mcp/pulse"
+      ],
+      "stability": "The root Fetch handler and /node HTTP bridge retain fixed-backend host behavior. /pulse supplies a static package-owned Native binding with local Entities dispatch, strict HTTP admission and no fallback. Protocol resources, prompts, sessions and stdio are unsupported.",
+      "tarball": "pulse-compute-mcp-1.0.0-rc.1.tgz",
+      "bytes": 40958,
+      "sha256": "8fe901b7d8ac7d05bcd9deb4b754a955a2572ca051fc84f4273b631aa0fbed24",
+      "sha512": "7b1892897032f3c1ec76c12aadc27ab76229dcad32ca04bc192999c400c0cb433867ed0dba95ab7a41a060f725cc4301fee697827b4ff29c59f563b98e97bd0f",
+      "integrity": "sha512-exiSiXAy88HsdsEqrcJ6t2Ip3K0yygS8GSmZxADAy0M4Z+0NupWrekGgYPclzEMB/uaXgntP8pxZ9WO5jpe9Dw==",
+      "shasum": "130a345b23212295922c025a934e73a7e9446d8f",
+      "files": 23,
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/entities",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "name": "@pulse-compute/s3",
+      "version": "1.0.0-rc.1",
+      "role": "public-extension",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "supportTier": "supported-extension",
+      "documentation": "docs/packages/s3.md",
+      "directInstall": "Yes, when an application uses S3 object operations.",
+      "entryPoints": [
+        "@pulse-compute/s3"
+      ],
+      "stability": "The package root supports head, getText, getBody and putText on Node Native, Node JavaScript and Fastly Native. getBody returns bounded opaque binary responses with the documented HTTP subset. Fastly JavaScript is ineligible. Provider and lowering subpaths are toolchain-only; live origin acceptance is separate.",
+      "tarball": "pulse-compute-s3-1.0.0-rc.1.tgz",
+      "bytes": 23653,
+      "sha256": "d11941500aa6864acaf8421b22d340ef7c781ae7f70d717ef37d1fcda560df6a",
+      "sha512": "cf00c0e63a584792e3baaec4ff2d3287424e8abaabe9ee155273de0c8db5d773691a7672b1c1cedcf8aa90a2ee897e9ecb297a23dae083c7f246e7b1208e0cd9",
+      "integrity": "sha512-zwDA5jpYR5Ljuq7E/y0yh0JOirqr6e4VUnPeDI2113NpGnZyscHO3PiqkKLuiX6eyyl6I9rgg8fyRuexII4M2Q==",
+      "shasum": "76446df32c7098ecd04874915b36c72430b1af94",
+      "files": 17,
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "name": "@pulse-compute/wasm-build-support",
+      "version": "1.0.0-rc.1",
+      "role": "implementation",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "supportTier": "implementation",
+      "documentation": "docs/packages/implementation-packages.md",
+      "directInstall": "No for application projects; it is installed transitively where required.",
+      "entryPoints": [
+        "None for application authors."
+      ],
+      "stability": "Internal release-set interface; exported modules may change with compiler implementation needs.",
+      "tarball": "pulse-compute-wasm-build-support-1.0.0-rc.1.tgz",
+      "bytes": 21396,
+      "sha256": "c736a3c4cc383240428da44130ce368136c0d45c744453aecc7c39e420cff374",
+      "sha512": "95bf92e2a716da6a2c9f5577602dcd13f1472f09f09b334adaff511659b6e1d36376db0bf97d5a15b6648771ba8e4ea4ba3003abd5142ebbc3500b55a72963ee",
+      "integrity": "sha512-lb+S4qcW2mosn1V3YC3NE/FHLwnwmzNK2v9RFlm24dNjdtsL+X1aFbZkh3G6jk6kujADq9UULrvDUAtVpylj7g==",
+      "shasum": "dad4b154839327beac39c397bdbc4667c127c0f4",
+      "files": 17,
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "name": "@pulse-compute/wasm-compiler",
+      "version": "1.0.0-rc.1",
+      "role": "implementation",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "supportTier": "implementation",
+      "documentation": "docs/packages/implementation-packages.md",
+      "directInstall": "No for application projects; use the pulse CLI.",
+      "entryPoints": [
+        "None for application authors."
+      ],
+      "stability": "Internal compiler interface; no application-author compatibility guarantee.",
+      "tarball": "pulse-compute-wasm-compiler-1.0.0-rc.1.tgz",
+      "bytes": 338646,
+      "sha256": "f5aab31f80aab3da1e8b559d2f598bb40509db3f8de53543c64f0fe3c9ca411c",
+      "sha512": "ee64b1311b493a2d45e1394d51c664da8ed2491581987b9540dc44ac72014bdebed1b0f5e8ed207aaf1a791da2758ee03d18ab7fc5f43e8d0cdb540bde14b8ab",
+      "integrity": "sha512-7mSxMRtJOi1F4TlNUcZk2o7SSRWBmHuVQNxErHIBS96+0bD16O0geq8aeR2idY7gPRirf8X0Po0M21QL3hS4qw==",
+      "shasum": "68c65d9f2dbdc6569002dd24ca1aeaac51a39767",
+      "files": 132,
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/wasm-build-support",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-guest-link",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-host-runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-library-kit",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-runtime-core-as",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-schema-json",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "name": "@pulse-compute/wasm-guest-link",
+      "version": "1.0.0-rc.1",
+      "role": "implementation",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "supportTier": "implementation",
+      "documentation": "docs/packages/implementation-packages.md",
+      "directInstall": "No for application projects; it is an internal synchronized compiler dependency.",
+      "entryPoints": [
+        "None for application authors."
+      ],
+      "stability": "Internal first-party prebuilt guest-link interface synchronized with the compiler; no application-author or third-party guest compatibility guarantee.",
+      "tarball": "pulse-compute-wasm-guest-link-1.0.0-rc.1.tgz",
+      "bytes": 40043,
+      "sha256": "deceee7e5de8f45ef6f7b4779bb0f44cbd07bd79ac5160f4dcdbaf2fa1e90efc",
+      "sha512": "5c7f30d1e74df57b6ceb931ead0e0ed640f8ee5b7ffb9c015aa901fa0715e2394ff03b1a05a13730bbf96826f239d69d39c0fa314e3c71c65fb3f1d79fc6783a",
+      "integrity": "sha512-XH8w0edN9Xts65MerQ4O1kD47lt/+5wBWqkB+gcV4jlP8DsaBaE3MLv5aCbyOdadOcD6MU48ccZfs/HXn8Z4Og==",
+      "shasum": "a6a7d0130c28c917a44dbd349addbd7fa1cb3b4b",
+      "files": 15,
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "name": "@pulse-compute/wasm-contracts",
+      "version": "1.0.0-rc.1",
+      "role": "implementation",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "supportTier": "implementation",
+      "documentation": "docs/packages/implementation-packages.md",
+      "directInstall": "Provider toolchain authors may install it for the versioned bootstrap contract; application projects receive it transitively.",
+      "entryPoints": [
+        "@pulse-compute/wasm-contracts/provider/toolchain"
+      ],
+      "stability": "The provider toolchain contract is versioned and supported for the Release Candidate; other protocol and proof interfaces remain internal.",
+      "tarball": "pulse-compute-wasm-contracts-1.0.0-rc.1.tgz",
+      "bytes": 182514,
+      "sha256": "391eb7cee2dd1d882760bd64fbe7f1435c33eaff4cd1613bcace140366918336",
+      "sha512": "46e59155d883f387c5c63e7bcd2ea8fe469fd804bc5119a01b3f1d73d3d76e4cf5c67442c81183f7a73eb6ab4871264d5ee6cc3a163dad2ceb782736f78a8d23",
+      "integrity": "sha512-RuWRVdiD84fFxj57zS6o/kaf2AS8URmgGz8dc9PXbkz1xnRCyBGD96c+tqtIcSZNXubMOhY9rSzreCc294qNIw==",
+      "shasum": "dae378ecb65232838b6ada245ad72a28d2687fc2",
+      "files": 112,
+      "pulseDependencies": []
+    },
+    {
+      "name": "@pulse-compute/wasm-host-runtime",
+      "version": "1.0.0-rc.1",
+      "role": "implementation",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "supportTier": "implementation",
+      "documentation": "docs/packages/implementation-packages.md",
+      "directInstall": "No for application projects; it is installed transitively.",
+      "entryPoints": [
+        "None for application authors."
+      ],
+      "stability": "Internal compiler/runtime interface synchronized with this release set.",
+      "tarball": "pulse-compute-wasm-host-runtime-1.0.0-rc.1.tgz",
+      "bytes": 98592,
+      "sha256": "81708d9a67d35a1a33474443ca398a6481985c0baf3e5536b01a1dab74f1f15e",
+      "sha512": "f5edfb4cf6cb48479516c88799b8b9e6659dcc8dfad97ea6932163ba346c8db9a32fb65227eff92953d3c6903d5ed8fbf61f65a56c07917c87d1d41549492009",
+      "integrity": "sha512-9e37TPbLSEeVFsiHmbi55mWdzI362X6mkyFjujRsjbmjL7ZSJ+/5KVPTxpA9Xtj79h9lpWwHkXyH0dQVSUkgCQ==",
+      "shasum": "49cc91e6f565b3c8cd7bea8835f16cd7526a745d",
+      "files": 28,
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/crypto",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-build-support",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-schema-json",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "name": "@pulse-compute/wasm-library-kit",
+      "version": "1.0.0-rc.1",
+      "role": "implementation",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "supportTier": "implementation",
+      "documentation": "docs/packages/implementation-packages.md",
+      "directInstall": "No for application projects; it is installed transitively.",
+      "entryPoints": [
+        "None for application authors."
+      ],
+      "stability": "Internal package-lowering interface synchronized with this release set.",
+      "tarball": "pulse-compute-wasm-library-kit-1.0.0-rc.1.tgz",
+      "bytes": 25656,
+      "sha256": "b34748dc8b33131433f274d620a3d9621f46a777e43547dc33fe35119e68e6f5",
+      "sha512": "eb85bf94a6eac6f06047bdec050eee999485faf6b8949384a0c5958aeba770d2d1488aecc7069a0664b2f9f150cf76b8d73cd5c7677feb2174e1d8f8f8169bfe",
+      "integrity": "sha512-64W/lKbqxvBgR73sBQ7umZSF+va4lJOEoMWViuuncNLRSIrsxwaaBmSy+fFQz3a41zzVx2d/6yF04dj4+Bab/g==",
+      "shasum": "da3886024c5b057709bbcf2336312bbb712e61b2",
+      "files": 12,
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/wasm-build-support",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "name": "@pulse-compute/provider-node",
+      "version": "1.0.0-rc.1",
+      "role": "implementation",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "supportTier": "implementation",
+      "documentation": "docs/packages/implementation-packages.md",
+      "directInstall": "Yes for the production Node launcher; application handlers remain provider-neutral.",
+      "entryPoints": [
+        "@pulse-compute/provider-node/toolchain",
+        "@pulse-compute/provider-node/server"
+      ],
+      "stability": "The /server export is an explicit supported-entry-point exception within this implementation package: finite production HTTP for explicit Node Native and JavaScript builds. Forwarding, generated output, transforms, S3-body bindings and blob-specific production qualification remain separate. /toolchain serves the CLI; all other provider subpaths remain internal.",
+      "tarball": "pulse-compute-provider-node-1.0.0-rc.1.tgz",
+      "bytes": 115992,
+      "sha256": "6cbffb1b06790af2b35cfd360c256dc96cc9614c9306b5c8f15d0ec0c99d0cab",
+      "sha512": "20bfd453cb43acdd027803d73a8bdb3fdf9c599d137901e9738d86cfa7f44eae57ee05c22e0a3be15b2e2d85171e3597134d45e587cdc9cd25c27ca8531edd1b",
+      "integrity": "sha512-IL/UU8tDrN0CeAPXOovbP9+cWZ0TeQHpc42Gz6f0Tq5X7gXCLgo74VsuLYUXHjWXE01F5YfNyc0lwnyoUx7dGw==",
+      "shasum": "9222107c8beaac343e26ceb5d3f621dfd74fd736",
+      "files": 54,
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/crypto",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/jwt",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/s3",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-build-support",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-host-runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "name": "@pulse-compute/wasm-runtime-core-as",
+      "version": "1.0.0-rc.1",
+      "role": "implementation",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "supportTier": "implementation",
+      "documentation": "docs/packages/implementation-packages.md",
+      "directInstall": "No for application projects; it is installed transitively.",
+      "entryPoints": [
+        "None for application authors."
+      ],
+      "stability": "Internal code-generation interface synchronized with this release set.",
+      "tarball": "pulse-compute-wasm-runtime-core-as-1.0.0-rc.1.tgz",
+      "bytes": 125997,
+      "sha256": "9b9b74f35f363c6efdfc914466e72960792276dbaceb94562b430f928b201242",
+      "sha512": "cdc009f150de1d07ae51a52a6fe0a12dc6692559676d78f0d9f430e50ef785ce3b9213735bd6ebb696ddc238b21366e0b9f003cd7ed51d6ee1c00f9427bc0d70",
+      "integrity": "sha512-zcAJ8VDeHQeuUaUqb+ChLcZpJVlnbXjw2fQw5Q73hc47khNzW9brtpbdwjiyE2bgufADzX7VHW7hwA+UJ7wNcA==",
+      "shasum": "fd1d4d077a3145ffbaf8c43b6e2150dd068d4867",
+      "files": 39,
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/crypto",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-build-support",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "name": "@pulse-compute/wasm-schema-json",
+      "version": "1.0.0-rc.1",
+      "role": "implementation",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "supportTier": "implementation",
+      "documentation": "docs/packages/implementation-packages.md",
+      "directInstall": "No for application projects; declare schemas in the selected .pulse/config.ts profile.",
+      "entryPoints": [
+        "None for application authors."
+      ],
+      "stability": "Internal schema compiler interface synchronized with this release set.",
+      "tarball": "pulse-compute-wasm-schema-json-1.0.0-rc.1.tgz",
+      "bytes": 61512,
+      "sha256": "e637ad90d88d90b658068533daa9e9354e4d1707a1807237e9c8d500edd2a5a1",
+      "sha512": "eafe4de48bf1d76b34eb9184f5d774c409124a01d823133bd7b73399d0e7433a94baf843b61238b9021cfc8df7b0a41815f51be135aa2c52bdb61a40c41abdc6",
+      "integrity": "sha512-6v5N5Ivx12s065GE9dd0xAkSSgHYIxM717czmdDnQzqUuvhDthI4uQIc/I33sKQYFfUb4TWqLFK9thpAxBq9xg==",
+      "shasum": "3166a7b73803e9cecd7ae18a1b4d92416f7213e6",
+      "files": 14,
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/wasm-build-support",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    }
+  ]
+}

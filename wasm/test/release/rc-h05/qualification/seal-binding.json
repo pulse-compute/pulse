@@ -1,0 +1,1297 @@
+{
+  "schemaVersion": "pulse.rc-h05-seal-binding.v1",
+  "status": "passed",
+  "candidate": {
+    "sourceRevision": "7a3f513631e2f84c52e390ffd330c6ed6180ea6b",
+    "sourceTree": "b71499b6caa15954c4cb880d556791621efe0c9b",
+    "workingTree": ""
+  },
+  "qualification": {
+    "schemaVersion": "pulse.release-pr-qualification.v2",
+    "repository": "pulse-compute/pulse",
+    "workflow": ".github/workflows/release-qualify.yml",
+    "runId": 45901090332,
+    "attempt": 1,
+    "pullRequest": 616,
+    "base": "dbad9e9b553d87999ae35a68c2f94335c99b3acc",
+    "head": "77ea6e193a2b5e7d4c749fdc3c988cf34a5a63c7",
+    "sourceRef": "refs/pull/616/merge",
+    "candidate": {
+      "sourceRevision": "7a3f513631e2f84c52e390ffd330c6ed6180ea6b",
+      "sourceTree": "b71499b6caa15954c4cb880d556791621efe0c9b",
+      "workingTree": ""
+    },
+    "preparation": {
+      "status": "passed",
+      "previousVersion": "1.0.0-beta.11",
+      "version": "1.0.0-rc.1",
+      "productChanged": true,
+      "preparedRelease": true,
+      "sealed": false
+    },
+    "releaseTag": "v1.0.0-rc.1",
+    "qualificationRequested": true,
+    "scopeQualification": {
+      "policyRevision": "dbad9e9b553d87999ae35a68c2f94335c99b3acc",
+      "checks": [
+        "cli",
+        "providers",
+        "release"
+      ],
+      "status": "pending"
+    },
+    "required": true,
+    "status": "passed",
+    "completedAt": "2026-11-26T22:50:16.006Z",
+    "artifact": "pulse-pr-release-qualification-45901090332-1",
+    "documentationMode": "source-only",
+    "sourceChecksSha256": "f67ad1c9be21e61b1aabb2f3e2a1772f7eba983731ef28a42e84dcbd923a6a3d",
+    "sealSha256": "d2e0ed0dd784d533fc3b5469f0512b40baf2277468abfada33c853aa85855d2e",
+    "bundleManifestSha256": "753a7840079d900de5c5b841f945ba1239d8352d6133dae024a4590f441bdb08",
+    "qualificationContextSha256": "d8f5964cd1e395a680ee811b55ee51e2dffd56e11cd1dbe320d82a59c33554ff",
+    "separateGates": [
+      {
+        "task": "str03c-bounded-transforms",
+        "classification": "experimental",
+        "disposition": "Workspace evidence only; installed transform qualification pending"
+      },
+      {
+        "task": "kv-conditional-acceptance",
+        "classification": "external-required",
+        "disposition": "Separate local K4 execution; documented Viceroy 0.21.0/0.21.1 missing-key CAS discrepancy is non-blocking by human direction (2026-10-04). Other failures and deployed Pulse cross-location acceptance remain required; B6-05"
+      }
+    ]
+  },
+  "acceptedManifestSha256": "753a7840079d900de5c5b841f945ba1239d8352d6133dae024a4590f441bdb08",
+  "packagesCompared": 20,
+  "allPackageHashesMatchLocalProof": true,
+  "sealStatus": "passed",
+  "cleanup": {
+    "status": "passed",
+    "timedOut": false,
+    "retainedPath": null
+  },
+  "externalFastly": {
+    "status": "passed",
+    "fastlyCli": {
+      "binary": "/home/runner/work/pulse/pulse/.validation-tools/fastly/fastly",
+      "version": "16.1.0"
+    },
+    "localComputeEngine": {
+      "owner": "fastly-cli",
+      "selection": "managed"
+    }
+  },
+  "featureAcceptance": {
+    "schemaVersion": "pulse.release-feature-acceptance.v1",
+    "sourceRevision": "7a3f513631e2f84c52e390ffd330c6ed6180ea6b",
+    "sourceTree": "b71499b6caa15954c4cb880d556791621efe0c9b",
+    "workingTree": "",
+    "status": "passed",
+    "gates": [
+      {
+        "task": "terminal-installed",
+        "feature": "Versioned terminal package contract and both GRIP ABIs; transport evidence remains separate",
+        "classification": "required-feature",
+        "status": "passed",
+        "reportSha256": "052f2d927cfd41f1b03b1898bce003c23689aea3b04cd6cfb8da4a57f5b9d9df",
+        "packages": [
+          {
+            "name": "@pulse-compute/runtime",
+            "version": "1.0.0-rc.1",
+            "file": "packages/pulse-compute-runtime-1.0.0-rc.1.tgz",
+            "sha256": "c8c3be5a43ca5a85c17ed83aacd444e0294836f4ab343230d9e21bdfd6a340d9"
+          },
+          {
+            "name": "@pulse-compute/pulse",
+            "version": "1.0.0-rc.1",
+            "file": "packages/pulse-compute-pulse-1.0.0-rc.1.tgz",
+            "sha256": "58ac9bc7880b45571fe816d0e267f494571f85e11947c32a7a68a5e01c674d9a"
+          },
+          {
+            "name": "@pulse-compute/cli",
+            "version": "1.0.0-rc.1",
+            "file": "packages/pulse-compute-cli-1.0.0-rc.1.tgz",
+            "sha256": "e9f2d6772ac30df4caf14475c032282388a99a18eb2d359d26e198987607db69"
+          },
+          {
+            "name": "@pulse-compute/provider-fastly",
+            "version": "1.0.0-rc.1",
+            "file": "packages/pulse-compute-provider-fastly-1.0.0-rc.1.tgz",
+            "sha256": "5e1c5d5c075495396f01dd2ee15c780144099cb28aef38a09b10fb4ff6bf284c"
+          },
+          {
+            "name": "@pulse-compute/grip",
+            "version": "1.0.0-rc.1",
+            "file": "packages/pulse-compute-grip-1.0.0-rc.1.tgz",
+            "sha256": "782e6906b114345e9998cab633526de4993c1e5c9e6247e9a8c9af17ada09edf"
+          },
+          {
+            "name": "@pulse-compute/assets",
+            "version": "1.0.0-rc.1",
+            "file": "packages/pulse-compute-assets-1.0.0-rc.1.tgz",
+            "sha256": "2271b6b58a26a41568864b03df76b854f42dabf6e184d0d48aa996cb193c49fd"
+          },
+          {
+            "name": "@pulse-compute/crypto",
+            "version": "1.0.0-rc.1",
+            "file": "packages/pulse-compute-crypto-1.0.0-rc.1.tgz",
+            "sha256": "353941f9ec2e11e34516e1dea6f28fb9c5efbc80f9015099f22ec6727a0d6f67"
+          },
+          {
+            "name": "@pulse-compute/jwt",
+            "version": "1.0.0-rc.1",
+            "file": "packages/pulse-compute-jwt-1.0.0-rc.1.tgz",
+            "sha256": "be5c06b78c2d76681a49f9692ecd88e6b63db4fc16a1a173f4b0fcbce2d8e2be"
+          },
+          {
+            "name": "@pulse-compute/entities",
+            "version": "1.0.0-rc.1",
+            "file": "packages/pulse-compute-entities-1.0.0-rc.1.tgz",
+            "sha256": "7da4d563146a683491401ba2ed4e45b6711e0a35f5a23171c01b3c001a7f1f2c"
+          },
+          {
+            "name": "@pulse-compute/mcp",
+            "version": "1.0.0-rc.1",
+            "file": "packages/pulse-compute-mcp-1.0.0-rc.1.tgz",
+            "sha256": "8fe901b7d8ac7d05bcd9deb4b754a955a2572ca051fc84f4273b631aa0fbed24"
+          },
+          {
+            "name": "@pulse-compute/s3",
+            "version": "1.0.0-rc.1",
+            "file": "packages/pulse-compute-s3-1.0.0-rc.1.tgz",
+            "sha256": "d11941500aa6864acaf8421b22d340ef7c781ae7f70d717ef37d1fcda560df6a"
+          },
+          {
+            "name": "@pulse-compute/wasm-build-support",
+            "version": "1.0.0-rc.1",
+            "file": "packages/pulse-compute-wasm-build-support-1.0.0-rc.1.tgz",
+            "sha256": "c736a3c4cc383240428da44130ce368136c0d45c744453aecc7c39e420cff374"
+          },
+          {
+            "name": "@pulse-compute/wasm-compiler",
+            "version": "1.0.0-rc.1",
+            "file": "packages/pulse-compute-wasm-compiler-1.0.0-rc.1.tgz",
+            "sha256": "f5aab31f80aab3da1e8b559d2f598bb40509db3f8de53543c64f0fe3c9ca411c"
+          },
+          {
+            "name": "@pulse-compute/wasm-guest-link",
+            "version": "1.0.0-rc.1",
+            "file": "packages/pulse-compute-wasm-guest-link-1.0.0-rc.1.tgz",
+            "sha256": "deceee7e5de8f45ef6f7b4779bb0f44cbd07bd79ac5160f4dcdbaf2fa1e90efc"
+          },
+          {
+            "name": "@pulse-compute/wasm-contracts",
+            "version": "1.0.0-rc.1",
+            "file": "packages/pulse-compute-wasm-contracts-1.0.0-rc.1.tgz",
+            "sha256": "391eb7cee2dd1d882760bd64fbe7f1435c33eaff4cd1613bcace140366918336"
+          },
+          {
+            "name": "@pulse-compute/wasm-host-runtime",
+            "version": "1.0.0-rc.1",
+            "file": "packages/pulse-compute-wasm-host-runtime-1.0.0-rc.1.tgz",
+            "sha256": "81708d9a67d35a1a33474443ca398a6481985c0baf3e5536b01a1dab74f1f15e"
+          },
+          {
+            "name": "@pulse-compute/wasm-library-kit",
+            "version": "1.0.0-rc.1",
+            "file": "packages/pulse-compute-wasm-library-kit-1.0.0-rc.1.tgz",
+            "sha256": "b34748dc8b33131433f274d620a3d9621f46a777e43547dc33fe35119e68e6f5"
+          },
+          {
+            "name": "@pulse-compute/provider-node",
+            "version": "1.0.0-rc.1",
+            "file": "packages/pulse-compute-provider-node-1.0.0-rc.1.tgz",
+            "sha256": "6cbffb1b06790af2b35cfd360c256dc96cc9614c9306b5c8f15d0ec0c99d0cab"
+          },
+          {
+            "name": "@pulse-compute/wasm-runtime-core-as",
+            "version": "1.0.0-rc.1",
+            "file": "packages/pulse-compute-wasm-runtime-core-as-1.0.0-rc.1.tgz",
+            "sha256": "9b9b74f35f363c6efdfc914466e72960792276dbaceb94562b430f928b201242"
+          },
+          {
+            "name": "@pulse-compute/wasm-schema-json",
+            "version": "1.0.0-rc.1",
+            "file": "packages/pulse-compute-wasm-schema-json-1.0.0-rc.1.tgz",
+            "sha256": "e637ad90d88d90b658068533daa9e9354e4d1707a1807237e9c8d500edd2a5a1"
+          }
+        ]
+      },
+      {
+        "task": "str02b-installed",
+        "feature": "Node Native request-body forwarding",
+        "classification": "required-feature",
+        "status": "passed",
+        "reportSha256": "3c94dd44c4d4436412007e7d912933945aada9799bcb11e700a21a73eac75ca9",
+        "packages": [
+          {
+            "name": "@pulse-compute/cli",
+            "version": "1.0.0-rc.1",
+            "sha256": "e9f2d6772ac30df4caf14475c032282388a99a18eb2d359d26e198987607db69"
+          },
+          {
+            "name": "@pulse-compute/crypto",
+            "version": "1.0.0-rc.1",
+            "sha256": "353941f9ec2e11e34516e1dea6f28fb9c5efbc80f9015099f22ec6727a0d6f67"
+          },
+          {
+            "name": "@pulse-compute/jwt",
+            "version": "1.0.0-rc.1",
+            "sha256": "be5c06b78c2d76681a49f9692ecd88e6b63db4fc16a1a173f4b0fcbce2d8e2be"
+          },
+          {
+            "name": "@pulse-compute/provider-fastly",
+            "version": "1.0.0-rc.1",
+            "sha256": "5e1c5d5c075495396f01dd2ee15c780144099cb28aef38a09b10fb4ff6bf284c"
+          },
+          {
+            "name": "@pulse-compute/provider-node",
+            "version": "1.0.0-rc.1",
+            "sha256": "6cbffb1b06790af2b35cfd360c256dc96cc9614c9306b5c8f15d0ec0c99d0cab"
+          },
+          {
+            "name": "@pulse-compute/pulse",
+            "version": "1.0.0-rc.1",
+            "sha256": "58ac9bc7880b45571fe816d0e267f494571f85e11947c32a7a68a5e01c674d9a"
+          },
+          {
+            "name": "@pulse-compute/runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "c8c3be5a43ca5a85c17ed83aacd444e0294836f4ab343230d9e21bdfd6a340d9"
+          },
+          {
+            "name": "@pulse-compute/s3",
+            "version": "1.0.0-rc.1",
+            "sha256": "d11941500aa6864acaf8421b22d340ef7c781ae7f70d717ef37d1fcda560df6a"
+          },
+          {
+            "name": "@pulse-compute/wasm-build-support",
+            "version": "1.0.0-rc.1",
+            "sha256": "c736a3c4cc383240428da44130ce368136c0d45c744453aecc7c39e420cff374"
+          },
+          {
+            "name": "@pulse-compute/wasm-compiler",
+            "version": "1.0.0-rc.1",
+            "sha256": "f5aab31f80aab3da1e8b559d2f598bb40509db3f8de53543c64f0fe3c9ca411c"
+          },
+          {
+            "name": "@pulse-compute/wasm-contracts",
+            "version": "1.0.0-rc.1",
+            "sha256": "391eb7cee2dd1d882760bd64fbe7f1435c33eaff4cd1613bcace140366918336"
+          },
+          {
+            "name": "@pulse-compute/wasm-guest-link",
+            "version": "1.0.0-rc.1",
+            "sha256": "deceee7e5de8f45ef6f7b4779bb0f44cbd07bd79ac5160f4dcdbaf2fa1e90efc"
+          },
+          {
+            "name": "@pulse-compute/wasm-host-runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "81708d9a67d35a1a33474443ca398a6481985c0baf3e5536b01a1dab74f1f15e"
+          },
+          {
+            "name": "@pulse-compute/wasm-library-kit",
+            "version": "1.0.0-rc.1",
+            "sha256": "b34748dc8b33131433f274d620a3d9621f46a777e43547dc33fe35119e68e6f5"
+          },
+          {
+            "name": "@pulse-compute/wasm-runtime-core-as",
+            "version": "1.0.0-rc.1",
+            "sha256": "9b9b74f35f363c6efdfc914466e72960792276dbaceb94562b430f928b201242"
+          },
+          {
+            "name": "@pulse-compute/wasm-schema-json",
+            "version": "1.0.0-rc.1",
+            "sha256": "e637ad90d88d90b658068533daa9e9354e4d1707a1807237e9c8d500edd2a5a1"
+          }
+        ]
+      },
+      {
+        "task": "node01-installed",
+        "feature": "Finite production Node HTTP launcher",
+        "classification": "required-feature",
+        "status": "passed",
+        "reportSha256": "db42f69acf1cc7a0969fc5b544235400c193e3e5067bb829e8f7d38cbf12cb03",
+        "packages": [
+          {
+            "name": "@pulse-compute/cli",
+            "version": "1.0.0-rc.1",
+            "sha256": "e9f2d6772ac30df4caf14475c032282388a99a18eb2d359d26e198987607db69"
+          },
+          {
+            "name": "@pulse-compute/crypto",
+            "version": "1.0.0-rc.1",
+            "sha256": "353941f9ec2e11e34516e1dea6f28fb9c5efbc80f9015099f22ec6727a0d6f67"
+          },
+          {
+            "name": "@pulse-compute/jwt",
+            "version": "1.0.0-rc.1",
+            "sha256": "be5c06b78c2d76681a49f9692ecd88e6b63db4fc16a1a173f4b0fcbce2d8e2be"
+          },
+          {
+            "name": "@pulse-compute/provider-fastly",
+            "version": "1.0.0-rc.1",
+            "sha256": "5e1c5d5c075495396f01dd2ee15c780144099cb28aef38a09b10fb4ff6bf284c"
+          },
+          {
+            "name": "@pulse-compute/provider-node",
+            "version": "1.0.0-rc.1",
+            "sha256": "6cbffb1b06790af2b35cfd360c256dc96cc9614c9306b5c8f15d0ec0c99d0cab"
+          },
+          {
+            "name": "@pulse-compute/pulse",
+            "version": "1.0.0-rc.1",
+            "sha256": "58ac9bc7880b45571fe816d0e267f494571f85e11947c32a7a68a5e01c674d9a"
+          },
+          {
+            "name": "@pulse-compute/runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "c8c3be5a43ca5a85c17ed83aacd444e0294836f4ab343230d9e21bdfd6a340d9"
+          },
+          {
+            "name": "@pulse-compute/s3",
+            "version": "1.0.0-rc.1",
+            "sha256": "d11941500aa6864acaf8421b22d340ef7c781ae7f70d717ef37d1fcda560df6a"
+          },
+          {
+            "name": "@pulse-compute/wasm-build-support",
+            "version": "1.0.0-rc.1",
+            "sha256": "c736a3c4cc383240428da44130ce368136c0d45c744453aecc7c39e420cff374"
+          },
+          {
+            "name": "@pulse-compute/wasm-compiler",
+            "version": "1.0.0-rc.1",
+            "sha256": "f5aab31f80aab3da1e8b559d2f598bb40509db3f8de53543c64f0fe3c9ca411c"
+          },
+          {
+            "name": "@pulse-compute/wasm-contracts",
+            "version": "1.0.0-rc.1",
+            "sha256": "391eb7cee2dd1d882760bd64fbe7f1435c33eaff4cd1613bcace140366918336"
+          },
+          {
+            "name": "@pulse-compute/wasm-guest-link",
+            "version": "1.0.0-rc.1",
+            "sha256": "deceee7e5de8f45ef6f7b4779bb0f44cbd07bd79ac5160f4dcdbaf2fa1e90efc"
+          },
+          {
+            "name": "@pulse-compute/wasm-host-runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "81708d9a67d35a1a33474443ca398a6481985c0baf3e5536b01a1dab74f1f15e"
+          },
+          {
+            "name": "@pulse-compute/wasm-library-kit",
+            "version": "1.0.0-rc.1",
+            "sha256": "b34748dc8b33131433f274d620a3d9621f46a777e43547dc33fe35119e68e6f5"
+          },
+          {
+            "name": "@pulse-compute/wasm-runtime-core-as",
+            "version": "1.0.0-rc.1",
+            "sha256": "9b9b74f35f363c6efdfc914466e72960792276dbaceb94562b430f928b201242"
+          },
+          {
+            "name": "@pulse-compute/wasm-schema-json",
+            "version": "1.0.0-rc.1",
+            "sha256": "e637ad90d88d90b658068533daa9e9354e4d1707a1807237e9c8d500edd2a5a1"
+          }
+        ]
+      },
+      {
+        "task": "arc01-installed",
+        "feature": "Package-owned execution and provider loading",
+        "classification": "required-feature",
+        "status": "passed",
+        "reportSha256": "802d9b80855886e8037c8ec71a84ade8d1d085fafad4f10dcebb6c1d05ea4755",
+        "packages": [
+          {
+            "name": "@pulse-compute/crypto",
+            "version": "1.0.0-rc.1",
+            "sha256": "353941f9ec2e11e34516e1dea6f28fb9c5efbc80f9015099f22ec6727a0d6f67"
+          },
+          {
+            "name": "@pulse-compute/runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "c8c3be5a43ca5a85c17ed83aacd444e0294836f4ab343230d9e21bdfd6a340d9"
+          },
+          {
+            "name": "@pulse-compute/wasm-build-support",
+            "version": "1.0.0-rc.1",
+            "sha256": "c736a3c4cc383240428da44130ce368136c0d45c744453aecc7c39e420cff374"
+          },
+          {
+            "name": "@pulse-compute/wasm-compiler",
+            "version": "1.0.0-rc.1",
+            "sha256": "f5aab31f80aab3da1e8b559d2f598bb40509db3f8de53543c64f0fe3c9ca411c"
+          },
+          {
+            "name": "@pulse-compute/wasm-contracts",
+            "version": "1.0.0-rc.1",
+            "sha256": "391eb7cee2dd1d882760bd64fbe7f1435c33eaff4cd1613bcace140366918336"
+          },
+          {
+            "name": "@pulse-compute/wasm-guest-link",
+            "version": "1.0.0-rc.1",
+            "sha256": "deceee7e5de8f45ef6f7b4779bb0f44cbd07bd79ac5160f4dcdbaf2fa1e90efc"
+          },
+          {
+            "name": "@pulse-compute/wasm-host-runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "81708d9a67d35a1a33474443ca398a6481985c0baf3e5536b01a1dab74f1f15e"
+          },
+          {
+            "name": "@pulse-compute/wasm-library-kit",
+            "version": "1.0.0-rc.1",
+            "sha256": "b34748dc8b33131433f274d620a3d9621f46a777e43547dc33fe35119e68e6f5"
+          },
+          {
+            "name": "@pulse-compute/wasm-runtime-core-as",
+            "version": "1.0.0-rc.1",
+            "sha256": "9b9b74f35f363c6efdfc914466e72960792276dbaceb94562b430f928b201242"
+          },
+          {
+            "name": "@pulse-compute/wasm-schema-json",
+            "version": "1.0.0-rc.1",
+            "sha256": "e637ad90d88d90b658068533daa9e9354e4d1707a1807237e9c8d500edd2a5a1"
+          },
+          {
+            "name": "@pulse-compute/crypto",
+            "version": "1.0.0-rc.1",
+            "sha256": "353941f9ec2e11e34516e1dea6f28fb9c5efbc80f9015099f22ec6727a0d6f67"
+          },
+          {
+            "name": "@pulse-compute/jwt",
+            "version": "1.0.0-rc.1",
+            "sha256": "be5c06b78c2d76681a49f9692ecd88e6b63db4fc16a1a173f4b0fcbce2d8e2be"
+          },
+          {
+            "name": "@pulse-compute/provider-node",
+            "version": "1.0.0-rc.1",
+            "sha256": "6cbffb1b06790af2b35cfd360c256dc96cc9614c9306b5c8f15d0ec0c99d0cab"
+          },
+          {
+            "name": "@pulse-compute/runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "c8c3be5a43ca5a85c17ed83aacd444e0294836f4ab343230d9e21bdfd6a340d9"
+          },
+          {
+            "name": "@pulse-compute/s3",
+            "version": "1.0.0-rc.1",
+            "sha256": "d11941500aa6864acaf8421b22d340ef7c781ae7f70d717ef37d1fcda560df6a"
+          },
+          {
+            "name": "@pulse-compute/wasm-build-support",
+            "version": "1.0.0-rc.1",
+            "sha256": "c736a3c4cc383240428da44130ce368136c0d45c744453aecc7c39e420cff374"
+          },
+          {
+            "name": "@pulse-compute/wasm-compiler",
+            "version": "1.0.0-rc.1",
+            "sha256": "f5aab31f80aab3da1e8b559d2f598bb40509db3f8de53543c64f0fe3c9ca411c"
+          },
+          {
+            "name": "@pulse-compute/wasm-contracts",
+            "version": "1.0.0-rc.1",
+            "sha256": "391eb7cee2dd1d882760bd64fbe7f1435c33eaff4cd1613bcace140366918336"
+          },
+          {
+            "name": "@pulse-compute/wasm-guest-link",
+            "version": "1.0.0-rc.1",
+            "sha256": "deceee7e5de8f45ef6f7b4779bb0f44cbd07bd79ac5160f4dcdbaf2fa1e90efc"
+          },
+          {
+            "name": "@pulse-compute/wasm-host-runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "81708d9a67d35a1a33474443ca398a6481985c0baf3e5536b01a1dab74f1f15e"
+          },
+          {
+            "name": "@pulse-compute/wasm-library-kit",
+            "version": "1.0.0-rc.1",
+            "sha256": "b34748dc8b33131433f274d620a3d9621f46a777e43547dc33fe35119e68e6f5"
+          },
+          {
+            "name": "@pulse-compute/wasm-runtime-core-as",
+            "version": "1.0.0-rc.1",
+            "sha256": "9b9b74f35f363c6efdfc914466e72960792276dbaceb94562b430f928b201242"
+          },
+          {
+            "name": "@pulse-compute/wasm-schema-json",
+            "version": "1.0.0-rc.1",
+            "sha256": "e637ad90d88d90b658068533daa9e9354e4d1707a1807237e9c8d500edd2a5a1"
+          },
+          {
+            "name": "@pulse-compute/crypto",
+            "version": "1.0.0-rc.1",
+            "sha256": "353941f9ec2e11e34516e1dea6f28fb9c5efbc80f9015099f22ec6727a0d6f67"
+          },
+          {
+            "name": "@pulse-compute/jwt",
+            "version": "1.0.0-rc.1",
+            "sha256": "be5c06b78c2d76681a49f9692ecd88e6b63db4fc16a1a173f4b0fcbce2d8e2be"
+          },
+          {
+            "name": "@pulse-compute/provider-fastly",
+            "version": "1.0.0-rc.1",
+            "sha256": "5e1c5d5c075495396f01dd2ee15c780144099cb28aef38a09b10fb4ff6bf284c"
+          },
+          {
+            "name": "@pulse-compute/runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "c8c3be5a43ca5a85c17ed83aacd444e0294836f4ab343230d9e21bdfd6a340d9"
+          },
+          {
+            "name": "@pulse-compute/s3",
+            "version": "1.0.0-rc.1",
+            "sha256": "d11941500aa6864acaf8421b22d340ef7c781ae7f70d717ef37d1fcda560df6a"
+          },
+          {
+            "name": "@pulse-compute/wasm-build-support",
+            "version": "1.0.0-rc.1",
+            "sha256": "c736a3c4cc383240428da44130ce368136c0d45c744453aecc7c39e420cff374"
+          },
+          {
+            "name": "@pulse-compute/wasm-compiler",
+            "version": "1.0.0-rc.1",
+            "sha256": "f5aab31f80aab3da1e8b559d2f598bb40509db3f8de53543c64f0fe3c9ca411c"
+          },
+          {
+            "name": "@pulse-compute/wasm-contracts",
+            "version": "1.0.0-rc.1",
+            "sha256": "391eb7cee2dd1d882760bd64fbe7f1435c33eaff4cd1613bcace140366918336"
+          },
+          {
+            "name": "@pulse-compute/wasm-guest-link",
+            "version": "1.0.0-rc.1",
+            "sha256": "deceee7e5de8f45ef6f7b4779bb0f44cbd07bd79ac5160f4dcdbaf2fa1e90efc"
+          },
+          {
+            "name": "@pulse-compute/wasm-host-runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "81708d9a67d35a1a33474443ca398a6481985c0baf3e5536b01a1dab74f1f15e"
+          },
+          {
+            "name": "@pulse-compute/wasm-library-kit",
+            "version": "1.0.0-rc.1",
+            "sha256": "b34748dc8b33131433f274d620a3d9621f46a777e43547dc33fe35119e68e6f5"
+          },
+          {
+            "name": "@pulse-compute/wasm-runtime-core-as",
+            "version": "1.0.0-rc.1",
+            "sha256": "9b9b74f35f363c6efdfc914466e72960792276dbaceb94562b430f928b201242"
+          },
+          {
+            "name": "@pulse-compute/wasm-schema-json",
+            "version": "1.0.0-rc.1",
+            "sha256": "e637ad90d88d90b658068533daa9e9354e4d1707a1807237e9c8d500edd2a5a1"
+          },
+          {
+            "name": "@pulse-compute/cli",
+            "version": "1.0.0-rc.1",
+            "sha256": "e9f2d6772ac30df4caf14475c032282388a99a18eb2d359d26e198987607db69"
+          },
+          {
+            "name": "@pulse-compute/crypto",
+            "version": "1.0.0-rc.1",
+            "sha256": "353941f9ec2e11e34516e1dea6f28fb9c5efbc80f9015099f22ec6727a0d6f67"
+          },
+          {
+            "name": "@pulse-compute/jwt",
+            "version": "1.0.0-rc.1",
+            "sha256": "be5c06b78c2d76681a49f9692ecd88e6b63db4fc16a1a173f4b0fcbce2d8e2be"
+          },
+          {
+            "name": "@pulse-compute/provider-fastly",
+            "version": "1.0.0-rc.1",
+            "sha256": "5e1c5d5c075495396f01dd2ee15c780144099cb28aef38a09b10fb4ff6bf284c"
+          },
+          {
+            "name": "@pulse-compute/provider-node",
+            "version": "1.0.0-rc.1",
+            "sha256": "6cbffb1b06790af2b35cfd360c256dc96cc9614c9306b5c8f15d0ec0c99d0cab"
+          },
+          {
+            "name": "@pulse-compute/pulse",
+            "version": "1.0.0-rc.1",
+            "sha256": "58ac9bc7880b45571fe816d0e267f494571f85e11947c32a7a68a5e01c674d9a"
+          },
+          {
+            "name": "@pulse-compute/runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "c8c3be5a43ca5a85c17ed83aacd444e0294836f4ab343230d9e21bdfd6a340d9"
+          },
+          {
+            "name": "@pulse-compute/s3",
+            "version": "1.0.0-rc.1",
+            "sha256": "d11941500aa6864acaf8421b22d340ef7c781ae7f70d717ef37d1fcda560df6a"
+          },
+          {
+            "name": "@pulse-compute/wasm-build-support",
+            "version": "1.0.0-rc.1",
+            "sha256": "c736a3c4cc383240428da44130ce368136c0d45c744453aecc7c39e420cff374"
+          },
+          {
+            "name": "@pulse-compute/wasm-compiler",
+            "version": "1.0.0-rc.1",
+            "sha256": "f5aab31f80aab3da1e8b559d2f598bb40509db3f8de53543c64f0fe3c9ca411c"
+          },
+          {
+            "name": "@pulse-compute/wasm-contracts",
+            "version": "1.0.0-rc.1",
+            "sha256": "391eb7cee2dd1d882760bd64fbe7f1435c33eaff4cd1613bcace140366918336"
+          },
+          {
+            "name": "@pulse-compute/wasm-guest-link",
+            "version": "1.0.0-rc.1",
+            "sha256": "deceee7e5de8f45ef6f7b4779bb0f44cbd07bd79ac5160f4dcdbaf2fa1e90efc"
+          },
+          {
+            "name": "@pulse-compute/wasm-host-runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "81708d9a67d35a1a33474443ca398a6481985c0baf3e5536b01a1dab74f1f15e"
+          },
+          {
+            "name": "@pulse-compute/wasm-library-kit",
+            "version": "1.0.0-rc.1",
+            "sha256": "b34748dc8b33131433f274d620a3d9621f46a777e43547dc33fe35119e68e6f5"
+          },
+          {
+            "name": "@pulse-compute/wasm-runtime-core-as",
+            "version": "1.0.0-rc.1",
+            "sha256": "9b9b74f35f363c6efdfc914466e72960792276dbaceb94562b430f928b201242"
+          },
+          {
+            "name": "@pulse-compute/wasm-schema-json",
+            "version": "1.0.0-rc.1",
+            "sha256": "e637ad90d88d90b658068533daa9e9354e4d1707a1807237e9c8d500edd2a5a1"
+          }
+        ]
+      },
+      {
+        "task": "jwt-installed-workflow",
+        "feature": "JWT signing, verification, cleanup and eligibility",
+        "classification": "required-feature",
+        "status": "passed",
+        "reportSha256": "e4dc13346d2b89eac5e7f84a6c1f503b3a5677d7e145817ad8ca17b9ce1d36da",
+        "packages": [
+          {
+            "name": "@pulse-compute/cli",
+            "version": "1.0.0-rc.1",
+            "sha256": "e9f2d6772ac30df4caf14475c032282388a99a18eb2d359d26e198987607db69"
+          },
+          {
+            "name": "@pulse-compute/crypto",
+            "version": "1.0.0-rc.1",
+            "sha256": "353941f9ec2e11e34516e1dea6f28fb9c5efbc80f9015099f22ec6727a0d6f67"
+          },
+          {
+            "name": "@pulse-compute/jwt",
+            "version": "1.0.0-rc.1",
+            "sha256": "be5c06b78c2d76681a49f9692ecd88e6b63db4fc16a1a173f4b0fcbce2d8e2be"
+          },
+          {
+            "name": "@pulse-compute/provider-fastly",
+            "version": "1.0.0-rc.1",
+            "sha256": "5e1c5d5c075495396f01dd2ee15c780144099cb28aef38a09b10fb4ff6bf284c"
+          },
+          {
+            "name": "@pulse-compute/provider-node",
+            "version": "1.0.0-rc.1",
+            "sha256": "6cbffb1b06790af2b35cfd360c256dc96cc9614c9306b5c8f15d0ec0c99d0cab"
+          },
+          {
+            "name": "@pulse-compute/pulse",
+            "version": "1.0.0-rc.1",
+            "sha256": "58ac9bc7880b45571fe816d0e267f494571f85e11947c32a7a68a5e01c674d9a"
+          },
+          {
+            "name": "@pulse-compute/runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "c8c3be5a43ca5a85c17ed83aacd444e0294836f4ab343230d9e21bdfd6a340d9"
+          },
+          {
+            "name": "@pulse-compute/s3",
+            "version": "1.0.0-rc.1",
+            "sha256": "d11941500aa6864acaf8421b22d340ef7c781ae7f70d717ef37d1fcda560df6a"
+          },
+          {
+            "name": "@pulse-compute/wasm-build-support",
+            "version": "1.0.0-rc.1",
+            "sha256": "c736a3c4cc383240428da44130ce368136c0d45c744453aecc7c39e420cff374"
+          },
+          {
+            "name": "@pulse-compute/wasm-compiler",
+            "version": "1.0.0-rc.1",
+            "sha256": "f5aab31f80aab3da1e8b559d2f598bb40509db3f8de53543c64f0fe3c9ca411c"
+          },
+          {
+            "name": "@pulse-compute/wasm-contracts",
+            "version": "1.0.0-rc.1",
+            "sha256": "391eb7cee2dd1d882760bd64fbe7f1435c33eaff4cd1613bcace140366918336"
+          },
+          {
+            "name": "@pulse-compute/wasm-guest-link",
+            "version": "1.0.0-rc.1",
+            "sha256": "deceee7e5de8f45ef6f7b4779bb0f44cbd07bd79ac5160f4dcdbaf2fa1e90efc"
+          },
+          {
+            "name": "@pulse-compute/wasm-host-runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "81708d9a67d35a1a33474443ca398a6481985c0baf3e5536b01a1dab74f1f15e"
+          },
+          {
+            "name": "@pulse-compute/wasm-library-kit",
+            "version": "1.0.0-rc.1",
+            "sha256": "b34748dc8b33131433f274d620a3d9621f46a777e43547dc33fe35119e68e6f5"
+          },
+          {
+            "name": "@pulse-compute/wasm-runtime-core-as",
+            "version": "1.0.0-rc.1",
+            "sha256": "9b9b74f35f363c6efdfc914466e72960792276dbaceb94562b430f928b201242"
+          },
+          {
+            "name": "@pulse-compute/wasm-schema-json",
+            "version": "1.0.0-rc.1",
+            "sha256": "e637ad90d88d90b658068533daa9e9354e4d1707a1807237e9c8d500edd2a5a1"
+          }
+        ]
+      },
+      {
+        "task": "str02-installed",
+        "feature": "Node JavaScript request-body forwarding",
+        "classification": "required-feature",
+        "status": "passed",
+        "reportSha256": "8dcab2fbed0dd9824c45569f00fcd201d93d95f525ca7760406504281428f818",
+        "packages": [
+          {
+            "name": "@pulse-compute/cli",
+            "version": "1.0.0-rc.1",
+            "sha256": "e9f2d6772ac30df4caf14475c032282388a99a18eb2d359d26e198987607db69"
+          },
+          {
+            "name": "@pulse-compute/crypto",
+            "version": "1.0.0-rc.1",
+            "sha256": "353941f9ec2e11e34516e1dea6f28fb9c5efbc80f9015099f22ec6727a0d6f67"
+          },
+          {
+            "name": "@pulse-compute/jwt",
+            "version": "1.0.0-rc.1",
+            "sha256": "be5c06b78c2d76681a49f9692ecd88e6b63db4fc16a1a173f4b0fcbce2d8e2be"
+          },
+          {
+            "name": "@pulse-compute/provider-fastly",
+            "version": "1.0.0-rc.1",
+            "sha256": "5e1c5d5c075495396f01dd2ee15c780144099cb28aef38a09b10fb4ff6bf284c"
+          },
+          {
+            "name": "@pulse-compute/provider-node",
+            "version": "1.0.0-rc.1",
+            "sha256": "6cbffb1b06790af2b35cfd360c256dc96cc9614c9306b5c8f15d0ec0c99d0cab"
+          },
+          {
+            "name": "@pulse-compute/pulse",
+            "version": "1.0.0-rc.1",
+            "sha256": "58ac9bc7880b45571fe816d0e267f494571f85e11947c32a7a68a5e01c674d9a"
+          },
+          {
+            "name": "@pulse-compute/runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "c8c3be5a43ca5a85c17ed83aacd444e0294836f4ab343230d9e21bdfd6a340d9"
+          },
+          {
+            "name": "@pulse-compute/s3",
+            "version": "1.0.0-rc.1",
+            "sha256": "d11941500aa6864acaf8421b22d340ef7c781ae7f70d717ef37d1fcda560df6a"
+          },
+          {
+            "name": "@pulse-compute/wasm-build-support",
+            "version": "1.0.0-rc.1",
+            "sha256": "c736a3c4cc383240428da44130ce368136c0d45c744453aecc7c39e420cff374"
+          },
+          {
+            "name": "@pulse-compute/wasm-compiler",
+            "version": "1.0.0-rc.1",
+            "sha256": "f5aab31f80aab3da1e8b559d2f598bb40509db3f8de53543c64f0fe3c9ca411c"
+          },
+          {
+            "name": "@pulse-compute/wasm-contracts",
+            "version": "1.0.0-rc.1",
+            "sha256": "391eb7cee2dd1d882760bd64fbe7f1435c33eaff4cd1613bcace140366918336"
+          },
+          {
+            "name": "@pulse-compute/wasm-guest-link",
+            "version": "1.0.0-rc.1",
+            "sha256": "deceee7e5de8f45ef6f7b4779bb0f44cbd07bd79ac5160f4dcdbaf2fa1e90efc"
+          },
+          {
+            "name": "@pulse-compute/wasm-host-runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "81708d9a67d35a1a33474443ca398a6481985c0baf3e5536b01a1dab74f1f15e"
+          },
+          {
+            "name": "@pulse-compute/wasm-library-kit",
+            "version": "1.0.0-rc.1",
+            "sha256": "b34748dc8b33131433f274d620a3d9621f46a777e43547dc33fe35119e68e6f5"
+          },
+          {
+            "name": "@pulse-compute/wasm-runtime-core-as",
+            "version": "1.0.0-rc.1",
+            "sha256": "9b9b74f35f363c6efdfc914466e72960792276dbaceb94562b430f928b201242"
+          },
+          {
+            "name": "@pulse-compute/wasm-schema-json",
+            "version": "1.0.0-rc.1",
+            "sha256": "e637ad90d88d90b658068533daa9e9354e4d1707a1807237e9c8d500edd2a5a1"
+          }
+        ]
+      },
+      {
+        "task": "str03b-installed",
+        "feature": "Experimental Node generated output; no support promotion",
+        "classification": "required-feature",
+        "status": "passed",
+        "reportSha256": "df9c5c99fe5b83702aa96aee49a91d7401ac572f6892e35024690b17df859ae0",
+        "packages": [
+          {
+            "name": "@pulse-compute/cli",
+            "version": "1.0.0-rc.1",
+            "sha256": "e9f2d6772ac30df4caf14475c032282388a99a18eb2d359d26e198987607db69"
+          },
+          {
+            "name": "@pulse-compute/crypto",
+            "version": "1.0.0-rc.1",
+            "sha256": "353941f9ec2e11e34516e1dea6f28fb9c5efbc80f9015099f22ec6727a0d6f67"
+          },
+          {
+            "name": "@pulse-compute/jwt",
+            "version": "1.0.0-rc.1",
+            "sha256": "be5c06b78c2d76681a49f9692ecd88e6b63db4fc16a1a173f4b0fcbce2d8e2be"
+          },
+          {
+            "name": "@pulse-compute/provider-fastly",
+            "version": "1.0.0-rc.1",
+            "sha256": "5e1c5d5c075495396f01dd2ee15c780144099cb28aef38a09b10fb4ff6bf284c"
+          },
+          {
+            "name": "@pulse-compute/provider-node",
+            "version": "1.0.0-rc.1",
+            "sha256": "6cbffb1b06790af2b35cfd360c256dc96cc9614c9306b5c8f15d0ec0c99d0cab"
+          },
+          {
+            "name": "@pulse-compute/pulse",
+            "version": "1.0.0-rc.1",
+            "sha256": "58ac9bc7880b45571fe816d0e267f494571f85e11947c32a7a68a5e01c674d9a"
+          },
+          {
+            "name": "@pulse-compute/runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "c8c3be5a43ca5a85c17ed83aacd444e0294836f4ab343230d9e21bdfd6a340d9"
+          },
+          {
+            "name": "@pulse-compute/s3",
+            "version": "1.0.0-rc.1",
+            "sha256": "d11941500aa6864acaf8421b22d340ef7c781ae7f70d717ef37d1fcda560df6a"
+          },
+          {
+            "name": "@pulse-compute/wasm-build-support",
+            "version": "1.0.0-rc.1",
+            "sha256": "c736a3c4cc383240428da44130ce368136c0d45c744453aecc7c39e420cff374"
+          },
+          {
+            "name": "@pulse-compute/wasm-compiler",
+            "version": "1.0.0-rc.1",
+            "sha256": "f5aab31f80aab3da1e8b559d2f598bb40509db3f8de53543c64f0fe3c9ca411c"
+          },
+          {
+            "name": "@pulse-compute/wasm-contracts",
+            "version": "1.0.0-rc.1",
+            "sha256": "391eb7cee2dd1d882760bd64fbe7f1435c33eaff4cd1613bcace140366918336"
+          },
+          {
+            "name": "@pulse-compute/wasm-guest-link",
+            "version": "1.0.0-rc.1",
+            "sha256": "deceee7e5de8f45ef6f7b4779bb0f44cbd07bd79ac5160f4dcdbaf2fa1e90efc"
+          },
+          {
+            "name": "@pulse-compute/wasm-host-runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "81708d9a67d35a1a33474443ca398a6481985c0baf3e5536b01a1dab74f1f15e"
+          },
+          {
+            "name": "@pulse-compute/wasm-library-kit",
+            "version": "1.0.0-rc.1",
+            "sha256": "b34748dc8b33131433f274d620a3d9621f46a777e43547dc33fe35119e68e6f5"
+          },
+          {
+            "name": "@pulse-compute/wasm-runtime-core-as",
+            "version": "1.0.0-rc.1",
+            "sha256": "9b9b74f35f363c6efdfc914466e72960792276dbaceb94562b430f928b201242"
+          },
+          {
+            "name": "@pulse-compute/wasm-schema-json",
+            "version": "1.0.0-rc.1",
+            "sha256": "e637ad90d88d90b658068533daa9e9354e4d1707a1807237e9c8d500edd2a5a1"
+          }
+        ]
+      },
+      {
+        "task": "ast01-installed",
+        "feature": "Assets signing facade",
+        "classification": "required-feature",
+        "status": "passed",
+        "reportSha256": "90fe3d227ad5c70d89d43150a12d3fcc4b11547b140923caa540b4b7196bfc91",
+        "packages": [
+          {
+            "name": "@pulse-compute/runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "c8c3be5a43ca5a85c17ed83aacd444e0294836f4ab343230d9e21bdfd6a340d9"
+          },
+          {
+            "name": "@pulse-compute/assets",
+            "version": "1.0.0-rc.1",
+            "sha256": "2271b6b58a26a41568864b03df76b854f42dabf6e184d0d48aa996cb193c49fd"
+          },
+          {
+            "name": "@pulse-compute/s3",
+            "version": "1.0.0-rc.1",
+            "sha256": "d11941500aa6864acaf8421b22d340ef7c781ae7f70d717ef37d1fcda560df6a"
+          },
+          {
+            "name": "@pulse-compute/wasm-contracts",
+            "version": "1.0.0-rc.1",
+            "sha256": "391eb7cee2dd1d882760bd64fbe7f1435c33eaff4cd1613bcace140366918336"
+          }
+        ]
+      },
+      {
+        "task": "ast02b-installed",
+        "feature": "JavaScript embedded Assets bytes",
+        "classification": "required-feature",
+        "status": "passed",
+        "reportSha256": "b291b56392d7f5bdecbbef101db36acfc1c14a1cbafeabdcf90232be36f283ca",
+        "packages": [
+          {
+            "name": "@pulse-compute/runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "c8c3be5a43ca5a85c17ed83aacd444e0294836f4ab343230d9e21bdfd6a340d9"
+          },
+          {
+            "name": "@pulse-compute/assets",
+            "version": "1.0.0-rc.1",
+            "sha256": "2271b6b58a26a41568864b03df76b854f42dabf6e184d0d48aa996cb193c49fd"
+          },
+          {
+            "name": "@pulse-compute/s3",
+            "version": "1.0.0-rc.1",
+            "sha256": "d11941500aa6864acaf8421b22d340ef7c781ae7f70d717ef37d1fcda560df6a"
+          },
+          {
+            "name": "@pulse-compute/wasm-contracts",
+            "version": "1.0.0-rc.1",
+            "sha256": "391eb7cee2dd1d882760bd64fbe7f1435c33eaff4cd1613bcace140366918336"
+          }
+        ]
+      },
+      {
+        "task": "ast02d-installed",
+        "feature": "Native embedded Assets bytes",
+        "classification": "required-feature",
+        "status": "passed",
+        "reportSha256": "1d0bbab9a95e298993b7c9764e5963809e5a31d6c69d01cecb552307da744c83",
+        "packages": [
+          {
+            "name": "@pulse-compute/assets",
+            "version": "1.0.0-rc.1",
+            "sha256": "2271b6b58a26a41568864b03df76b854f42dabf6e184d0d48aa996cb193c49fd"
+          },
+          {
+            "name": "@pulse-compute/cli",
+            "version": "1.0.0-rc.1",
+            "sha256": "e9f2d6772ac30df4caf14475c032282388a99a18eb2d359d26e198987607db69"
+          },
+          {
+            "name": "@pulse-compute/crypto",
+            "version": "1.0.0-rc.1",
+            "sha256": "353941f9ec2e11e34516e1dea6f28fb9c5efbc80f9015099f22ec6727a0d6f67"
+          },
+          {
+            "name": "@pulse-compute/jwt",
+            "version": "1.0.0-rc.1",
+            "sha256": "be5c06b78c2d76681a49f9692ecd88e6b63db4fc16a1a173f4b0fcbce2d8e2be"
+          },
+          {
+            "name": "@pulse-compute/provider-fastly",
+            "version": "1.0.0-rc.1",
+            "sha256": "5e1c5d5c075495396f01dd2ee15c780144099cb28aef38a09b10fb4ff6bf284c"
+          },
+          {
+            "name": "@pulse-compute/provider-node",
+            "version": "1.0.0-rc.1",
+            "sha256": "6cbffb1b06790af2b35cfd360c256dc96cc9614c9306b5c8f15d0ec0c99d0cab"
+          },
+          {
+            "name": "@pulse-compute/pulse",
+            "version": "1.0.0-rc.1",
+            "sha256": "58ac9bc7880b45571fe816d0e267f494571f85e11947c32a7a68a5e01c674d9a"
+          },
+          {
+            "name": "@pulse-compute/runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "c8c3be5a43ca5a85c17ed83aacd444e0294836f4ab343230d9e21bdfd6a340d9"
+          },
+          {
+            "name": "@pulse-compute/s3",
+            "version": "1.0.0-rc.1",
+            "sha256": "d11941500aa6864acaf8421b22d340ef7c781ae7f70d717ef37d1fcda560df6a"
+          },
+          {
+            "name": "@pulse-compute/wasm-build-support",
+            "version": "1.0.0-rc.1",
+            "sha256": "c736a3c4cc383240428da44130ce368136c0d45c744453aecc7c39e420cff374"
+          },
+          {
+            "name": "@pulse-compute/wasm-compiler",
+            "version": "1.0.0-rc.1",
+            "sha256": "f5aab31f80aab3da1e8b559d2f598bb40509db3f8de53543c64f0fe3c9ca411c"
+          },
+          {
+            "name": "@pulse-compute/wasm-contracts",
+            "version": "1.0.0-rc.1",
+            "sha256": "391eb7cee2dd1d882760bd64fbe7f1435c33eaff4cd1613bcace140366918336"
+          },
+          {
+            "name": "@pulse-compute/wasm-guest-link",
+            "version": "1.0.0-rc.1",
+            "sha256": "deceee7e5de8f45ef6f7b4779bb0f44cbd07bd79ac5160f4dcdbaf2fa1e90efc"
+          },
+          {
+            "name": "@pulse-compute/wasm-host-runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "81708d9a67d35a1a33474443ca398a6481985c0baf3e5536b01a1dab74f1f15e"
+          },
+          {
+            "name": "@pulse-compute/wasm-library-kit",
+            "version": "1.0.0-rc.1",
+            "sha256": "b34748dc8b33131433f274d620a3d9621f46a777e43547dc33fe35119e68e6f5"
+          },
+          {
+            "name": "@pulse-compute/wasm-runtime-core-as",
+            "version": "1.0.0-rc.1",
+            "sha256": "9b9b74f35f363c6efdfc914466e72960792276dbaceb94562b430f928b201242"
+          },
+          {
+            "name": "@pulse-compute/wasm-schema-json",
+            "version": "1.0.0-rc.1",
+            "sha256": "e637ad90d88d90b658068533daa9e9354e4d1707a1807237e9c8d500edd2a5a1"
+          }
+        ]
+      },
+      {
+        "task": "mcp-installed",
+        "feature": "Public MCP host extension over installed governed HTTP",
+        "classification": "required-feature",
+        "status": "passed",
+        "reportSha256": "87558255eabdfaf5f439fbdd4a4a3513a5be6b197b9e72f17f1ec17ee573fe66",
+        "packages": [
+          {
+            "name": "@pulse-compute/cli",
+            "version": "1.0.0-rc.1",
+            "sha256": "e9f2d6772ac30df4caf14475c032282388a99a18eb2d359d26e198987607db69"
+          },
+          {
+            "name": "@pulse-compute/crypto",
+            "version": "1.0.0-rc.1",
+            "sha256": "353941f9ec2e11e34516e1dea6f28fb9c5efbc80f9015099f22ec6727a0d6f67"
+          },
+          {
+            "name": "@pulse-compute/entities",
+            "version": "1.0.0-rc.1",
+            "sha256": "7da4d563146a683491401ba2ed4e45b6711e0a35f5a23171c01b3c001a7f1f2c"
+          },
+          {
+            "name": "@pulse-compute/jwt",
+            "version": "1.0.0-rc.1",
+            "sha256": "be5c06b78c2d76681a49f9692ecd88e6b63db4fc16a1a173f4b0fcbce2d8e2be"
+          },
+          {
+            "name": "@pulse-compute/mcp",
+            "version": "1.0.0-rc.1",
+            "sha256": "8fe901b7d8ac7d05bcd9deb4b754a955a2572ca051fc84f4273b631aa0fbed24"
+          },
+          {
+            "name": "@pulse-compute/provider-fastly",
+            "version": "1.0.0-rc.1",
+            "sha256": "5e1c5d5c075495396f01dd2ee15c780144099cb28aef38a09b10fb4ff6bf284c"
+          },
+          {
+            "name": "@pulse-compute/provider-node",
+            "version": "1.0.0-rc.1",
+            "sha256": "6cbffb1b06790af2b35cfd360c256dc96cc9614c9306b5c8f15d0ec0c99d0cab"
+          },
+          {
+            "name": "@pulse-compute/pulse",
+            "version": "1.0.0-rc.1",
+            "sha256": "58ac9bc7880b45571fe816d0e267f494571f85e11947c32a7a68a5e01c674d9a"
+          },
+          {
+            "name": "@pulse-compute/runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "c8c3be5a43ca5a85c17ed83aacd444e0294836f4ab343230d9e21bdfd6a340d9"
+          },
+          {
+            "name": "@pulse-compute/s3",
+            "version": "1.0.0-rc.1",
+            "sha256": "d11941500aa6864acaf8421b22d340ef7c781ae7f70d717ef37d1fcda560df6a"
+          },
+          {
+            "name": "@pulse-compute/wasm-build-support",
+            "version": "1.0.0-rc.1",
+            "sha256": "c736a3c4cc383240428da44130ce368136c0d45c744453aecc7c39e420cff374"
+          },
+          {
+            "name": "@pulse-compute/wasm-compiler",
+            "version": "1.0.0-rc.1",
+            "sha256": "f5aab31f80aab3da1e8b559d2f598bb40509db3f8de53543c64f0fe3c9ca411c"
+          },
+          {
+            "name": "@pulse-compute/wasm-contracts",
+            "version": "1.0.0-rc.1",
+            "sha256": "391eb7cee2dd1d882760bd64fbe7f1435c33eaff4cd1613bcace140366918336"
+          },
+          {
+            "name": "@pulse-compute/wasm-guest-link",
+            "version": "1.0.0-rc.1",
+            "sha256": "deceee7e5de8f45ef6f7b4779bb0f44cbd07bd79ac5160f4dcdbaf2fa1e90efc"
+          },
+          {
+            "name": "@pulse-compute/wasm-host-runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "81708d9a67d35a1a33474443ca398a6481985c0baf3e5536b01a1dab74f1f15e"
+          },
+          {
+            "name": "@pulse-compute/wasm-library-kit",
+            "version": "1.0.0-rc.1",
+            "sha256": "b34748dc8b33131433f274d620a3d9621f46a777e43547dc33fe35119e68e6f5"
+          },
+          {
+            "name": "@pulse-compute/wasm-runtime-core-as",
+            "version": "1.0.0-rc.1",
+            "sha256": "9b9b74f35f363c6efdfc914466e72960792276dbaceb94562b430f928b201242"
+          },
+          {
+            "name": "@pulse-compute/wasm-schema-json",
+            "version": "1.0.0-rc.1",
+            "sha256": "e637ad90d88d90b658068533daa9e9354e4d1707a1807237e9c8d500edd2a5a1"
+          }
+        ]
+      },
+      {
+        "task": "s3-body-installed",
+        "feature": "S3 opaque binary bodies on advertised target cells",
+        "classification": "required-feature",
+        "status": "passed",
+        "reportSha256": "6e53559f25700706a7e43f57b3918e2efb11296b015fa5f535b1b051e2c02a47",
+        "packages": [
+          {
+            "name": "@pulse-compute/cli",
+            "version": "1.0.0-rc.1",
+            "sha256": "e9f2d6772ac30df4caf14475c032282388a99a18eb2d359d26e198987607db69"
+          },
+          {
+            "name": "@pulse-compute/crypto",
+            "version": "1.0.0-rc.1",
+            "sha256": "353941f9ec2e11e34516e1dea6f28fb9c5efbc80f9015099f22ec6727a0d6f67"
+          },
+          {
+            "name": "@pulse-compute/jwt",
+            "version": "1.0.0-rc.1",
+            "sha256": "be5c06b78c2d76681a49f9692ecd88e6b63db4fc16a1a173f4b0fcbce2d8e2be"
+          },
+          {
+            "name": "@pulse-compute/provider-fastly",
+            "version": "1.0.0-rc.1",
+            "sha256": "5e1c5d5c075495396f01dd2ee15c780144099cb28aef38a09b10fb4ff6bf284c"
+          },
+          {
+            "name": "@pulse-compute/provider-node",
+            "version": "1.0.0-rc.1",
+            "sha256": "6cbffb1b06790af2b35cfd360c256dc96cc9614c9306b5c8f15d0ec0c99d0cab"
+          },
+          {
+            "name": "@pulse-compute/pulse",
+            "version": "1.0.0-rc.1",
+            "sha256": "58ac9bc7880b45571fe816d0e267f494571f85e11947c32a7a68a5e01c674d9a"
+          },
+          {
+            "name": "@pulse-compute/runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "c8c3be5a43ca5a85c17ed83aacd444e0294836f4ab343230d9e21bdfd6a340d9"
+          },
+          {
+            "name": "@pulse-compute/s3",
+            "version": "1.0.0-rc.1",
+            "sha256": "d11941500aa6864acaf8421b22d340ef7c781ae7f70d717ef37d1fcda560df6a"
+          },
+          {
+            "name": "@pulse-compute/wasm-build-support",
+            "version": "1.0.0-rc.1",
+            "sha256": "c736a3c4cc383240428da44130ce368136c0d45c744453aecc7c39e420cff374"
+          },
+          {
+            "name": "@pulse-compute/wasm-compiler",
+            "version": "1.0.0-rc.1",
+            "sha256": "f5aab31f80aab3da1e8b559d2f598bb40509db3f8de53543c64f0fe3c9ca411c"
+          },
+          {
+            "name": "@pulse-compute/wasm-contracts",
+            "version": "1.0.0-rc.1",
+            "sha256": "391eb7cee2dd1d882760bd64fbe7f1435c33eaff4cd1613bcace140366918336"
+          },
+          {
+            "name": "@pulse-compute/wasm-guest-link",
+            "version": "1.0.0-rc.1",
+            "sha256": "deceee7e5de8f45ef6f7b4779bb0f44cbd07bd79ac5160f4dcdbaf2fa1e90efc"
+          },
+          {
+            "name": "@pulse-compute/wasm-host-runtime",
+            "version": "1.0.0-rc.1",
+            "sha256": "81708d9a67d35a1a33474443ca398a6481985c0baf3e5536b01a1dab74f1f15e"
+          },
+          {
+            "name": "@pulse-compute/wasm-library-kit",
+            "version": "1.0.0-rc.1",
+            "sha256": "b34748dc8b33131433f274d620a3d9621f46a777e43547dc33fe35119e68e6f5"
+          },
+          {
+            "name": "@pulse-compute/wasm-runtime-core-as",
+            "version": "1.0.0-rc.1",
+            "sha256": "9b9b74f35f363c6efdfc914466e72960792276dbaceb94562b430f928b201242"
+          },
+          {
+            "name": "@pulse-compute/wasm-schema-json",
+            "version": "1.0.0-rc.1",
+            "sha256": "e637ad90d88d90b658068533daa9e9354e4d1707a1807237e9c8d500edd2a5a1"
+          }
+        ]
+      }
+    ],
+    "separateGates": [
+      {
+        "task": "str03c-bounded-transforms",
+        "classification": "experimental",
+        "disposition": "Workspace evidence only; installed transform qualification pending"
+      },
+      {
+        "task": "kv-conditional-acceptance",
+        "classification": "external-required",
+        "disposition": "Separate local K4 execution; documented Viceroy 0.21.0/0.21.1 missing-key CAS discrepancy is non-blocking by human direction (2026-10-04). Other failures and deployed Pulse cross-location acceptance remain required; B6-05"
+      }
+    ],
+    "providerRealityValidated": false,
+    "deploymentPerformed": false,
+    "publicationPerformed": false,
+    "startedAt": "2026-11-26T22:44:02.100Z",
+    "completedAt": "2026-11-26T22:50:11.439Z",
+    "directory": "/home/runner/work/pulse/pulse/.pulse-seal/attempts/2026-11-26T21-53-05-796Z-ADj0TS/artifacts",
+    "runnerReportSha256": "9d760b09e12f3b6f59749184d52e69d24ea40a994e9dfe2817445fb3da1a0bf9"
+  },
+  "providerBindingReview": "pending-human-release-review"
+}

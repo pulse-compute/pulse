@@ -49,9 +49,14 @@ Other retained setup failures identify stale generation and the pre-existing
 
 [Full CI](https://github.com/pulse-compute/pulse/actions/runs/45901154055) and
 [aggregate qualification](https://github.com/pulse-compute/pulse/actions/runs/45901090332)
-remain separate terminal gates. Their artifacts must match this exact merge
-candidate, tree and package hashes. See the PR and any later CI receipt here
-for actual status; this local record does not infer a successful seal.
+both completed successfully. The accepted artifact archive digest was verified,
+then its source identity, seal, source-check and publication-manifest hashes were
+verified. All twenty accepted tarball hashes equal the local proof package set.
+The seal records twelve passing required installed feature gates, passing local
+Fastly CLI qualification and successful cleanup. `seal-binding.json` records this
+comparison; `sealed/` preserves the original terminal manifests and receipts.
+CI artifacts retain the tarballs until December 26, 2026; release publication
+must consume the accepted bundle under the repository release procedure.
 
 Review the exact-byte provider binding and final qualification before merge.
 Tagging, npm publication and website delivery remain separate human operations.

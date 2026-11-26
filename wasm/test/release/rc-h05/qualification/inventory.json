@@ -3,8 +3,8 @@
   "files": [
     {
       "file": "README.md",
-      "sha256": "b0fcf7d780bddf5a2e5aa19609d32d1ccd28b406573e25a1c2a961278c4a48d4",
-      "bytes": 3342
+      "sha256": "8e6005e5777430629fa90c7ab2d5b65f24452ed34f10b86095edcf6272362246",
+      "bytes": 3751
     },
     {
       "file": "build.log",
@@ -13,8 +13,8 @@
     },
     {
       "file": "ci-status.json",
-      "sha256": "e1246f1a39a394b5850923495d274db0fd0bae8ca9b5f68428c38f1ac1603057",
-      "bytes": 497
+      "sha256": "8909f0503a74efd69e6768165b6d2f8a0efa8600ebd443a189d0a0696e209112",
+      "bytes": 799
     },
     {
       "file": "docs-check-3.log",
@@ -140,6 +140,46 @@
       "file": "scope-final.log",
       "sha256": "23983e9536a857e98bb6399e98c45bfeb08e075699a5850ca648702250d4742d",
       "bytes": 3439
+    },
+    {
+      "file": "seal-binding.json",
+      "sha256": "d3b09b735e3d1ad86d155e3e0e659214df71a801c5d82313ae89806fd7e07d7f",
+      "bytes": 52106
+    },
+    {
+      "file": "sealed/pulse-publication-manifest.json",
+      "sha256": "753a7840079d900de5c5b841f945ba1239d8352d6133dae024a4590f441bdb08",
+      "bytes": 26997
+    },
+    {
+      "file": "sealed/pulse-release-manifest.json",
+      "sha256": "85aa9332047b54bc8a4eab7dd520abc3031f59c467b62d07e5566e2b97b8fbe9",
+      "bytes": 42391
+    },
+    {
+      "file": "sealed/pulse-source-release-catalog.json",
+      "sha256": "826d9ebc0e3547f22c25212e3a3c692032fc7a962e661c61328e623ce1b0a3a3",
+      "bytes": 21111
+    },
+    {
+      "file": "sealed/qualification.json",
+      "sha256": "c8bbc4b887e72621af5c452554c63b5b368ef0ccb11d74b1379ba1155838afec",
+      "bytes": 2098
+    },
+    {
+      "file": "sealed/release-seal.json",
+      "sha256": "d2e0ed0dd784d533fc3b5469f0512b40baf2277468abfada33c853aa85855d2e",
+      "bytes": 91017
+    },
+    {
+      "file": "sealed/sha256sums.txt",
+      "sha256": "fff5ca57f12ddfa9ab1e16e4923512c070cdef9e993871709d04703d865051ef",
+      "bytes": 2596
+    },
+    {
+      "file": "sealed/source-checks.json",
+      "sha256": "f67ad1c9be21e61b1aabb2f3e2a1772f7eba983731ef28a42e84dcbd923a6a3d",
+      "bytes": 390771
     },
     {
       "file": "shared-pack.json",

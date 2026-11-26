@@ -11,7 +11,14 @@
   },
   "aggregate": {
     "runId": 45901090332,
-    "status": "running",
-    "conclusion": null
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/pulse-compute/pulse/actions/runs/45901090332",
+    "completedAt": "2026-11-26T22:50:31Z"
+  },
+  "acceptedArtifact": {
+    "id": 15158034714,
+    "sha256": "2c95dd048b990da70d2f42e61e42121a45582653686495b1bf8cc88dc3b2a0d9",
+    "expiresAt": "2026-12-26T22:50:16Z"
   }
 }

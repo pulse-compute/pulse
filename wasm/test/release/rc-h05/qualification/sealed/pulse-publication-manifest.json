@@ -1,0 +1,761 @@
+{
+  "schemaVersion": "pulse.npm-publication-bundle.v1",
+  "releaseVersion": "1.0.0-rc.1",
+  "releaseTag": "v1.0.0-rc.1",
+  "channel": "rc",
+  "distTag": "latest",
+  "legal": {
+    "licenseFile": "LICENSE",
+    "noticeFile": "NOTICE",
+    "noticeSha256": "8af1d352fb8a9d3ba372767b310fa53e28f2424ee052ead7cabbce547186bb6f",
+    "packageFiles": [
+      "LICENSE",
+      "NOTICE"
+    ],
+    "packagePolicy": "exact-root-files-in-every-publishable-tarball"
+  },
+  "registry": "https://registry.npmjs.org",
+  "access": "public",
+  "authentication": "npm-trusted-publishing-oidc",
+  "provenance": "automatic",
+  "workflowFile": "npm-publish.yml",
+  "environment": "npm-publish",
+  "candidateArtifact": "pulse-npm-release-candidate",
+  "source": {
+    "commit": "7a3f513631e2f84c52e390ffd330c6ed6180ea6b",
+    "ref": "refs/pull/616/merge"
+  },
+  "sourceCatalogSha256": "826d9ebc0e3547f22c25212e3a3c692032fc7a962e661c61328e623ce1b0a3a3",
+  "packManifestSha256": "85aa9332047b54bc8a4eab7dd520abc3031f59c467b62d07e5566e2b97b8fbe9",
+  "packageCount": 20,
+  "packages": [
+    {
+      "order": 1,
+      "name": "@pulse-compute/wasm-contracts",
+      "version": "1.0.0-rc.1",
+      "role": "implementation",
+      "supportTier": "implementation",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "tarball": "packages/pulse-compute-wasm-contracts-1.0.0-rc.1.tgz",
+      "bytes": 182514,
+      "sha256": "391eb7cee2dd1d882760bd64fbe7f1435c33eaff4cd1613bcace140366918336",
+      "sha512": "46e59155d883f387c5c63e7bcd2ea8fe469fd804bc5119a01b3f1d73d3d76e4cf5c67442c81183f7a73eb6ab4871264d5ee6cc3a163dad2ceb782736f78a8d23",
+      "integrity": "sha512-RuWRVdiD84fFxj57zS6o/kaf2AS8URmgGz8dc9PXbkz1xnRCyBGD96c+tqtIcSZNXubMOhY9rSzreCc294qNIw==",
+      "shasum": "dae378ecb65232838b6ada245ad72a28d2687fc2",
+      "pulseDependencies": []
+    },
+    {
+      "order": 2,
+      "name": "@pulse-compute/wasm-build-support",
+      "version": "1.0.0-rc.1",
+      "role": "implementation",
+      "supportTier": "implementation",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "tarball": "packages/pulse-compute-wasm-build-support-1.0.0-rc.1.tgz",
+      "bytes": 21396,
+      "sha256": "c736a3c4cc383240428da44130ce368136c0d45c744453aecc7c39e420cff374",
+      "sha512": "95bf92e2a716da6a2c9f5577602dcd13f1472f09f09b334adaff511659b6e1d36376db0bf97d5a15b6648771ba8e4ea4ba3003abd5142ebbc3500b55a72963ee",
+      "integrity": "sha512-lb+S4qcW2mosn1V3YC3NE/FHLwnwmzNK2v9RFlm24dNjdtsL+X1aFbZkh3G6jk6kujADq9UULrvDUAtVpylj7g==",
+      "shasum": "dad4b154839327beac39c397bdbc4667c127c0f4",
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "order": 3,
+      "name": "@pulse-compute/wasm-guest-link",
+      "version": "1.0.0-rc.1",
+      "role": "implementation",
+      "supportTier": "implementation",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "tarball": "packages/pulse-compute-wasm-guest-link-1.0.0-rc.1.tgz",
+      "bytes": 40043,
+      "sha256": "deceee7e5de8f45ef6f7b4779bb0f44cbd07bd79ac5160f4dcdbaf2fa1e90efc",
+      "sha512": "5c7f30d1e74df57b6ceb931ead0e0ed640f8ee5b7ffb9c015aa901fa0715e2394ff03b1a05a13730bbf96826f239d69d39c0fa314e3c71c65fb3f1d79fc6783a",
+      "integrity": "sha512-XH8w0edN9Xts65MerQ4O1kD47lt/+5wBWqkB+gcV4jlP8DsaBaE3MLv5aCbyOdadOcD6MU48ccZfs/HXn8Z4Og==",
+      "shasum": "a6a7d0130c28c917a44dbd349addbd7fa1cb3b4b",
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "order": 4,
+      "name": "@pulse-compute/wasm-library-kit",
+      "version": "1.0.0-rc.1",
+      "role": "implementation",
+      "supportTier": "implementation",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "tarball": "packages/pulse-compute-wasm-library-kit-1.0.0-rc.1.tgz",
+      "bytes": 25656,
+      "sha256": "b34748dc8b33131433f274d620a3d9621f46a777e43547dc33fe35119e68e6f5",
+      "sha512": "eb85bf94a6eac6f06047bdec050eee999485faf6b8949384a0c5958aeba770d2d1488aecc7069a0664b2f9f150cf76b8d73cd5c7677feb2174e1d8f8f8169bfe",
+      "integrity": "sha512-64W/lKbqxvBgR73sBQ7umZSF+va4lJOEoMWViuuncNLRSIrsxwaaBmSy+fFQz3a41zzVx2d/6yF04dj4+Bab/g==",
+      "shasum": "da3886024c5b057709bbcf2336312bbb712e61b2",
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/wasm-build-support",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "order": 5,
+      "name": "@pulse-compute/wasm-schema-json",
+      "version": "1.0.0-rc.1",
+      "role": "implementation",
+      "supportTier": "implementation",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "tarball": "packages/pulse-compute-wasm-schema-json-1.0.0-rc.1.tgz",
+      "bytes": 61512,
+      "sha256": "e637ad90d88d90b658068533daa9e9354e4d1707a1807237e9c8d500edd2a5a1",
+      "sha512": "eafe4de48bf1d76b34eb9184f5d774c409124a01d823133bd7b73399d0e7433a94baf843b61238b9021cfc8df7b0a41815f51be135aa2c52bdb61a40c41abdc6",
+      "integrity": "sha512-6v5N5Ivx12s065GE9dd0xAkSSgHYIxM717czmdDnQzqUuvhDthI4uQIc/I33sKQYFfUb4TWqLFK9thpAxBq9xg==",
+      "shasum": "3166a7b73803e9cecd7ae18a1b4d92416f7213e6",
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/wasm-build-support",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "order": 6,
+      "name": "@pulse-compute/runtime",
+      "version": "1.0.0-rc.1",
+      "role": "public-runtime",
+      "supportTier": "canonical-application",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "tarball": "packages/pulse-compute-runtime-1.0.0-rc.1.tgz",
+      "bytes": 99893,
+      "sha256": "c8c3be5a43ca5a85c17ed83aacd444e0294836f4ab343230d9e21bdfd6a340d9",
+      "sha512": "9e7e71ec246aab822ba9be7f6c5332eea3968498840c86492c65395754f0694987f3f70c11fa69eda6110ba4265a2a91c918a312ccade46239377a7ce8962f22",
+      "integrity": "sha512-nn5x7CRqq4Irqb5/bFMy7qOWhJiEDIZJLGU5V1TwaUmH8/cMEfpp7aYRC6QmWiqRyRijEsyt5GI5N3p86JYvIg==",
+      "shasum": "4dc27e516c802052177a199fd8a33c7f52dc1017",
+      "pulseDependencies": []
+    },
+    {
+      "order": 7,
+      "name": "@pulse-compute/crypto",
+      "version": "1.0.0-rc.1",
+      "role": "public-extension",
+      "supportTier": "supported-extension",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "tarball": "packages/pulse-compute-crypto-1.0.0-rc.1.tgz",
+      "bytes": 233216,
+      "sha256": "353941f9ec2e11e34516e1dea6f28fb9c5efbc80f9015099f22ec6727a0d6f67",
+      "sha512": "2ad03cf53cb3dbedde57c5c513d1d6407d894294dc8f0382e36149e42e473fbfdac3386bb7f6e9a80694972f99b483a0addd139bcc913abcf192704911bfc0a8",
+      "integrity": "sha512-KtA89Tyz2+3eV8XFE9HWQH2JQpTcjwOC42FJ5C5HP7/awzhrt/bpqAaUly+ZtIOgrd0Tm8yROrzxknBJEb/AqA==",
+      "shasum": "d390774d58eb68ed003ee5e32a750b715069bee5",
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "order": 8,
+      "name": "@pulse-compute/wasm-host-runtime",
+      "version": "1.0.0-rc.1",
+      "role": "implementation",
+      "supportTier": "implementation",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "tarball": "packages/pulse-compute-wasm-host-runtime-1.0.0-rc.1.tgz",
+      "bytes": 98592,
+      "sha256": "81708d9a67d35a1a33474443ca398a6481985c0baf3e5536b01a1dab74f1f15e",
+      "sha512": "f5edfb4cf6cb48479516c88799b8b9e6659dcc8dfad97ea6932163ba346c8db9a32fb65227eff92953d3c6903d5ed8fbf61f65a56c07917c87d1d41549492009",
+      "integrity": "sha512-9e37TPbLSEeVFsiHmbi55mWdzI362X6mkyFjujRsjbmjL7ZSJ+/5KVPTxpA9Xtj79h9lpWwHkXyH0dQVSUkgCQ==",
+      "shasum": "49cc91e6f565b3c8cd7bea8835f16cd7526a745d",
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/crypto",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-build-support",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-schema-json",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "order": 9,
+      "name": "@pulse-compute/wasm-runtime-core-as",
+      "version": "1.0.0-rc.1",
+      "role": "implementation",
+      "supportTier": "implementation",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "tarball": "packages/pulse-compute-wasm-runtime-core-as-1.0.0-rc.1.tgz",
+      "bytes": 125997,
+      "sha256": "9b9b74f35f363c6efdfc914466e72960792276dbaceb94562b430f928b201242",
+      "sha512": "cdc009f150de1d07ae51a52a6fe0a12dc6692559676d78f0d9f430e50ef785ce3b9213735bd6ebb696ddc238b21366e0b9f003cd7ed51d6ee1c00f9427bc0d70",
+      "integrity": "sha512-zcAJ8VDeHQeuUaUqb+ChLcZpJVlnbXjw2fQw5Q73hc47khNzW9brtpbdwjiyE2bgufADzX7VHW7hwA+UJ7wNcA==",
+      "shasum": "fd1d4d077a3145ffbaf8c43b6e2150dd068d4867",
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/crypto",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-build-support",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "order": 10,
+      "name": "@pulse-compute/wasm-compiler",
+      "version": "1.0.0-rc.1",
+      "role": "implementation",
+      "supportTier": "implementation",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "tarball": "packages/pulse-compute-wasm-compiler-1.0.0-rc.1.tgz",
+      "bytes": 338646,
+      "sha256": "f5aab31f80aab3da1e8b559d2f598bb40509db3f8de53543c64f0fe3c9ca411c",
+      "sha512": "ee64b1311b493a2d45e1394d51c664da8ed2491581987b9540dc44ac72014bdebed1b0f5e8ed207aaf1a791da2758ee03d18ab7fc5f43e8d0cdb540bde14b8ab",
+      "integrity": "sha512-7mSxMRtJOi1F4TlNUcZk2o7SSRWBmHuVQNxErHIBS96+0bD16O0geq8aeR2idY7gPRirf8X0Po0M21QL3hS4qw==",
+      "shasum": "68c65d9f2dbdc6569002dd24ca1aeaac51a39767",
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/wasm-build-support",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-guest-link",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-host-runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-library-kit",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-runtime-core-as",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-schema-json",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "order": 11,
+      "name": "@pulse-compute/entities",
+      "version": "1.0.0-rc.1",
+      "role": "public-extension",
+      "supportTier": "supported-extension",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "tarball": "packages/pulse-compute-entities-1.0.0-rc.1.tgz",
+      "bytes": 51777,
+      "sha256": "7da4d563146a683491401ba2ed4e45b6711e0a35f5a23171c01b3c001a7f1f2c",
+      "sha512": "68427469e2f36616e3f9a5c10b02dda692a56ce8fae8d59b47b5f6c8b7c178274a080cd23709b71dd22d3280a20e96a633cb893c3b1f3dc2613239d8a34e8435",
+      "integrity": "sha512-aEJ0aeLzZhbj+aXBCwLdppKlbOj66NWbR7X2yLfBeCdKCAzSNwm3HdItMoCiDpamM8uJPDsfPcJhMjnYo06ENQ==",
+      "shasum": "48475def1a7891d641c94b9ef9793cf3593037e1",
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "order": 12,
+      "name": "@pulse-compute/grip",
+      "version": "1.0.0-rc.1",
+      "role": "public-extension",
+      "supportTier": "supported-extension",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "tarball": "packages/pulse-compute-grip-1.0.0-rc.1.tgz",
+      "bytes": 27130,
+      "sha256": "782e6906b114345e9998cab633526de4993c1e5c9e6247e9a8c9af17ada09edf",
+      "sha512": "6b87ae3d5f983cfde3c1b7b027de842fb3af72cca4c49de04afe0d4f5d730a5efe659062db7c336405bae30f6c79c43848508c8948c22da7393fe90a63294bc9",
+      "integrity": "sha512-a4euPV+YPP3jwbewJ96EL7OvcsykxJ3gSv4NT11zCl7+ZZBi23wzZAW64w9secQ4SFCMiUjCLac5P+kKYylLyQ==",
+      "shasum": "5106bb6b1d37424630f1a8c395d3278ceb228925",
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "order": 13,
+      "name": "@pulse-compute/jwt",
+      "version": "1.0.0-rc.1",
+      "role": "public-extension",
+      "supportTier": "supported-extension",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "tarball": "packages/pulse-compute-jwt-1.0.0-rc.1.tgz",
+      "bytes": 65790,
+      "sha256": "be5c06b78c2d76681a49f9692ecd88e6b63db4fc16a1a173f4b0fcbce2d8e2be",
+      "sha512": "3c78b4f65ec666dade8ffb782a11d9824f3d6fc95710e2d662a4d94f4e0429753c44fb8857cbb378f40fda4a12ec715a3535263050537d9167e9483d8b03a9d4",
+      "integrity": "sha512-PHi09l7GZtrej/t4KhHZgk89b8lXEOLWYqTZT04EKXU8RPuIV8uzePQP2koS7HFaNTUmMFBTfZFn6Ug9iwOp1A==",
+      "shasum": "ae2773dbafc9fa0c7993fdeb346c148caad0edad",
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/crypto",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "order": 14,
+      "name": "@pulse-compute/mcp",
+      "version": "1.0.0-rc.1",
+      "role": "public-extension",
+      "supportTier": "supported-extension",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "tarball": "packages/pulse-compute-mcp-1.0.0-rc.1.tgz",
+      "bytes": 40958,
+      "sha256": "8fe901b7d8ac7d05bcd9deb4b754a955a2572ca051fc84f4273b631aa0fbed24",
+      "sha512": "7b1892897032f3c1ec76c12aadc27ab76229dcad32ca04bc192999c400c0cb433867ed0dba95ab7a41a060f725cc4301fee697827b4ff29c59f563b98e97bd0f",
+      "integrity": "sha512-exiSiXAy88HsdsEqrcJ6t2Ip3K0yygS8GSmZxADAy0M4Z+0NupWrekGgYPclzEMB/uaXgntP8pxZ9WO5jpe9Dw==",
+      "shasum": "130a345b23212295922c025a934e73a7e9446d8f",
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/entities",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "order": 15,
+      "name": "@pulse-compute/s3",
+      "version": "1.0.0-rc.1",
+      "role": "public-extension",
+      "supportTier": "supported-extension",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "tarball": "packages/pulse-compute-s3-1.0.0-rc.1.tgz",
+      "bytes": 23653,
+      "sha256": "d11941500aa6864acaf8421b22d340ef7c781ae7f70d717ef37d1fcda560df6a",
+      "sha512": "cf00c0e63a584792e3baaec4ff2d3287424e8abaabe9ee155273de0c8db5d773691a7672b1c1cedcf8aa90a2ee897e9ecb297a23dae083c7f246e7b1208e0cd9",
+      "integrity": "sha512-zwDA5jpYR5Ljuq7E/y0yh0JOirqr6e4VUnPeDI2113NpGnZyscHO3PiqkKLuiX6eyyl6I9rgg8fyRuexII4M2Q==",
+      "shasum": "76446df32c7098ecd04874915b36c72430b1af94",
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "order": 16,
+      "name": "@pulse-compute/provider-node",
+      "version": "1.0.0-rc.1",
+      "role": "implementation",
+      "supportTier": "implementation",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "tarball": "packages/pulse-compute-provider-node-1.0.0-rc.1.tgz",
+      "bytes": 115992,
+      "sha256": "6cbffb1b06790af2b35cfd360c256dc96cc9614c9306b5c8f15d0ec0c99d0cab",
+      "sha512": "20bfd453cb43acdd027803d73a8bdb3fdf9c599d137901e9738d86cfa7f44eae57ee05c22e0a3be15b2e2d85171e3597134d45e587cdc9cd25c27ca8531edd1b",
+      "integrity": "sha512-IL/UU8tDrN0CeAPXOovbP9+cWZ0TeQHpc42Gz6f0Tq5X7gXCLgo74VsuLYUXHjWXE01F5YfNyc0lwnyoUx7dGw==",
+      "shasum": "9222107c8beaac343e26ceb5d3f621dfd74fd736",
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/crypto",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/jwt",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/s3",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-build-support",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-host-runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "order": 17,
+      "name": "@pulse-compute/assets",
+      "version": "1.0.0-rc.1",
+      "role": "public-extension",
+      "supportTier": "supported-extension",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "tarball": "packages/pulse-compute-assets-1.0.0-rc.1.tgz",
+      "bytes": 50318,
+      "sha256": "2271b6b58a26a41568864b03df76b854f42dabf6e184d0d48aa996cb193c49fd",
+      "sha512": "0314f1884a64646faf9f9ea17114eeb11524656d766642df7d7c30b9ddb31c806c29a9d0b7e6a90b1223aa22caaba0f93264dbe1496d703159fa85f6ce43afc9",
+      "integrity": "sha512-AxTxiEpkZG+vn56hcRTusRUkZW12ZkLffXwwud2zHIBsKanQt+apCxIjqiLKq6D5MmTb4UltcDFZ+oX2zkOvyQ==",
+      "shasum": "63db46ceec7b2f051a61ab8f6c71e25fac0a8071",
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/s3",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "order": 18,
+      "name": "@pulse-compute/provider-fastly",
+      "version": "1.0.0-rc.1",
+      "role": "public-provider",
+      "supportTier": "supported-extension",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "tarball": "packages/pulse-compute-provider-fastly-1.0.0-rc.1.tgz",
+      "bytes": 284486,
+      "sha256": "5e1c5d5c075495396f01dd2ee15c780144099cb28aef38a09b10fb4ff6bf284c",
+      "sha512": "d96b171e4793a6aa7dbc043a5a61b7bb86f4610fb18c5a2e411841659600a413e5374b1498ac46228664a4821982390c299ba4f619027b50559283cffcb65471",
+      "integrity": "sha512-2WsXHkeTpqp9vAQ6WmG3u4b0YQ+xjFouQRhBZZYApBPlN0sUmKxGIoZkpIIZgjkMKZuk9hkCe1BVkoPP/LZUcQ==",
+      "shasum": "1ca53b7b1da25ba4a2a448bbd7d08859fb5c7e01",
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/crypto",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/jwt",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/s3",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-build-support",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-guest-link",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-host-runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-runtime-core-as",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "order": 19,
+      "name": "@pulse-compute/pulse",
+      "version": "1.0.0-rc.1",
+      "role": "public-api",
+      "supportTier": "canonical-application",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "tarball": "packages/pulse-compute-pulse-1.0.0-rc.1.tgz",
+      "bytes": 15535,
+      "sha256": "58ac9bc7880b45571fe816d0e267f494571f85e11947c32a7a68a5e01c674d9a",
+      "sha512": "74fc39d5afe6be10cae927cca8d3f21c437566219d9d96a2f7b4c87c4ac3db53b51c74d5a1105bb5b6cbfd0c1d65799127cc76ac74f910d8fe017492997b0919",
+      "integrity": "sha512-dPw51a/mvhDK6SfMqNPyHEN1ZiGdnZai97TIfErD21O1HHTVoRBbtbbL/QwdZXmRJ8x2rHT5ENj+AXSSmXsJGQ==",
+      "shasum": "ea82bed0105cb065ec3260fc7f4cd8a30fae969d",
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    },
+    {
+      "order": 20,
+      "name": "@pulse-compute/cli",
+      "version": "1.0.0-rc.1",
+      "role": "public-cli",
+      "supportTier": "canonical-application",
+      "license": "Apache-2.0",
+      "legalFiles": [
+        "LICENSE",
+        "NOTICE"
+      ],
+      "nodeEngines": "^22.14.0 || ^24.0.0",
+      "tarball": "packages/pulse-compute-cli-1.0.0-rc.1.tgz",
+      "bytes": 1479364,
+      "sha256": "e9f2d6772ac30df4caf14475c032282388a99a18eb2d359d26e198987607db69",
+      "sha512": "16eb01237523f3da5c97a0055b831bcaea2ca0c4427c0af351f6725a89fb3138af219a225e47ae37acc3a7e59b8b4f8c8f0207f7dc36a448a70e3ffc6caa09c4",
+      "integrity": "sha512-FusBI3Uj89pcl6AFW4MbyuosoMRCfArzUfZyWon7MTivIZoiXkeuN6zDp+Wbi0+MjwIH99w2pEinDj/8bKoJxA==",
+      "shasum": "c99330a28a586aa3d4b0e5c64b77e18ba78be51b",
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/provider-fastly",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/provider-node",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-build-support",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-compiler",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-host-runtime",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        },
+        {
+          "name": "@pulse-compute/wasm-schema-json",
+          "section": "dependencies",
+          "version": "1.0.0-rc.1"
+        }
+      ]
+    }
+  ]
+}
