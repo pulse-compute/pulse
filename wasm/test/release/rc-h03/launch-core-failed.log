@@ -1,0 +1,41 @@
+
+[pulsewasm:release] release-packages
+[pulsewasm] publishable package manifests and tarballs (timeout 240.00s)
+node:assert:152
+  throw new AssertionError(obj);
+  ^
+
+AssertionError [ERR_ASSERTION]: Feature acceptance requires a clean candidate checkout
++ actual - expected
+
++ '?? wasm/wasm/.test-results/rc-h03-core.json\n' +
++   '?? wasm/wasm/.test-results/runs/2026-11-26T09-21-24-936Z--14/tasks/release-packages.log'
+- ''
+
+    at candidateIdentity (/workspace/scratch/ef4956ac6b89/pulse/scripts/release-feature-acceptance.cjs:42:10)
+    at Object.copySharedPack (/workspace/scratch/ef4956ac6b89/pulse/scripts/release-shared-pack.cjs:50:20)
+    at packRelease (/workspace/scratch/ef4956ac6b89/pulse/scripts/pack-release.cjs:234:49)
+    at Object.<anonymous> (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/release/assert-release-packages.cjs:19:16)
+    at Module._compile (node:internal/modules/cjs/loader:1871:14)
+    at Object..js (node:internal/modules/cjs/loader:2002:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '?? wasm/wasm/.test-results/rc-h03-core.json\n' +
+    '?? wasm/wasm/.test-results/runs/2026-11-26T09-21-24-936Z--14/tasks/release-packages.log',
+  expected: '',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.18.0
+[pulsewasm] release-packages: failed in 691ms
+
+[pulsewasm] test summary
+  failed         691ms  release-packages  (wasm/.test-results/runs/2026-11-26T09-21-24-936Z--14/tasks/release-packages.log)
+  report       wasm/.test-results/rc-h03-core.json
+  run logs     wasm/.test-results/runs/2026-11-26T09-21-24-936Z--14
+  total        704ms
