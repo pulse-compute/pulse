@@ -6,7 +6,7 @@
 verification and exact-text SHA-256 for Pulse applications and first-party capability packages.
 
 ```bash
-npm install @pulse-compute/crypto@1.0.0-beta.10
+npm install @pulse-compute/crypto@1.0.0-beta.11
 ```
 
 ## Exact-text digest

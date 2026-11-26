@@ -1,14 +1,26 @@
 {
   "schemaVersion": "pulse.documentation-versions.v1",
-  "latest": "1.0.0-beta.10",
+  "latest": "1.0.0-beta.11",
   "versions": [
+    {
+      "version": "1.0.0-beta.11",
+      "segment": "v1.0.0-beta.11",
+      "channel": "beta",
+      "releasedAt": "2026-11-01",
+      "status": "current",
+      "sourceManifest": "release/pulse-release-manifest.json"
+    },
     {
       "version": "1.0.0-beta.10",
       "segment": "v1.0.0-beta.10",
       "channel": "beta",
       "releasedAt": "2026-10-21",
-      "status": "current",
-      "sourceManifest": "release/pulse-release-manifest.json"
+      "status": "archived",
+      "sourceManifest": "release/documentation-release-history/v1.0.0-beta.10.json",
+      "deliveryOwner": "website",
+      "sourceTag": "v1.0.0-beta.10",
+      "sourceCommit": "e69e4b6f1381a05bf0ee0b9b4c6385d2acefb20c",
+      "sourceManifestSha256": "04440e8c922826fa3b520b1840c9bbce8ba502c2ab9c90985734d87d37ad3a20"
     },
     {
       "version": "1.0.0-beta.9",

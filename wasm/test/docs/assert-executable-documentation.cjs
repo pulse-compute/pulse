@@ -59,7 +59,7 @@ const examples = Object.freeze([
     id: '05-fastly-capabilities',
     provider: 'fastly',
     guestWasmBytes: 5181,
-    providerWasmBytes: 45928,
+    providerWasmBytes: 46756,
     wasiImports: ['clock_time_get', 'fd_write'],
     capabilities: [
       'config.get',
@@ -75,7 +75,7 @@ const examples = Object.freeze([
     id: '07-opaque-proxy',
     provider: 'fastly',
     guestWasmBytes: 2205,
-    providerWasmBytes: 36637,
+    providerWasmBytes: 37471,
     wasiImports: ['clock_time_get', 'fd_write'],
     capabilities: ['fetch'],
     opaque: true
