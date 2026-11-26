@@ -1,0 +1,297 @@
+{
+  "schemaVersion": "pulse.rc-h02-development-audit.v1",
+  "classification": "development-evidence-not-release-checkpoint",
+  "baseCommit": "111aeaccab962bac547ed95c7797052fdc5cd983",
+  "workingTree": "uncommitted development edits during tests; not a clean candidate",
+  "node": "v24.22.3",
+  "lockfileSha256": "c2f2f034698dc635f610e1b33f27228f9766fbef90b05d1605e4534b5ec92cb0",
+  "finalChangedCodeSha256": {
+    "wasm/packages/host-runtime/src/runtime/canonical-api-runtime.js": "d193562796e291aa489d3972b07b912f69abd8e5bb561527456cc4789b6e550e",
+    "wasm/test/api/fetch-method-types.cjs": "738944b6f968ed56249af08612b58cfcb6127f2b12a0a1990f59c6832a666282",
+    "wasm/test/api/fetch-method-installed-http.cjs": "96087bd112a747625f58d867fe65c71b25875e8e873f36055cf0e1b69c63f451",
+    "wasm/test/provider/assert-fastly-fetch-headers.cjs": "c033f5c12427a3300720033730d48c8ac95fcc4b31a9355f9b19209175bd918c",
+    "wasm/test/runtime/assert-canonical-api-runtime.cjs": "640764ccbca982609a3f5ecbe79bde697cefa99849e7160a0f6b87650cdcc97e",
+    "wasm/test/runtime/assert-fetch-admission.cjs": "fb2e641f59c9000169a3b02730b6775fbe2700f526e431612cc9f3c41cea22f5"
+  },
+  "earlierCodeVariants": {
+    "beforeSparseArrayGuard": {
+      "wasm/packages/host-runtime/src/runtime/canonical-api-runtime.js": "b1b5cc26cbcee9feecefaed32aa6e3ee073040847700e325e201568c5ce282a4",
+      "wasm/test/runtime/assert-fetch-admission.cjs": "58eb89571f8f6f5a275e92f86d462d0f5a8c31d8c7e7eacdb05ca7b8e2613a87"
+    },
+    "initialConsumerAssertion": {
+      "wasm/test/api/fetch-method-installed-http.cjs": "91a19a240a359ec6ca788cd71a25c3a39624874e67943db0a96cc774268d2b1c"
+    }
+  },
+  "attempts": [
+    {
+      "runId": "2026-11-26T07-52-58-742Z--5",
+      "status": "failed",
+      "startedAt": "2026-11-26T07:52:58.749Z",
+      "finishedAt": "2026-11-26T07:53:01.806Z",
+      "selectedTasks": [
+        "api-surface",
+        "canonical-api-runtime",
+        "continuation-registry",
+        "request-budget-transport",
+        "http-input-outcomes",
+        "canonical-opaque-node-emission"
+      ],
+      "completedTasks": 1,
+      "note": "Failed in api-surface: test expected promise rejection, but managed application returns HTTP 500. Remaining selected tasks did not run. Before sparse-array guard and with initial consumer assertion.",
+      "rawReportSha256": "e7b8eff3093cfdec0a0a0be365e139c620c53744e9d54c672fa406d725f05360",
+      "results": [
+        {
+          "name": "api-surface",
+          "status": "failed",
+          "exitCode": 1,
+          "durationMs": 3041,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logSha256": "3a863d0ea965816de1faa2087ec4df1b9909170f6a25b645d48da1689ef13075"
+        }
+      ]
+    },
+    {
+      "runId": "2026-11-26T07-56-15-474Z--5",
+      "status": "passed",
+      "startedAt": "2026-11-26T07:56:15.480Z",
+      "finishedAt": "2026-11-26T07:57:44.934Z",
+      "selectedTasks": [
+        "api-surface",
+        "canonical-api-runtime",
+        "continuation-registry",
+        "request-budget-transport",
+        "http-input-outcomes",
+        "canonical-opaque-node-emission",
+        "javascript-effect-adapter",
+        "canonical-api-lowering",
+        "canonical-native-wasm"
+      ],
+      "completedTasks": 9,
+      "note": "Nine tasks completed. Consumer assertion corrected; first canonical-api-runtime execution preceded sparse-array guard. Other tasks completed while final guard was added; this is development evidence, not an immutable whole-tree campaign.",
+      "rawReportSha256": "f4fc71924f9e39f2e2f94b3f6a0c930990d5c3031bb17fc740859cce2359d1b9",
+      "results": [
+        {
+          "name": "api-surface",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 3247,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logSha256": "4c124c7607d23ea9a6f439f3f8f6f36b0e7b12ed606072256163a9808f4b34bf"
+        },
+        {
+          "name": "canonical-api-runtime",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 1413,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logSha256": "ea302dadab208f02a0741a89a15ebb2f7fcc8dc98596750d46292cc5d37eff78"
+        },
+        {
+          "name": "continuation-registry",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 143,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logSha256": "3c671433498470a7364bbe60b158b86b4599d6c6a877da06a84919ddeb4bc74d"
+        },
+        {
+          "name": "request-budget-transport",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 7097,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logSha256": "2e61c66d8f8ff1732817d78a95964f4152868ca11a50d4b08c4cbb3ba6e171fc"
+        },
+        {
+          "name": "http-input-outcomes",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 14045,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logSha256": "9bf953f13b8bc1ea481f9ff93fabe0faf48005eff80df935d612858910092f17"
+        },
+        {
+          "name": "canonical-opaque-node-emission",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 1403,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logSha256": "0018fcdbf22575ae5f1f7ecb654700684f8c5b437b7128b63e604becc31ed254"
+        },
+        {
+          "name": "javascript-effect-adapter",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 732,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logSha256": "1433c01a6f9b04748712bd2db9e8bfb30b3da7b88f2b2756f7cf1b2d6517892c"
+        },
+        {
+          "name": "canonical-api-lowering",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 1075,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logSha256": "2880129cf81d502aa6bd3160d7fe9d1351d2deae310f79106f29fe6763ac70bf"
+        },
+        {
+          "name": "canonical-native-wasm",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 60289,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logSha256": "47500ac8d1ed7227b576a3860120c433a012e1e7452165015c1e4d8fdd15291f"
+        }
+      ]
+    },
+    {
+      "runId": "2026-11-26T07-53-16-203Z--5",
+      "status": "passed",
+      "startedAt": "2026-11-26T07:53:16.208Z",
+      "finishedAt": "2026-11-26T07:55:58.123Z",
+      "selectedTasks": [
+        "fetch-projections-request-bodies",
+        "fastly-native-http-effects",
+        "fastly-incoming-body-forwarding"
+      ],
+      "completedTasks": 3,
+      "note": "Three tasks completed before sparse-array guard. Fastly evidence uses injected ABI, not live provider replay.",
+      "rawReportSha256": "07719aae8f68ef426356cd77637bb8b351775456655e85fe090bf1269e9c5a4f",
+      "results": [
+        {
+          "name": "fetch-projections-request-bodies",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 113866,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logSha256": "c671a14af7f56e8d32156466599422c40f5d45769e381bd4c84f9711df93ad99"
+        },
+        {
+          "name": "fastly-native-http-effects",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 39634,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logSha256": "f45a1fce2148a58be3c072300921a378ed1448f24347ac3a307ade911a3711cc"
+        },
+        {
+          "name": "fastly-incoming-body-forwarding",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 8402,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logSha256": "a7731ce4d648e2cdd0ec67587811f4dac421d19e0fa332c561c430b56225e0cb"
+        }
+      ]
+    },
+    {
+      "runId": "2026-11-26T07-56-55-952Z--5",
+      "status": "passed",
+      "startedAt": "2026-11-26T07:56:55.957Z",
+      "finishedAt": "2026-11-26T07:56:57.468Z",
+      "selectedTasks": [
+        "canonical-api-runtime"
+      ],
+      "completedTasks": 1,
+      "note": "Final sparse-array guard and 21-case admission regression; final changed code digests above.",
+      "rawReportSha256": "1885b1578daa215b63fadd735712c53b7f8f7bacc5bd91a00857c8f9c5ec289a",
+      "results": [
+        {
+          "name": "canonical-api-runtime",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 1500,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logSha256": "0d421bcd8f7e723bb7fe7ba5d0207e29a8d6d200261636f1cc45180340bc4d4f"
+        }
+      ]
+    },
+    {
+      "name": "admission-red",
+      "status": "failed",
+      "note": "Expected red before production repair: missing expected exception for invalid method.",
+      "logSha256": "b72b2d01349d7851ee97443b6967355fd063906230f6816fc51956188eeceb32"
+    },
+    {
+      "name": "admission-green",
+      "status": "passed",
+      "note": "Initial repair: 20 negative cases per normalizer, invalid dispatch denied, valid recovery.",
+      "logSha256": "ffac2ece01b1466c47f93129795109f974ee4fe9de1c39247b69c4087574e109"
+    },
+    {
+      "name": "js",
+      "status": "passed",
+      "note": "68 focused JavaScript fetch deadline/outcome/timing tests.",
+      "logSha256": "90a075a37c502aff66229c9ea087369b16fe2d747a02f1a5c958dbe3f8e836db"
+    },
+    {
+      "name": "runtime",
+      "status": "passed",
+      "note": "157 tests in 9 runtime test files.",
+      "logSha256": "79695deba5f4926e6addb39a384ab5379d819fba7da84caa085fbbd8a36666c4"
+    },
+    {
+      "name": "platform-headers",
+      "status": "passed",
+      "note": "Fastly platform generator header regression including DELETE/OPTIONS and empty content type.",
+      "logSha256": "66ddcc113be9e7b719a7565f27b8600adb37cb61bb786d2cd168675c7426cc90"
+    },
+    {
+      "name": "fastly-deadlines",
+      "status": "passed",
+      "note": "103 emitted-Wasm ABI cases; three live replay scenarios skipped without PULSE_VICEROY_BIN.",
+      "logSha256": "1c882c36f9a741a18ca7447d0a447c098686781d35bbdb03496c3a9aa2dcb538"
+    }
+  ],
+  "fastlyForwarding": {
+    "version": "pulse.fwd9-03-proof.v1",
+    "status": "passed",
+    "source": "111aeaccab962bac547ed95c7797052fdc5cd983",
+    "workingDiffSha256": "5d6fc3e94b6536cf25dad48a0acef2aeee45f309e3d73f83710f041d85f7ac38",
+    "wasm": {
+      "bytes": 42977,
+      "sha256": "ec73b53f71b75ed914a020d6525dd9a9981a9e5535244c60d4a058e85f0acaa4",
+      "normalBuild": true
+    },
+    "cleanup": {
+      "status": "passed"
+    },
+    "kind": "injected-ABI",
+    "caseCount": 93,
+    "hostQueueBound": "not measured"
+  },
+  "limits": [
+    "No Viceroy or deployed Fastly replay selected.",
+    "Installed package check covers runtime types and real local HTTP through runtime/host; full CLI/compiler/provider package acceptance remains RC-H03.",
+    "No remote rollback, cancellation or total host-memory guarantee.",
+    "RC-H04 deployed proof and RC-H05 aggregate qualification remain pending."
+  ]
+}
