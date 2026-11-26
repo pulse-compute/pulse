@@ -1,0 +1,34 @@
+K4 - replay portable contract, adversarial scheduling and injected Fastly ABI gates
+ok - KV list/delete admission, opaque scoped cursors, live index, atomic deletion, result bounds, redaction and deadline lifecycle
+ok - K2 production types, wire/token/bounds corpus, admission snapshot, redaction and explicit failure outcomes
+ok - KV list/delete javascript actual execution, pagination, deletion, parallel race and existing get/put compatibility
+ok - KV list/delete native actual execution, pagination, deletion, parallel race and existing get/put compatibility
+ok - KV list/delete generator actual execution, pagination, deletion, parallel race and existing get/put compatibility
+ok - Native manual host result preparation preserves admitted page size and prefix through ticket settlement
+ok - K2 javascript: shared authority, token transport, races, stale observations, uncertainty, deadlines and cancellation
+ok - K2 native: shared authority, token transport, races, stale observations, uncertainty, deadlines and cancellation
+ok - K2 generator: shared authority, token transport, races, stale observations, uncertainty, deadlines and cancellation
+ok - 78 K2 target scenarios plus lowering negatives; no Fastly realization or deployed claims
+ok - Fastly safe structured logging: 10 structured-log ABI cases, severity/off/UTF-8 controls and 4 retained-adapter cases
+ok - 59 Fastly Native KV list/delete final-Wasm scenarios (enforcing ABI host; no deployed claim)
+ok - K3 actual Fastly Native Wasm: 209 corpus cases, u64 ABI fidelity, shared wire, races, snapshots, bounded waits and uncertainty (no deployed-service claim)
+K4 - pack the current candidate and install its exact package closure
+[pulse:pack] Checking documentation source
+[pulse:pack] Building workspace
+Error: Command failed: /tmp/pulse-rc-h04-tools/node_modules/node-linux-x64/bin/node /workspace/scratch/ef4956ac6b89/pulse/scripts/pnpm-toolchain.cjs --root /workspace/scratch/ef4956ac6b89/pulse --version 12.4.2 -- run -s build
+Scope: all 22 workspace projects
+✓ Lockfile passes supply-chain policies (verified 2h ago)
+Lockfile is up to date, resolution step is skipped
+Already up to date
+Error: ERR_PNPM_IGNORED_BUILDS
+
+  × installing dependencies
+  ╰─▶ Ignored build scripts: esbuild@0.25.12, esbuild@0.28.1
+  help: Run "pnpm approve-builds" to pick which dependencies should be allowed
+        to run scripts.
+    at fail (/workspace/scratch/ef4956ac6b89/pulse/scripts/pack-release.cjs:29:17)
+    at run (/workspace/scratch/ef4956ac6b89/pulse/scripts/pack-release.cjs:106:5)
+    at packRelease (/workspace/scratch/ef4956ac6b89/pulse/scripts/pack-release.cjs:264:34)
+    at main (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/kv/assert-k4-acceptance.cjs:32:26)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+

@@ -1,0 +1,26 @@
+{
+  "candidate": {
+    "sourceRevision": "7a3f513631e2f84c52e390ffd330c6ed6180ea6b",
+    "sourceTree": "b71499b6caa15954c4cb880d556791621efe0c9b",
+    "workingTree": ""
+  },
+  "kind": "installed Pulse K2 consumer with QA auth guard and response-only WASI identity instrumentation",
+  "originalConsumerSha256": "a594200ffe357a4e8c738775ad5567aab09dbf8195e0d088b2d411e0c57447f6",
+  "wasmSha256": "53304c64a5744242c4f73e8fc7f00a807a01e33cebd6b090c5e0fdb43e575381",
+  "uninstrumentedSha256": "8f56f0bc27a498dfb882268ff834d54d9c953f5625dd54c30d4224eafe9a5520",
+  "instrumentedSourceSha256": "1baafb9a056880903c6ec79065ce6a44c68228e2726f903171d8e6fc61b5dbff",
+  "sourceSha256": "fae88224b1a624c8916285bbb4defa10c50e6283258d2d76452e7c8840f1f7a0",
+  "argv": [
+    "/tmp/rc-h05/provider-binding/consumer/node_modules/assemblyscript/bin/asc.js",
+    "fastly-native-platform-capabilities.as.ts",
+    "--outFile",
+    "/tmp/rc-h05/provider-binding/k4-build/main.wasm",
+    "--runtime",
+    "stub",
+    "--noAssert",
+    "--optimize",
+    "--use",
+    "abort=fastly-native-platform-capabilities.as/__pulse_fastly_abort"
+  ],
+  "guestUnits": 0
+}

@@ -1,0 +1,2 @@
+ok - release PR rejects unprepared code and version drift; preparation preserves published changelog history
+ok - release vocabulary, Apache-2.0 and NOTICE disposition, 7D conformance closure, applied 7E snapshot, stage blockers, npm bootstrap, current-only documentation inventory, and external-mutation hold are enforced

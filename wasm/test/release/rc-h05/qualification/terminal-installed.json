@@ -1,0 +1,306 @@
+{
+  "version": "pulse.terminal-installed.v1",
+  "status": "passed",
+  "candidate": {
+    "sourceRevision": "7a3f513631e2f84c52e390ffd330c6ed6180ea6b",
+    "sourceTree": "b71499b6caa15954c4cb880d556791621efe0c9b",
+    "workingTree": ""
+  },
+  "packageClosureVerified": true,
+  "outsideCheckout": true,
+  "harness": {
+    "prepare.cjs": "281c5c72dd1467f6ad8b3d3301840813c2e451c8ced98721dfeb3a3d3119231d",
+    "installed-worker.cjs": "eb2c44fc548f4233e5622ba0c30de4e46b65e3d718e1afa3b626fb368cccbe24",
+    "bundle.cjs": "b4a46c78e0703e901cdfde83e28a3745909aafba8d5a7a4e9c265bb6f63779da",
+    "local.cjs": "d0c8c9a0ed7f3bea325caf65921df78936ce575d2b4feda5a3a2939b54e902de",
+    "hosted.cjs": "f63b5660daaa6b02ad9b602f97f3df15efc9d71b812e790a788dcd873fd7a244",
+    "origin.cjs": "e91e9f0e5e618657a1e91bcd67faccdd43594748125d76a950a06b624b29458b",
+    "verify.cjs": "8c6f1bb7724dd684d704b9e5d1c76fffc4e8d74f716120f2de4c7dd4c837eb3a",
+    "engines.json": "ede864ade69d19d272ecb74cdac1232ce4272b3db408697d78d89e28d6fb51c7"
+  },
+  "packages": [
+    {
+      "name": "@pulse-compute/runtime",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-runtime-1.0.0-rc.1.tgz",
+      "sha256": "c8c3be5a43ca5a85c17ed83aacd444e0294836f4ab343230d9e21bdfd6a340d9"
+    },
+    {
+      "name": "@pulse-compute/pulse",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-pulse-1.0.0-rc.1.tgz",
+      "sha256": "58ac9bc7880b45571fe816d0e267f494571f85e11947c32a7a68a5e01c674d9a"
+    },
+    {
+      "name": "@pulse-compute/cli",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-cli-1.0.0-rc.1.tgz",
+      "sha256": "e9f2d6772ac30df4caf14475c032282388a99a18eb2d359d26e198987607db69"
+    },
+    {
+      "name": "@pulse-compute/provider-fastly",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-provider-fastly-1.0.0-rc.1.tgz",
+      "sha256": "5e1c5d5c075495396f01dd2ee15c780144099cb28aef38a09b10fb4ff6bf284c"
+    },
+    {
+      "name": "@pulse-compute/grip",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-grip-1.0.0-rc.1.tgz",
+      "sha256": "782e6906b114345e9998cab633526de4993c1e5c9e6247e9a8c9af17ada09edf"
+    },
+    {
+      "name": "@pulse-compute/assets",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-assets-1.0.0-rc.1.tgz",
+      "sha256": "2271b6b58a26a41568864b03df76b854f42dabf6e184d0d48aa996cb193c49fd"
+    },
+    {
+      "name": "@pulse-compute/crypto",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-crypto-1.0.0-rc.1.tgz",
+      "sha256": "353941f9ec2e11e34516e1dea6f28fb9c5efbc80f9015099f22ec6727a0d6f67"
+    },
+    {
+      "name": "@pulse-compute/jwt",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-jwt-1.0.0-rc.1.tgz",
+      "sha256": "be5c06b78c2d76681a49f9692ecd88e6b63db4fc16a1a173f4b0fcbce2d8e2be"
+    },
+    {
+      "name": "@pulse-compute/entities",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-entities-1.0.0-rc.1.tgz",
+      "sha256": "7da4d563146a683491401ba2ed4e45b6711e0a35f5a23171c01b3c001a7f1f2c"
+    },
+    {
+      "name": "@pulse-compute/mcp",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-mcp-1.0.0-rc.1.tgz",
+      "sha256": "8fe901b7d8ac7d05bcd9deb4b754a955a2572ca051fc84f4273b631aa0fbed24"
+    },
+    {
+      "name": "@pulse-compute/s3",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-s3-1.0.0-rc.1.tgz",
+      "sha256": "d11941500aa6864acaf8421b22d340ef7c781ae7f70d717ef37d1fcda560df6a"
+    },
+    {
+      "name": "@pulse-compute/wasm-build-support",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-wasm-build-support-1.0.0-rc.1.tgz",
+      "sha256": "c736a3c4cc383240428da44130ce368136c0d45c744453aecc7c39e420cff374"
+    },
+    {
+      "name": "@pulse-compute/wasm-compiler",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-wasm-compiler-1.0.0-rc.1.tgz",
+      "sha256": "f5aab31f80aab3da1e8b559d2f598bb40509db3f8de53543c64f0fe3c9ca411c"
+    },
+    {
+      "name": "@pulse-compute/wasm-guest-link",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-wasm-guest-link-1.0.0-rc.1.tgz",
+      "sha256": "deceee7e5de8f45ef6f7b4779bb0f44cbd07bd79ac5160f4dcdbaf2fa1e90efc"
+    },
+    {
+      "name": "@pulse-compute/wasm-contracts",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-wasm-contracts-1.0.0-rc.1.tgz",
+      "sha256": "391eb7cee2dd1d882760bd64fbe7f1435c33eaff4cd1613bcace140366918336"
+    },
+    {
+      "name": "@pulse-compute/wasm-host-runtime",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-wasm-host-runtime-1.0.0-rc.1.tgz",
+      "sha256": "81708d9a67d35a1a33474443ca398a6481985c0baf3e5536b01a1dab74f1f15e"
+    },
+    {
+      "name": "@pulse-compute/wasm-library-kit",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-wasm-library-kit-1.0.0-rc.1.tgz",
+      "sha256": "b34748dc8b33131433f274d620a3d9621f46a777e43547dc33fe35119e68e6f5"
+    },
+    {
+      "name": "@pulse-compute/provider-node",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-provider-node-1.0.0-rc.1.tgz",
+      "sha256": "6cbffb1b06790af2b35cfd360c256dc96cc9614c9306b5c8f15d0ec0c99d0cab"
+    },
+    {
+      "name": "@pulse-compute/wasm-runtime-core-as",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-wasm-runtime-core-as-1.0.0-rc.1.tgz",
+      "sha256": "9b9b74f35f363c6efdfc914466e72960792276dbaceb94562b430f928b201242"
+    },
+    {
+      "name": "@pulse-compute/wasm-schema-json",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-wasm-schema-json-1.0.0-rc.1.tgz",
+      "sha256": "e637ad90d88d90b658068533daa9e9354e4d1707a1807237e9c8d500edd2a5a1"
+    }
+  ],
+  "fixture": {
+    "name": "@independent/rc-terminal",
+    "version": "91.7.3",
+    "file": "independent-rc-terminal-91.7.3.tgz",
+    "sha256": "c3faacee51ca4c4a211b4ff3fe3b3f41d5dea4c6f16797c9cb6f8479e1e5d990"
+  },
+  "artifacts": [
+    {
+      "id": "fanout",
+      "file": "fanout.wasm",
+      "sha256": "cd789e57b8b7be4c8ab2fd51cbff81eb7a409e015a72179c7c30f90cdab6175a",
+      "bytes": 27510,
+      "abi": "redirect_to_grip_proxy_v2",
+      "report": {
+        "file": "fanout.report.json",
+        "sha256": "b20a9d02f4ba5eb29efbe2d37deae20f1e0c28203561b663dd5c98c0a7a7fde6"
+      }
+    },
+    {
+      "id": "fanout-router",
+      "file": "fanout-router.wasm",
+      "sha256": "ac7db50a833fa62a59f38007558e063abea6234412a0b95eb7362276c625f807",
+      "bytes": 29073,
+      "abi": "redirect_to_grip_proxy_v2",
+      "report": {
+        "file": "fanout-router.report.json",
+        "sha256": "c1fde2b9acf098b8aadb664ce56134d721c1a73a2559bd39ee9c512c5992a9df"
+      }
+    },
+    {
+      "id": "websocket",
+      "file": "websocket.wasm",
+      "sha256": "a776b28019661b673fcb0faa96fa9b63946276245e0662000f6eb509158c208a",
+      "bytes": 27515,
+      "abi": "redirect_to_websocket_proxy_v2",
+      "report": {
+        "file": "websocket.report.json",
+        "sha256": "bce7226e037be9d7ae47516f665c67d9720da0c485f67c4977cf52269552abd6"
+      }
+    },
+    {
+      "id": "websocket-router",
+      "file": "websocket-router.wasm",
+      "sha256": "408f00a5e866042760f7b07257da628cb1cd6a6aa6c0a732584911dabe8e33a6",
+      "bytes": 29078,
+      "abi": "redirect_to_websocket_proxy_v2",
+      "report": {
+        "file": "websocket-router.report.json",
+        "sha256": "19f24bbacd8ca0d019396f50c350fbc1303b1be32b2e335e276b322ae91c0d34"
+      }
+    },
+    {
+      "id": "independent",
+      "file": "independent.wasm",
+      "sha256": "6cb1231c4582aab621f60436d8537252f490ae09180647013d7580ce1fbad364",
+      "bytes": 27510,
+      "abi": "redirect_to_grip_proxy_v2",
+      "report": {
+        "file": "independent.report.json",
+        "sha256": "cd0b00a11e3d06f0a03930a6381f21d07658b93d3ed0849118f6074c7eda50aa"
+      }
+    },
+    {
+      "id": "absent",
+      "file": "absent.wasm",
+      "sha256": "af970ab8e57e822cebf3c16c08a710b03f0db9bc211cf79c53c583c9cab31360",
+      "bytes": 23444,
+      "abi": null,
+      "report": {
+        "file": "absent.report.json",
+        "sha256": "22d16d2017ee2a1a5db08dee3ad6f380aabc4098c8c3311da70559399f387643"
+      }
+    },
+    {
+      "id": "unused",
+      "file": "unused.wasm",
+      "sha256": "c072be3c3186cd450587e219615f9ec14fc1d6787b8e90816df6b2d4b3aa2b11",
+      "bytes": 23444,
+      "abi": null,
+      "report": {
+        "file": "unused.report.json",
+        "sha256": "505c1ad299ab1efd480fc7d554308a283da64d32b0e3168f4e409ecd85a06e32"
+      }
+    },
+    {
+      "id": "generic",
+      "file": "generic.wasm",
+      "sha256": "cbcf6abf78f3304143847248049ac481314a059db91bd5056952f2663dca4d2e",
+      "bytes": 25175,
+      "abi": null,
+      "report": {
+        "file": "generic.report.json",
+        "sha256": "d923e67e0b9ab9003ff6ae40b00901dbbd822d3e3df8af428394f25262da7173"
+      }
+    }
+  ],
+  "negative": [
+    {
+      "id": "surrounding-effect",
+      "status": "passed"
+    },
+    {
+      "id": "escaped-token",
+      "status": "passed"
+    },
+    {
+      "id": "parallel",
+      "status": "passed"
+    },
+    {
+      "id": "helper",
+      "status": "passed"
+    },
+    {
+      "id": "dynamic-backend",
+      "status": "passed"
+    },
+    {
+      "id": "middleware",
+      "status": "passed"
+    },
+    {
+      "id": "fanout-node-native",
+      "status": "passed"
+    },
+    {
+      "id": "websocket-node-native",
+      "status": "passed"
+    },
+    {
+      "id": "independent-node-native",
+      "status": "passed"
+    },
+    {
+      "id": "fanout-node-javascript",
+      "status": "passed"
+    },
+    {
+      "id": "websocket-node-javascript",
+      "status": "passed"
+    },
+    {
+      "id": "independent-node-javascript",
+      "status": "passed"
+    },
+    {
+      "id": "fanout-fastly-javascript",
+      "status": "passed"
+    },
+    {
+      "id": "websocket-fastly-javascript",
+      "status": "passed"
+    },
+    {
+      "id": "independent-fastly-javascript",
+      "status": "passed"
+    }
+  ],
+  "unusedDeclarationsByteIdentical": true,
+  "injected": {
+    "file": "injected.json",
+    "sha256": "082fe23f8bfbc5a1c094b39f1564d69b8e35ea2438a5650b5e1ca38994f9261a"
+  }
+}

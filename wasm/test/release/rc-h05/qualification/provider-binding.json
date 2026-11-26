@@ -1,0 +1,276 @@
+{
+  "schemaVersion": "pulse.rc-h05-provider-binding.v1",
+  "status": "verified-byte-equality",
+  "reviewStatus": "pending-human-release-review",
+  "candidate": {
+    "sourceRevision": "7a3f513631e2f84c52e390ffd330c6ed6180ea6b",
+    "sourceTree": "b71499b6caa15954c4cb880d556791621efe0c9b",
+    "workingTree": ""
+  },
+  "priorCandidate": {
+    "sourceRevision": "d012f547f804af6e272cb1a6aeafe970c22e0b77",
+    "sourceTree": "ae28b53c6a31c77354e06d1e2d8816139b329eb2",
+    "workingTree": ""
+  },
+  "packageClosureVerifiedAfterBuild": true,
+  "packages": [
+    {
+      "name": "@pulse-compute/runtime",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-runtime-1.0.0-rc.1.tgz",
+      "sha256": "c8c3be5a43ca5a85c17ed83aacd444e0294836f4ab343230d9e21bdfd6a340d9"
+    },
+    {
+      "name": "@pulse-compute/pulse",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-pulse-1.0.0-rc.1.tgz",
+      "sha256": "58ac9bc7880b45571fe816d0e267f494571f85e11947c32a7a68a5e01c674d9a"
+    },
+    {
+      "name": "@pulse-compute/cli",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-cli-1.0.0-rc.1.tgz",
+      "sha256": "e9f2d6772ac30df4caf14475c032282388a99a18eb2d359d26e198987607db69"
+    },
+    {
+      "name": "@pulse-compute/provider-fastly",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-provider-fastly-1.0.0-rc.1.tgz",
+      "sha256": "5e1c5d5c075495396f01dd2ee15c780144099cb28aef38a09b10fb4ff6bf284c"
+    },
+    {
+      "name": "@pulse-compute/grip",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-grip-1.0.0-rc.1.tgz",
+      "sha256": "782e6906b114345e9998cab633526de4993c1e5c9e6247e9a8c9af17ada09edf"
+    },
+    {
+      "name": "@pulse-compute/assets",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-assets-1.0.0-rc.1.tgz",
+      "sha256": "2271b6b58a26a41568864b03df76b854f42dabf6e184d0d48aa996cb193c49fd"
+    },
+    {
+      "name": "@pulse-compute/crypto",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-crypto-1.0.0-rc.1.tgz",
+      "sha256": "353941f9ec2e11e34516e1dea6f28fb9c5efbc80f9015099f22ec6727a0d6f67"
+    },
+    {
+      "name": "@pulse-compute/jwt",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-jwt-1.0.0-rc.1.tgz",
+      "sha256": "be5c06b78c2d76681a49f9692ecd88e6b63db4fc16a1a173f4b0fcbce2d8e2be"
+    },
+    {
+      "name": "@pulse-compute/entities",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-entities-1.0.0-rc.1.tgz",
+      "sha256": "7da4d563146a683491401ba2ed4e45b6711e0a35f5a23171c01b3c001a7f1f2c"
+    },
+    {
+      "name": "@pulse-compute/mcp",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-mcp-1.0.0-rc.1.tgz",
+      "sha256": "8fe901b7d8ac7d05bcd9deb4b754a955a2572ca051fc84f4273b631aa0fbed24"
+    },
+    {
+      "name": "@pulse-compute/s3",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-s3-1.0.0-rc.1.tgz",
+      "sha256": "d11941500aa6864acaf8421b22d340ef7c781ae7f70d717ef37d1fcda560df6a"
+    },
+    {
+      "name": "@pulse-compute/wasm-build-support",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-wasm-build-support-1.0.0-rc.1.tgz",
+      "sha256": "c736a3c4cc383240428da44130ce368136c0d45c744453aecc7c39e420cff374"
+    },
+    {
+      "name": "@pulse-compute/wasm-compiler",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-wasm-compiler-1.0.0-rc.1.tgz",
+      "sha256": "f5aab31f80aab3da1e8b559d2f598bb40509db3f8de53543c64f0fe3c9ca411c"
+    },
+    {
+      "name": "@pulse-compute/wasm-guest-link",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-wasm-guest-link-1.0.0-rc.1.tgz",
+      "sha256": "deceee7e5de8f45ef6f7b4779bb0f44cbd07bd79ac5160f4dcdbaf2fa1e90efc"
+    },
+    {
+      "name": "@pulse-compute/wasm-contracts",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-wasm-contracts-1.0.0-rc.1.tgz",
+      "sha256": "391eb7cee2dd1d882760bd64fbe7f1435c33eaff4cd1613bcace140366918336"
+    },
+    {
+      "name": "@pulse-compute/wasm-host-runtime",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-wasm-host-runtime-1.0.0-rc.1.tgz",
+      "sha256": "81708d9a67d35a1a33474443ca398a6481985c0baf3e5536b01a1dab74f1f15e"
+    },
+    {
+      "name": "@pulse-compute/wasm-library-kit",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-wasm-library-kit-1.0.0-rc.1.tgz",
+      "sha256": "b34748dc8b33131433f274d620a3d9621f46a777e43547dc33fe35119e68e6f5"
+    },
+    {
+      "name": "@pulse-compute/provider-node",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-provider-node-1.0.0-rc.1.tgz",
+      "sha256": "6cbffb1b06790af2b35cfd360c256dc96cc9614c9306b5c8f15d0ec0c99d0cab"
+    },
+    {
+      "name": "@pulse-compute/wasm-runtime-core-as",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-wasm-runtime-core-as-1.0.0-rc.1.tgz",
+      "sha256": "9b9b74f35f363c6efdfc914466e72960792276dbaceb94562b430f928b201242"
+    },
+    {
+      "name": "@pulse-compute/wasm-schema-json",
+      "version": "1.0.0-rc.1",
+      "file": "packages/pulse-compute-wasm-schema-json-1.0.0-rc.1.tgz",
+      "sha256": "e637ad90d88d90b658068533daa9e9354e4d1707a1807237e9c8d500edd2a5a1"
+    }
+  ],
+  "artifacts": [
+    {
+      "kind": "terminal",
+      "id": "fanout",
+      "sha256": "cd789e57b8b7be4c8ab2fd51cbff81eb7a409e015a72179c7c30f90cdab6175a",
+      "bytes": 27510,
+      "previousFile": "fanout.wasm",
+      "currentFile": "fanout.wasm",
+      "identical": true,
+      "deployedPackageFile": "wasm/test/release/rc-h04/live/packages/fanout.tar.gz",
+      "deployedPackageSha256": "95b80deb022eca5c4bec53ea17eb86a1a60d66a643f585b1a9d97da91e54443e",
+      "deployedModuleFile": "package/bin/main.wasm"
+    },
+    {
+      "kind": "terminal",
+      "id": "fanout-router",
+      "sha256": "ac7db50a833fa62a59f38007558e063abea6234412a0b95eb7362276c625f807",
+      "bytes": 29073,
+      "previousFile": "fanout-router.wasm",
+      "currentFile": "fanout-router.wasm",
+      "identical": true,
+      "deployedPackageFile": "wasm/test/release/rc-h04/live/packages/fanout-router.tar.gz",
+      "deployedPackageSha256": "9f2071b979b1da2d94e4a2d5607766ed3fcedee806032eb7c1f4391cc9804c79",
+      "deployedModuleFile": "package/bin/main.wasm"
+    },
+    {
+      "kind": "terminal",
+      "id": "websocket",
+      "sha256": "a776b28019661b673fcb0faa96fa9b63946276245e0662000f6eb509158c208a",
+      "bytes": 27515,
+      "previousFile": "websocket.wasm",
+      "currentFile": "websocket.wasm",
+      "identical": true,
+      "deployedPackageFile": "wasm/test/release/rc-h04/live/packages/websocket.tar.gz",
+      "deployedPackageSha256": "7de1e0824222ff776319fb22445edb22d88fcc01d8378b9f9e171a2481b2e910",
+      "deployedModuleFile": "package/bin/main.wasm"
+    },
+    {
+      "kind": "terminal",
+      "id": "websocket-router",
+      "sha256": "408f00a5e866042760f7b07257da628cb1cd6a6aa6c0a732584911dabe8e33a6",
+      "bytes": 29078,
+      "previousFile": "websocket-router.wasm",
+      "currentFile": "websocket-router.wasm",
+      "identical": true,
+      "deployedPackageFile": "wasm/test/release/rc-h04/live/packages/websocket-router.tar.gz",
+      "deployedPackageSha256": "df1144d9215783d75ebbb8002c13e1e6e045cc655e6c3780bf721ab48bc2cfc8",
+      "deployedModuleFile": "package/bin/main.wasm"
+    },
+    {
+      "kind": "terminal",
+      "id": "independent",
+      "sha256": "6cb1231c4582aab621f60436d8537252f490ae09180647013d7580ce1fbad364",
+      "bytes": 27510,
+      "previousFile": "independent.wasm",
+      "currentFile": "independent.wasm",
+      "identical": true,
+      "deployedPackageFile": "wasm/test/release/rc-h04/live/packages/independent.tar.gz",
+      "deployedPackageSha256": "2f10a5bf495be81aac2104b6b50f22a6ffe145216164859f388bbdb408be9c06",
+      "deployedModuleFile": "package/bin/main.wasm"
+    },
+    {
+      "kind": "terminal",
+      "id": "absent",
+      "sha256": "af970ab8e57e822cebf3c16c08a710b03f0db9bc211cf79c53c583c9cab31360",
+      "bytes": 23444,
+      "previousFile": "absent.wasm",
+      "currentFile": "absent.wasm",
+      "identical": true
+    },
+    {
+      "kind": "terminal",
+      "id": "unused",
+      "sha256": "c072be3c3186cd450587e219615f9ec14fc1d6787b8e90816df6b2d4b3aa2b11",
+      "bytes": 23444,
+      "previousFile": "unused.wasm",
+      "currentFile": "unused.wasm",
+      "identical": true
+    },
+    {
+      "kind": "terminal",
+      "id": "generic",
+      "sha256": "cbcf6abf78f3304143847248049ac481314a059db91bd5056952f2663dca4d2e",
+      "bytes": 25175,
+      "previousFile": "generic.wasm",
+      "currentFile": "generic.wasm",
+      "identical": true
+    },
+    {
+      "kind": "k4",
+      "id": "k4",
+      "sha256": "53304c64a5744242c4f73e8fc7f00a807a01e33cebd6b090c5e0fdb43e575381",
+      "identical": true,
+      "deployedPackageFile": "wasm/test/release/rc-h04/live/packages/kv.tar.gz",
+      "deployedPackageSha256": "166069f33d48b5b161c000c21ce40190d41a4141de21a7e57433fc9a35c51478",
+      "deployedModuleFile": "package/bin/main.wasm"
+    },
+    {
+      "kind": "origin",
+      "id": "origin",
+      "sha256": "4281bb2afb470649b45d905dee4adcbc1d15799bcbe1fbd4e9bba2fa35dfdd69",
+      "identical": true,
+      "deployedPackageFile": "wasm/test/release/rc-h04/live/packages/origins.tar.gz",
+      "deployedPackageSha256": "4298b14981007458fcfbad93ad68db1dba72cd96331df9a6c9175049b84c2c3a",
+      "deployedModuleFile": "package/bin/main.wasm"
+    }
+  ],
+  "localK4": {
+    "rawSemanticStatus": "failed",
+    "acceptance": {
+      "semanticStatus": "failed",
+      "deployedPulseCrossLocationStillRequired": true,
+      "status": "accepted-with-known-viceroy-discrepancy",
+      "releaseBlocking": false,
+      "knownIssues": [
+        {
+          "check": "missing-key-cas",
+          "engine": "Viceroy",
+          "version": "0.21.1",
+          "disposition": "non-blocking by explicit human release direction on 2026-10-04",
+          "evidence": "wasm/test/kv/k4/viceroy-0.21.1-beta6-evidence.json"
+        }
+      ]
+    }
+  },
+  "observations": {
+    "terminal": "complete 15-cell hosted replay; earlier failed attempts retained",
+    "kv": "58 deployed requests across IAD/LHR; zero mutation retries",
+    "origins": "16 live S3/fetch cases"
+  },
+  "limitations": [
+    "No new deployment or remote traffic occurred in this binding.",
+    "The original deployed source/version identities remain unchanged.",
+    "Release-owner review must accept this explicit exact-byte binding; it is not self-approved.",
+    "The earlier held-response timeout remains unexplained.",
+    "A matching fixture does not prove every program or global provider behavior.",
+    "The aggregate seal must independently qualify all RC package bytes; compare its accepted package hashes before relying on this binding."
+  ]
+}

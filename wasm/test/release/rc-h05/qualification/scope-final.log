@@ -1,0 +1,44 @@
+# Pulse maintainer scope
+
+**Status:** Human decision required
+
+| Signal | Result |
+|---|---|
+| Declared class | `release` |
+| Declared scope | `release-change` |
+| Risk | `critical` |
+| Changed files | 441 |
+| Areas | `api`, `cli`, `compiler`, `configuration`, `deployment`, `documentation`, `governance`, `provider`, `release`, `runtime`, `testing` |
+| Protected boundaries | `configuration-contract`, `continuation-runtime`, `documentation-deployment`, `effect-capability-model`, `maintenance-control-plane`, `package-publication`, `provider-registry`, `public-authoring-api`, `release-authority`, `runtime-target-fluidity` |
+| Separate human decision | Required |
+| Current contract update | Required for the proposed boundary change |
+| Release authority | Required |
+| Required checks | `build`, `cli`, `conformance`, `documentation`, `javascript`, `maintenance-policy`, `native`, `providers`, `publication-control-plane`, `release`, `release-preflight`, `unit` |
+
+Human release authority must decide and approve this change before merge or publication.
+
+## Validation ownership (not execution evidence)
+
+Local checks: documentation, maintenance-policy, publication-control-plane, release-preflight.
+Discovered registry regressions: assets-javascript-runtime, canonical-api-runtime, crypto-verification-seal, docs-example-01-hello-json, docs-example-02-request-schema, docs-example-03-fetch-composition, docs-example-03-fetch-composition-dynamic-probes, docs-example-05-fastly-capabilities, docs-example-07-opaque-proxy, docs-example-09-router-lowering, docs-example-10-entities-tools, docs-example-11-events, docs-example-12-pulse-context-mcp, docs-example-13-jwt-es256, docs-executable-contracts, docs-executable-init-dev, lifecycle-foundation, release-tag.
+Run change-specific Entry Point regressions and add a regression for changed behavior. Registry ownership and fast smoke alone do not prove coverage.
+
+CI checkpoints: build -> main-full-portable (pending), cli -> pre-main-qualification (pending), conformance -> main-full-portable (pending), javascript -> main-full-portable (pending), native -> main-full-portable (pending), providers -> pre-main-qualification (pending), release -> pre-main-qualification (pending), unit -> main-full-portable (pending).
+Record PR/head/tested source, required check and workflow links, artifacts and passed/failed/pending/not-triggered status. Do not claim untriggered CI is queued. Agent may exit after local evidence and this handoff; integration and release remain gated.
+Fast smoke is not subsystem regression coverage. No local or CI pass is inferred by this report.
+
+## Warnings
+
+- unclassified path(s) require human review: packages/crypto/guests/es256-rustcrypto/build.cjs, packages/crypto/guests/es256-rustcrypto/pulse.guest-unit.json, packages/mcp/examples/resource-directory/package.json, packages/s3/conformance/README.md, release/evidence/rc-h00-baseline.md, release/plugin-readiness.json, scripts/pulse-context-inputs.json, wasm/packages/wasm-guest-link/src/constants.js
+
+## Unclassified paths
+
+- `packages/crypto/guests/es256-rustcrypto/build.cjs`
+- `packages/crypto/guests/es256-rustcrypto/pulse.guest-unit.json`
+- `packages/mcp/examples/resource-directory/package.json`
+- `packages/s3/conformance/README.md`
+- `release/evidence/rc-h00-baseline.md`
+- `release/plugin-readiness.json`
+- `scripts/pulse-context-inputs.json`
+- `wasm/packages/wasm-guest-link/src/constants.js`
+

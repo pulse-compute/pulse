@@ -1,0 +1,973 @@
+{
+  "schemaVersion": "pulse.rc-h05-package-delta.v1",
+  "old": {
+    "sourceRevision": "d012f547f804af6e272cb1a6aeafe970c22e0b77",
+    "sourceTree": "ae28b53c6a31c77354e06d1e2d8816139b329eb2",
+    "workingTree": ""
+  },
+  "current": {
+    "sourceRevision": "7a3f513631e2f84c52e390ffd330c6ed6180ea6b",
+    "sourceTree": "b71499b6caa15954c4cb880d556791621efe0c9b",
+    "workingTree": ""
+  },
+  "packages": [
+    {
+      "package": "@pulse-compute/runtime",
+      "beforeTarball": "8937e8fd4f0da54633400aaa20d7d61bd9ff1a1dbded762cdb063160a3df5ea8",
+      "afterTarball": "c8c3be5a43ca5a85c17ed83aacd444e0294836f4ab343230d9e21bdfd6a340d9",
+      "unchangedFiles": 34,
+      "changes": [
+        {
+          "file": "package/README.md",
+          "change": "version-only",
+          "before": "dd79fce93dec3ea56e45a506f9736279baf8705d6c3f2866c65f739dc56d30c7",
+          "after": "121a0850c1f6419bf652c9ec893ce2be8035486f245fecbc2ccf399138b38bf5"
+        },
+        {
+          "file": "package/docs/API.md",
+          "change": "version-only",
+          "before": "e91256eb06162a043fb39ce271e1066d61c86e4c6e79f0b0442136ee314c6bb0",
+          "after": "07dd961887d45f003ac1cebfcf49817bd45e9715331cbbab1be4b28e13115748"
+        },
+        {
+          "file": "package/docs/guides/routing.md",
+          "change": "version-only",
+          "before": "2396dd17b84e073b8a7ce727ddd382228ffcd13c20529f22b3f2ab8d0c6a3be5",
+          "after": "4bbd9a506f53f9db75adb3b1a530211bf9f9dbfe39897b8000e110e1533d2818"
+        },
+        {
+          "file": "package/docs/preview-scope.md",
+          "change": "content",
+          "before": "c76d3f3f18752d5e23fd7cc8292d042d6d66d3f9a9ec7083dcef1a2c141389e0",
+          "after": "bb5199003831fdcf3738606683b55c2167e93f14fb168bf113218b6bff27d275"
+        },
+        {
+          "file": "package/package.json",
+          "change": "version-only",
+          "before": "cfa353327395bf40d4d0d3c71c971e85c1a8b55baf42572c64800a4e3b2195ce",
+          "after": "97d59cc31c13cd471a1c55eec3d49420646220a03a9cfb9ef41f88665c932b30"
+        }
+      ]
+    },
+    {
+      "package": "@pulse-compute/pulse",
+      "beforeTarball": "a2c57c648ca60ba4ea9e78de7066ec458f7395ee274c8a1e6a50ec63ce8e6739",
+      "afterTarball": "58ac9bc7880b45571fe816d0e267f494571f85e11947c32a7a68a5e01c674d9a",
+      "unchangedFiles": 9,
+      "changes": [
+        {
+          "file": "package/README.md",
+          "change": "version-only",
+          "before": "7a107b815abd79c0ee1ba7101c27fc27b83dc20511516991208067c9f3c61087",
+          "after": "d607c1fb8be31656e641553a0828ee665e49987f6588ba87faf57e1d02bcc03f"
+        },
+        {
+          "file": "package/package.json",
+          "change": "version-only",
+          "before": "27f805abaa6aef9b4b5f2e589017ae1e5b030fbe6a116a9c686ed1f95344044c",
+          "after": "c4b7da259cee2a54f45eb49557848a6f623938218c30df495a814dd8003e7cfc"
+        }
+      ]
+    },
+    {
+      "package": "@pulse-compute/cli",
+      "beforeTarball": "0718e60199e60174b4a49529abec79a9d8c60191e33ca94a0de2c8023ad7cc95",
+      "afterTarball": "e9f2d6772ac30df4caf14475c032282388a99a18eb2d359d26e198987607db69",
+      "unchangedFiles": 218,
+      "changes": [
+        {
+          "file": "package/API.md",
+          "change": "version-only",
+          "before": "934e2f79455997ffc833df507272492241e5d7fdb0bebe30c9e389e2e08e1545",
+          "after": "04d9c281210087557cc2e87f8ac7bbe83e54920f261ba88637c23604488d3556"
+        },
+        {
+          "file": "package/CHANGELOG.md",
+          "change": "content",
+          "before": "b30049bcc8675c3da0198811aad1ce6a9cb94ebaba814d2da4ad47e82d6a7be8",
+          "after": "7f9ddab14f93bae3ddb8aab31f675811da5a3804e765717a7a571f99a8628eaa"
+        },
+        {
+          "file": "package/README.md",
+          "change": "content",
+          "before": "30e2425e965a1d23ce270f6d4cf3456bb7f040f4896d7ac462a4039235c789fa",
+          "after": "68c502452afe93cc1553b225e232366ed28b752ba1d473706907f5eef611c4fd"
+        },
+        {
+          "file": "package/cli-spec.json",
+          "change": "version-only",
+          "before": "c7b947b55dee5bf764c1ebd368b5066fb6be7c6cdfc3a64a702a06b0f4257a7f",
+          "after": "d31a4c0cf1ff2f23c9d83055402d70a8c5e7de1d10ba4115b9e53b84fbc128eb"
+        },
+        {
+          "file": "package/docs/README.md",
+          "change": "content",
+          "before": "d0eaf45244d60f1e07ef8a42b1990650e5575fd2ca2cdf25fd6adcd6870ef049",
+          "after": "46316af2b45b2f3cf9992a6a384f2b61ed366186b35580620eb7f5cf7c92dc37"
+        },
+        {
+          "file": "package/docs/architecture/current-contracts.md",
+          "change": "content",
+          "before": "46cdfcb9bb048afd97289925d0a0e79788baa2bd6d932d2c83a68aa520e28131",
+          "after": "ecaf860f9bb0a4e9b0f6d1f27e75bd23db40e119a5722bc4f2b9a145dceb3a38"
+        },
+        {
+          "file": "package/docs/architecture/vision.md",
+          "change": "content",
+          "before": "4598913af27c1b64440ee20c636a95868256f178850f1e4f47e87f52b6eac172",
+          "after": "0ef805ce1fb72c6fe5dcfcdacc3e97bc01dac593ad8259193db8114fbb42bfb8"
+        },
+        {
+          "file": "package/docs/concepts/bodies.md",
+          "change": "content",
+          "before": "074751b810cad9abafd29ab42f5f25880c1a68ffc5acde2b688d777978109bd5",
+          "after": "7048a03062b080f74bc10bf415a7ff96d23b35bc06986e2d5c763594c94dbab7"
+        },
+        {
+          "file": "package/docs/concepts/compilation-and-lowering.md",
+          "change": "content",
+          "before": "f1d93629e43ee982ad8683e83779e515468f1c3f0ae9809ffab6f5ab7c05e560",
+          "after": "860270abc623f44a305fc8e16cb376eedfe7e7fd8833445ab8dadac1f2045672"
+        },
+        {
+          "file": "package/docs/concepts/contracts-and-providers.md",
+          "change": "version-only",
+          "before": "8e92c2ad457e585062c6ebff8869d3648948e8967f05fcf6f0b9c00ea5fb28f1",
+          "after": "938af50afe217993a7028a4078e8c1a33cfa1177829ac91607900609f0d023c0"
+        },
+        {
+          "file": "package/docs/concepts/package-owned-lowering.md",
+          "change": "version-only",
+          "before": "cb91aadadbd84640e8175bcb6e0c8331fba1dff314c2e51f8f9adb904e0e4801",
+          "after": "ca884a9beb2d40ee87e8ce42fd2126c21faf080a2d0bc08ef8f7de04c68cd39c"
+        },
+        {
+          "file": "package/docs/concepts/targets-and-hosts.md",
+          "change": "content",
+          "before": "dc6fc09aabb6d836e645dc02c5694083a61d30a7a371432a8ad78911c42bcdd2",
+          "after": "2dedee84ef9b3065304921d150e08592985ec972d13844bf0b3a8b65b988f89c"
+        },
+        {
+          "file": "package/docs/contributing/adding-core-provider.md",
+          "change": "version-only",
+          "before": "2ba64fa24a843d2d6faf0f9e4a1dac6d704ef6b5c2b7c5b0821d8dc97efa6593",
+          "after": "39f5ff7bd2b5725a6c17accf31ad4e02ec3b8879eb43742f2e27f7ffed80d8f9"
+        },
+        {
+          "file": "package/docs/contributing/adding-first-party-lowerer.md",
+          "change": "content",
+          "before": "a88171f125d3e44f2d54e503f62edd5b785edf8df72d4494946c2b17d2a5a0f1",
+          "after": "22182780bee126a5e4ea06fae3e44b279bd01f2d2394d3c324e5d7a657c6a5af"
+        },
+        {
+          "file": "package/docs/contributing/entities-lowering.md",
+          "change": "content",
+          "before": "b3cc3c80e1f3686eddda6aacb4124861337eb2ca53db77cf2a70793e207df41e",
+          "after": "a0b80edbbef241e510ede8a14c5bb66b1a486ca034369819e646f2791b843203"
+        },
+        {
+          "file": "package/docs/examples.md",
+          "change": "content",
+          "before": "dae53b53e490cabc308a1563139a12ba5913c2d4325094a95077e9a4a8addc74",
+          "after": "cdc13620dadaefb3d8c12a2b32bee2411b609435ca221158bd5b03f0067e2522"
+        },
+        {
+          "file": "package/docs/getting-started.md",
+          "change": "version-only",
+          "before": "235c96cda8fbda926b56c5f7076695002d30b558b4af42ec3f5812cfe5f4910d",
+          "after": "5c98c057eb4091a996b7871773bb312780b718bcfc3c5987872b87cbeb8d3f07"
+        },
+        {
+          "file": "package/docs/guides/deploying-node.md",
+          "change": "content",
+          "before": "774e87b5b6198a9ee0193af37bcc27173c01e2285dff55c38958688629623ffe",
+          "after": "c6d4d27077ae96351f8a74f05551db80e202cb85b21505c0e0aafe29bd406421"
+        },
+        {
+          "file": "package/docs/guides/grip.md",
+          "change": "content",
+          "before": "e5ad88409bdbd905b1a87898826d8a0da1e6d0891de0eedc9d9678f03397b3e7",
+          "after": "02c0c48b23f90219e906b1f7e2ef6cfe3cbce17c1444fa72801e9a0e2cec1a72"
+        },
+        {
+          "file": "package/docs/guides/migrating-from-express.md",
+          "change": "content",
+          "before": "afb94d8f018d08d79c35011a7883beacd365be6fc9d9acfe4067f3e014597d17",
+          "after": "3a41fa6f3b2da3559f7d33b911de2d21a74396e3dec3cf06990e6990ce487f55"
+        },
+        {
+          "file": "package/docs/maintainers/documentation-deployment.md",
+          "change": "version-only",
+          "before": "4df0a4b8e59d91f8088d0a7caf44de148eaff022f8f04521dfdc1bdf25087c58",
+          "after": "e5d9e020f2cee9f5de69284c94419fbbc692180cc40335d60c2fb10de40d728c"
+        },
+        {
+          "file": "package/docs/maintainers/documentation-versioning.md",
+          "change": "content",
+          "before": "7685e58c4ab466e6e52b4de7e8abc0b9558622afa4e13839746489253594fccf",
+          "after": "b50188a9a57b16ea8a8e6edfa1304b84eac09b356ff5a513185563a2fef8243b"
+        },
+        {
+          "file": "package/docs/maintainers/maintainer-charter.md",
+          "change": "content",
+          "before": "bf670b3190f53a5b6e45030b86d8541b0787020bf7b9a5c2ed577984a27440ca",
+          "after": "3f748ec2f4f645f80f9341a5477be248548e89a4ff4b7caea5fb65ca8b895558"
+        },
+        {
+          "file": "package/docs/maintainers/maintenance-policy.json",
+          "change": "content",
+          "before": "5ef70be5383684a18c8620e4b2ce5e3d987ed374988479a6f63f50b1e9167453",
+          "after": "f95261ef17ca0b401d1a5ee355f9051ce052f75d1e6ad160c7c339f8a720db8e"
+        },
+        {
+          "file": "package/docs/maintainers/maintenance-policy.md",
+          "change": "content",
+          "before": "73b15f5ccc13b05945a4092762cfd4f5b1457b15190c41f36d0f9ad36ae6d0e1",
+          "after": "d42f6304809aebe6e622d33aa969a5a0034130aafc151619fe6d712776088dcc"
+        },
+        {
+          "file": "package/docs/maintainers/npm-publishing.md",
+          "change": "content",
+          "before": "bd7f4da34c60a38f85f0202636f78a51978ff480289e061af2dc8cc5a1119cc4",
+          "after": "c8303de9b72bcafff545894593ef95020e363e3e35e14de4762892de204ced07"
+        },
+        {
+          "file": "package/docs/maintainers/plugin-readiness.json",
+          "change": "version-only",
+          "before": "bb1cc439a672714f775cfdfb859a731cdc321bd3d007bb4cd309745b8667ee68",
+          "after": "b4e3f4e5aea0de32b8d7e7a252e5106be405e684dcb9f0626b718ce6f8374413"
+        },
+        {
+          "file": "package/docs/maintainers/plugin-readiness.md",
+          "change": "version-only",
+          "before": "4bc38b9cba7b60721dc47bdbe70d550698ed86ac8ac77f94efa32af1a0a866db",
+          "after": "48757c35626b83e4669f543e955a8d4e4a0d8f23234595b479f1011a7f0686c2"
+        },
+        {
+          "file": "package/docs/maintainers/release-acceptance.md",
+          "change": "content",
+          "before": "2fa86e3cfaffb745702d286a153705fe807420f3a1b77336c5ccdc1f231891ab",
+          "after": "861618faa49310c61149764a251b8159bbb81cea43426ae23ce7d1f9dcf8100b"
+        },
+        {
+          "file": "package/docs/maintainers/release-manifest.md",
+          "change": "content",
+          "before": "58ad72d70eba8a40ff27caa5854b02a186ff2a890eac74826f2bbd12fc7ab542",
+          "after": "433440d4cacf0fa2ac5750e77b701e2397f7e71c9e53038d735219182d8ff38b"
+        },
+        {
+          "file": "package/docs/maintainers/scope-policy.md",
+          "change": "content",
+          "before": "6dfdfeb883fba8fabbce6ea740309ee0ac4241d33fd0eddf0f332919ee3a6153",
+          "after": "c98b6eb827cb334c4a4d5d348b221fc2889fc7dd558e322e438ee7fc94bc0291"
+        },
+        {
+          "file": "package/docs/maintainers/support-and-triage.md",
+          "change": "content",
+          "before": "95689fd1cc89a51f74abd71e283ade7546038582fd4be57014e7647f2c8a1236",
+          "after": "e32d537aef13b081320668c33aa0e386c6d51533b6fb8d59561dda4ab6c06363"
+        },
+        {
+          "file": "package/docs/packages/README.md",
+          "change": "content",
+          "before": "0f8980526cbf8b7b2d3d351fdf2633f689c14e4ecd3add719748ec4b6acd07d3",
+          "after": "ae9f60c2d860437b77cc09f0976044d7f6e7334f29b7e646a8e600d8747807e5"
+        },
+        {
+          "file": "package/docs/packages/assets.md",
+          "change": "version-only",
+          "before": "617c1e9b23eb595e2e15871bfa8856860c49f691becab24dd3bafca0903c175a",
+          "after": "09c551b41438ba2caf39be425da63eafdadf437499faf8be125d3aae306b4596"
+        },
+        {
+          "file": "package/docs/packages/crypto.md",
+          "change": "version-only",
+          "before": "bf7698af36331c1a4e11cb0252c07a86585b5ae47b41f089dc89d233427e3210",
+          "after": "a3508a9a9ebac971246a06e7628dc37b50ff23068398c3156fb78d124812628f"
+        },
+        {
+          "file": "package/docs/packages/entities.md",
+          "change": "content",
+          "before": "ac77f74747d64f41accc560370aa09ed63caf4746b5aa9a1467b7c415bc3fa06",
+          "after": "c82aa511bd2f6fb9e5057a9b2b3096a5b61b1e207e87820996f91f51d31f9920"
+        },
+        {
+          "file": "package/docs/packages/grip.md",
+          "change": "version-only",
+          "before": "034938e1b88e80335b00833a64ddbd0711612522aacb2666cc6b4206cc31e299",
+          "after": "797b9ad53990592867275963cbd2b409ff6c02721c7a23e2dc5e204e4a8ff5c3"
+        },
+        {
+          "file": "package/docs/packages/implementation-packages.md",
+          "change": "content",
+          "before": "29914a495af6f26a33d74d21e124aebdedc38fbb1582a9aadeb348c4e1a27a4d",
+          "after": "8b1273a79062855195aef8d48b67c56f8e5a3291cb2d000c4124bd861ffda933"
+        },
+        {
+          "file": "package/docs/packages/jwt.md",
+          "change": "content",
+          "before": "3322660014f2897fc973364fe3b7927fd4ca6ed2985598267b1a863079ef60fb",
+          "after": "7d3486d45328c83eba6dc993d8b15def69ff35c0996181cd524bfd740fc870eb"
+        },
+        {
+          "file": "package/docs/packages/mcp.md",
+          "change": "content",
+          "before": "ba6163142a95a458afcaaee492e7e9954f2b88c051f3936c15d47aea73259bf3",
+          "after": "9e49b49368a2039fa15906ae0ebeeffb8c188c9dd4ddba79a3ba15d556587105"
+        },
+        {
+          "file": "package/docs/packages/provider-fastly.md",
+          "change": "content",
+          "before": "38e073d128e116fda75fa3e06fb54ddad8923323a099a8488bd78f7a8f9bb9aa",
+          "after": "cb3ea495ca19933dadc00c8d4e7022d288dd64060b09b9301a418a61b18f5fa5"
+        },
+        {
+          "file": "package/docs/packages/pulse.md",
+          "change": "version-only",
+          "before": "21d6934e1838cb763241e5ea0148a3e7d3762d924e08bc43874319135504e2e6",
+          "after": "0bf8c1bb192238793beda2c6b349297d695d6291add454da1a82bcdba9a201d3"
+        },
+        {
+          "file": "package/docs/packages/runtime.md",
+          "change": "content",
+          "before": "8d00bd51eed1e2bcd6fd2ba855d334ec7db7fed1301c1399f0c15183bfc33aef",
+          "after": "d787b3c8d9cdb67257cd2465c4fc20c0182cf66775916e90721831e29228b452"
+        },
+        {
+          "file": "package/docs/packages/s3.md",
+          "change": "version-only",
+          "before": "ca22353fcf61216ae36f487cbb1723ed4a557818da3d45bd1f04963fa94d1c0e",
+          "after": "4e079d6363958ff7a2d380edf65e0fdef09124a0ebcac92b425259cc11d9a6c0"
+        },
+        {
+          "file": "package/docs/preview-scope.md",
+          "change": "content",
+          "before": "29a9143fe29711fdac3a2457f1d18393cf20e32abb0155fa1636ec92b5e55b8f",
+          "after": "ef68a341da8f9e5490ac5b19b17d312d05f550e459bceb5a51d5e97e99de118c"
+        },
+        {
+          "file": "package/docs/reference/cli-spec.json",
+          "change": "version-only",
+          "before": "c7b947b55dee5bf764c1ebd368b5066fb6be7c6cdfc3a64a702a06b0f4257a7f",
+          "after": "d31a4c0cf1ff2f23c9d83055402d70a8c5e7de1d10ba4115b9e53b84fbc128eb"
+        },
+        {
+          "file": "package/docs/reference/cli.md",
+          "change": "version-only",
+          "before": "e79027c322fcad1fa6ca889bbe367dd918db41625a2aed7e9b4a9d487dcae6a3",
+          "after": "e252e5f56adfb0c408f8f93c1a155a13745c43332035cda7f34859fa9d02a13d"
+        },
+        {
+          "file": "package/docs/reference/compatibility-matrix.md",
+          "change": "content",
+          "before": "3ec26a674516cf16d0c9871967e4cf0686a52fc57f5d3f8b20b7f85aeb6a73db",
+          "after": "e87c14902bf6f4aea8bb40a349b94a97e25259be301c48e6f0985f162a66ba2e"
+        },
+        {
+          "file": "package/docs/reference/diagnostics.md",
+          "change": "version-only",
+          "before": "f440915cc0451d39453b96a0a1774ff1ffc664538b8c339d4be41baaebcfa9e6",
+          "after": "a5d0ae3cf73cdf67835b10c2aac21e6d4365ba828c3a1802c21a337135c7c9cb"
+        },
+        {
+          "file": "package/docs/reference/documentation-versions.json",
+          "change": "content",
+          "before": "a1e51844ec448ac448e3afbee60019f88b401bcfc948d73d862f1aaa534e4b95",
+          "after": "71b83bffe834fb3923071d360e67fa3c94ad0a2c03b028cc7d10afb14867733a"
+        },
+        {
+          "file": "package/docs/reference/environment.md",
+          "change": "content",
+          "before": "805def6d5dd425bb5d466bc4a5675fb336ffa2680aacc912c83b2126c91d4c2c",
+          "after": "af36f8ee0d0806ce4cd10797607e2013ab7899209651a40b3f20d2fff50a7d16"
+        },
+        {
+          "file": "package/docs/reference/project-config.schema.json",
+          "change": "version-only",
+          "before": "d8589123bc58d1f40d04ba08b8235a0f68b9c6dfe3fc51b2eb41f7b6ef00daae",
+          "after": "f953cbca5882577123a92567be9e5660646b128bb1b66dff7c8ed445d419b7b3"
+        },
+        {
+          "file": "package/docs/reference/release-manifest.json",
+          "change": "content",
+          "before": "9e9667698579888bc815c675507dbc566964619f8a8b1cf07854bea351e6cc61",
+          "after": "547841165e04dbdd4d2cb1804b0d52060846086fd55f39609e62419631e88cd6"
+        },
+        {
+          "file": "package/documentation-site.json",
+          "change": "content",
+          "before": "bb5cdc1ac10dd8c9b98244b582b5421bc4dc78c82ae7f324a09c1a1125686cc2",
+          "after": "0f861ff195827c21acb93e9716f710a130b802a5c7e34f69d4062098784a4258"
+        },
+        {
+          "file": "package/documentation-versions.json",
+          "change": "content",
+          "before": "a1e51844ec448ac448e3afbee60019f88b401bcfc948d73d862f1aaa534e4b95",
+          "after": "71b83bffe834fb3923071d360e67fa3c94ad0a2c03b028cc7d10afb14867733a"
+        },
+        {
+          "file": "package/examples/01-hello-json/package.json",
+          "change": "version-only",
+          "before": "a68ff64417110cd6797852aadfa3e775fdcfcce014a03faccb6d5da2e86baba3",
+          "after": "55cef420e28ba52da92ce3cd0ad51f8f82b4c5034460b6795732511c42140388"
+        },
+        {
+          "file": "package/examples/02-request-schema/package.json",
+          "change": "version-only",
+          "before": "d1b50e13ec0f64ce21d1a424367a049f579302c6f6a60c404d5ee9d1de85eafa",
+          "after": "437f00cbda60a8d54712bfb4728745e119130c7a3af9359afddb62ff4e51a014"
+        },
+        {
+          "file": "package/examples/03-fetch-composition/package.json",
+          "change": "version-only",
+          "before": "da13beebe6b2ae514106317ece78efa5dee1aa562a95cfdedfd563d1baca44a9",
+          "after": "6a60c910f508d11866097a32d977bca3901835cca9036c8239c9cd1d67bc11f1"
+        },
+        {
+          "file": "package/examples/05-fastly-capabilities/package.json",
+          "change": "version-only",
+          "before": "0cad1a21ac13504d83508bf94d3b02d11f416ce16711da273fb38e4dafdca4d4",
+          "after": "0621be5412587a32d6ec3bb2588e587be96381dd5d75b75e390bcb4f9b3077af"
+        },
+        {
+          "file": "package/examples/07-opaque-proxy/package.json",
+          "change": "version-only",
+          "before": "e90752ae8a68a0f800cc9ec15d028768763ffb4289551ceea1d2dccb8638d086",
+          "after": "940fd27131f85f39c97d44e2859d6573f7b7b2ffc89d94def4df1f5d2821404b"
+        },
+        {
+          "file": "package/examples/09-router-lowering/package.json",
+          "change": "version-only",
+          "before": "7b63940979fe11a5dcb6c49f781daffaa2f858faacfd733bb0ec747b8e03a754",
+          "after": "4b773bc805b6d4a8add0061e9e0e68daf4e79e34f8dec991645bd7146ddfeaa6"
+        },
+        {
+          "file": "package/examples/10-entities-tools/README.md",
+          "change": "version-only",
+          "before": "549ef830b5adfdb9588c3e65a22acc9efefc0e1d6aec2cc73f9b66d5297a16b2",
+          "after": "4dcfc8b511478a485e8b5b3e3296c4bccceb21f098ffc967ced7fee50196d0e6"
+        },
+        {
+          "file": "package/examples/10-entities-tools/package.json",
+          "change": "version-only",
+          "before": "56c35fd59e57e490e4ff30235aee0dfe68e2957c60677c0d105b98000ce88426",
+          "after": "c127c76e39770925d0cc801731aff7fbd094b7a539326eaa4ca327b0ddd4f207"
+        },
+        {
+          "file": "package/examples/11-events/package.json",
+          "change": "version-only",
+          "before": "c46e93c327f1819e42fd765c2fa6a0e28ef705f930544aa115d656da21e64d02",
+          "after": "ae28457fba5cd633840b40e3d00a9b6d30e03b3e4674f0f5d5f2c1f637263911"
+        },
+        {
+          "file": "package/examples/12-pulse-context-mcp/README.md",
+          "change": "version-only",
+          "before": "0ea5b68824c034e30d751772b2d18f6928bb2c6fbf5be5e34380c2ddd2b7cd10",
+          "after": "ec6cc826797b95fcab0073609db6d4be9a943864aeec6d717c2359e3644e9a7b"
+        },
+        {
+          "file": "package/examples/12-pulse-context-mcp/application/.pulse/config.ts",
+          "change": "content",
+          "before": "587f0733a4d9352988cd09c7ae6b9142c549919b2e81add6ba7eeb44e602ac16",
+          "after": "3fb4548814e5752a799421901b8887e9cd017bc005ce11eacb24d6329f7bd425"
+        },
+        {
+          "file": "package/examples/12-pulse-context-mcp/application/package.json",
+          "change": "version-only",
+          "before": "60eddfd1602664026b35995cd30e7ba8ec6d199d336cb1dd886406c54ab76729",
+          "after": "b1c2727ae7f4b4f4ac87d6bb4f851c3146ad022dff151fb3c0dbf5c0154e5959"
+        },
+        {
+          "file": "package/examples/12-pulse-context-mcp/application/src/diagnostic.ts",
+          "change": "content",
+          "before": "ff69ee56c1fc49aa7866c01685cad0c082583d87872ef9c8e82883bff35e5dc9",
+          "after": "0048dff216dab2175c0c12dd4e351ad632106768af378e5658d20be50f3ef0a2"
+        },
+        {
+          "file": "package/examples/12-pulse-context-mcp/application/src/example.ts",
+          "change": "content",
+          "before": "f5615d989f3a4ec96fceca33cc4a8e5199b069e2833f2fb4e5d529904692fda5",
+          "after": "986e2798f2afc44a448dfbf802dcd4693662300db5b316f62485239feedbbe62"
+        },
+        {
+          "file": "package/examples/12-pulse-context-mcp/application/src/index.ts",
+          "change": "version-only",
+          "before": "32e1354767746f5af60aa4e8608851c6fad6dedcd88eda655f1183e83ca30106",
+          "after": "dd27a4798141332f6d55c90ffd090119561e1b9238534772305572488f2def36"
+        },
+        {
+          "file": "package/examples/12-pulse-context-mcp/application/src/read.ts",
+          "change": "content",
+          "before": "a58183f9d591e03e257a85df9ad07f5b560dc2f3927aa7d6a82d387b1c1dc036",
+          "after": "a5b9455ff52f651f3a3bc88f8fa4f4a68608352ffbf3bace9046d2209db5c0e6"
+        },
+        {
+          "file": "package/examples/12-pulse-context-mcp/application/src/search.ts",
+          "change": "content",
+          "before": "a7bec90449226a317d4eedd08d8678f8bcc498de59abbfa85674a056e073ab84",
+          "after": "fd575b77cec0b7d454f8f75508b0b3880f327008568b0a00a04dffc92e8b1616"
+        },
+        {
+          "file": "package/examples/12-pulse-context-mcp/application/src/start.ts",
+          "change": "content",
+          "before": "87202b4a52367b4fdac95c771a6280651978be98f8e5049d3011f94cdf8e9392",
+          "after": "73d1ea0fc3a8dbb2533857730c9a5f00afd273b186db07b55362fd50240678a2"
+        },
+        {
+          "file": "package/examples/12-pulse-context-mcp/context-corpus.ts",
+          "change": "content",
+          "before": "f88a5a89c329bad9b948a6fa936ffcd08a0601fca480d5781dcf9800fbe0e61d",
+          "after": "c34cdfda943189288e198c2507c62e1b0ca3410dae006b3e9cb719f506898523"
+        },
+        {
+          "file": "package/examples/12-pulse-context-mcp/context-data/context-manifest.json",
+          "change": "content",
+          "before": "97cc89e49f64b6814eaf4b956660a94e379476db8bb2a5aa8e277cb349c6536b",
+          "after": "a908b4a5d818ac1e9db2b174a09eb23dc928c7adeb0b294aa7e7c0787b9ec0a6"
+        },
+        {
+          "file": "package/examples/12-pulse-context-mcp/context-data/context-metadata.ts",
+          "change": "content",
+          "before": "66c411b1c617f399ca76e748cb9f67f60e4d9bbaee1cdee37121d8166486781e",
+          "after": "dd29555a182cbb6257fd196d5c99666196bb0d080bacb4e149df7ac400271064"
+        },
+        {
+          "file": "package/examples/12-pulse-context-mcp/context-data/metadata.bin",
+          "change": "content",
+          "before": "be8552285e7d49abdb23e610c83e4d17a6c158e47c04b76fffbe9c352cb77d6f",
+          "after": "44470faecd5ca23b3c348ca058c815c82618a87f5c0a7b08ad4f2c7976f7cff5"
+        },
+        {
+          "file": "package/examples/12-pulse-context-mcp/context-data/resource-manifest.json",
+          "change": "content",
+          "before": "dfc735c829f43edea53f1a16236463ca3cf6d539b26bf39bd88ab498a6deebf6",
+          "after": "943d75469d1784e77fd488c40d770a981c9766e59fa7697b3899951e28debfe7"
+        },
+        {
+          "file": "package/examples/12-pulse-context-mcp/context-data/text.bin",
+          "change": "content",
+          "before": "14c07bf1e1e14acf9c31e9fed884c74076f59b8666494818c2d51c87887e5a37",
+          "after": "8f04c945412ca25bd1dbc886a76c8926bd16d197c75830c68b68498409ae1151"
+        },
+        {
+          "file": "package/examples/12-pulse-context-mcp/context-data/vector.bin",
+          "change": "content",
+          "before": "5adde7664527ec09400d3c61d42a093ff181cf01e51c9b74c5ff20582096a2b8",
+          "after": "156057fbf872dd38ebf5654d0dc9e18974a474a89dc7eba6908d785c49e4b915"
+        },
+        {
+          "file": "package/examples/12-pulse-context-mcp/package.json",
+          "change": "version-only",
+          "before": "913964bd92a79c634c7b90e7993e95420fb70703d6b5ce545df9f6298caf4dde",
+          "after": "142e703c7d7e5579c00018e3355edad841a1d1825c70dc6fa73d406381102146"
+        },
+        {
+          "file": "package/examples/13-jwt-es256/package.json",
+          "change": "version-only",
+          "before": "47599a0ed9f74efab1ceab6afcbdece625e5274ed07c001d8951afb38c30a073",
+          "after": "ca12f9f2e072231ecf90eaf1d7824bd9f79d64762d509f98b659541776904edc"
+        },
+        {
+          "file": "package/package.json",
+          "change": "version-only",
+          "before": "1726e5d2f12eedb6ee0397f011ee00f7235b898888679db059517b0b29c3f522",
+          "after": "6330b7fbf8ee16dd16e1242c1ef9af335d95c157a4c61c9185678d8dd38fad0f"
+        },
+        {
+          "file": "package/project-config.schema.json",
+          "change": "version-only",
+          "before": "d8589123bc58d1f40d04ba08b8235a0f68b9c6dfe3fc51b2eb41f7b6ef00daae",
+          "after": "f953cbca5882577123a92567be9e5660646b128bb1b66dff7c8ed445d419b7b3"
+        },
+        {
+          "file": "package/release-manifest.json",
+          "change": "content",
+          "before": "9e9667698579888bc815c675507dbc566964619f8a8b1cf07854bea351e6cc61",
+          "after": "547841165e04dbdd4d2cb1804b0d52060846086fd55f39609e62419631e88cd6"
+        },
+        {
+          "file": "package/src/documentation.js",
+          "change": "version-only",
+          "before": "7652d92c607af8ae2c66953722806fdc22d218bc54e459aafd3e9990736790b9",
+          "after": "79addbda16e047405d0eb374516669bcd59c04dd3ebac4579d4dc37ba8e1d2ad"
+        },
+        {
+          "file": "package/src/project-config-schema.js",
+          "change": "version-only",
+          "before": "fb8ddd3a88ca6a6761c747e3b9537e05bb57d679f36b92fb9024ef06da6b788c",
+          "after": "28bbeda820b707346d0ddd7cf0da3c72f6157da46eeeaccf4df64e97d7f3f386"
+        }
+      ]
+    },
+    {
+      "package": "@pulse-compute/provider-fastly",
+      "beforeTarball": "20ec7ac3201e93077b0473a3fb807459139819fcf00a12a396af490a02d4df3d",
+      "afterTarball": "5e1c5d5c075495396f01dd2ee15c780144099cb28aef38a09b10fb4ff6bf284c",
+      "unchangedFiles": 117,
+      "changes": [
+        {
+          "file": "package/README.md",
+          "change": "content",
+          "before": "014639a7309da6ff62c7bc7637edac935132cf306f1c9dafb9359d29babb7355",
+          "after": "cf2efc3049a475fc41f8a3bd28f4e2adf4626b1c6d497867da26cc0efb6ab3a2"
+        },
+        {
+          "file": "package/package.json",
+          "change": "version-only",
+          "before": "9b0fb23b2173465506574589335602431d4d168e7c0b42fa22e924252c69cf54",
+          "after": "4a2b15d519a8ad04b9c7271654f0c8b0c3924f327ba1a0f53db881112fbfe5fd"
+        }
+      ]
+    },
+    {
+      "package": "@pulse-compute/grip",
+      "beforeTarball": "6f1c6d0a0e11c188c29587c64fa5b5b9cbf3c340adcc36981e44a7ec3b1e0476",
+      "afterTarball": "782e6906b114345e9998cab633526de4993c1e5c9e6247e9a8c9af17ada09edf",
+      "unchangedFiles": 22,
+      "changes": [
+        {
+          "file": "package/README.md",
+          "change": "version-only",
+          "before": "7bdbd1bb9b29ea93049a0a26deace8282a683c6d87e811a781f4e3f5ff6751d2",
+          "after": "2a771ab39a430c4c86b6c2214d4ae34f3e2035ae82697f6089a34c7b323286b5"
+        },
+        {
+          "file": "package/package.json",
+          "change": "version-only",
+          "before": "c62b42655c10f443dde22a03b94ed58b162896fa05e027753bfb27e50027e2dc",
+          "after": "1b9eb912d42031a53e9f5647c7f1c9923b5117fd9209c85af8821929f7dd8ffa"
+        }
+      ]
+    },
+    {
+      "package": "@pulse-compute/assets",
+      "beforeTarball": "4a587ce59c7832ed7be130a5e550eb8d0e61d3133ca979bb88ff771445b64e66",
+      "afterTarball": "2271b6b58a26a41568864b03df76b854f42dabf6e184d0d48aa996cb193c49fd",
+      "unchangedFiles": 56,
+      "changes": [
+        {
+          "file": "package/README.md",
+          "change": "version-only",
+          "before": "6ae96620c5e73f47505729bc097aa5b0072ed6ec17779d2d1e68701f9b1af5b3",
+          "after": "2c5d996368181488287be87edf8d347868beee2ee06120e634e1cd1718c1b215"
+        },
+        {
+          "file": "package/package.json",
+          "change": "version-only",
+          "before": "fae67eb6be7ee69ab3e52fb309837a124a1b3933b68b112d663847ef1895d26f",
+          "after": "a04338c03c276bc66a17fb6876f6960f942f16d06875959383a9cd0997647d89"
+        }
+      ]
+    },
+    {
+      "package": "@pulse-compute/crypto",
+      "beforeTarball": "83c7ac0cdaf65ebae2b0221bf5f6d7c629f1e4c1eca86da62e6f4e8c6f6d346a",
+      "afterTarball": "353941f9ec2e11e34516e1dea6f28fb9c5efbc80f9015099f22ec6727a0d6f67",
+      "unchangedFiles": 101,
+      "changes": [
+        {
+          "file": "package/README.md",
+          "change": "version-only",
+          "before": "4b03b09f560ab0cb5b6f9aa9ad2c3f96dc2857a378aef5eca9eea76e88e1b4d1",
+          "after": "d04da888f60595ad0d038e181b5e1f71515fae2624fd21a3cb9e13ebe7dd5f65"
+        },
+        {
+          "file": "package/guests/es256-rustcrypto/build.cjs",
+          "change": "version-only",
+          "before": "041347c2542fe2fe43cb24c9042556151f9f11a21da53c5eded362ede54ca2eb",
+          "after": "6eba250974ba8c97e6a6c5f4ee800748a40d206bd551ff5745a42e25779cc47a"
+        },
+        {
+          "file": "package/guests/es256-rustcrypto/pulse.guest-unit.json",
+          "change": "content",
+          "before": "477e30630cc95efb8dd5a228f21fde6a1220194436fc59e333c6bb478d9dc90f",
+          "after": "149dba3636c12a6d6c23fd4eb5ab3a99b7261a71d998f8be4a58b39674214c20"
+        },
+        {
+          "file": "package/package.json",
+          "change": "version-only",
+          "before": "0aa6818d2ef65657594dbeb26a56c870132ff69f7229b5cd3ef4b51ffa006174",
+          "after": "0f3c550d6afaf9c1d04099e8c9e0926df5da032b9ac4474cf053842bb6d9e0ae"
+        }
+      ]
+    },
+    {
+      "package": "@pulse-compute/jwt",
+      "beforeTarball": "4655cca2737e868f45acf889ef2be65aff902a9f31e7cfc521437efde70b30a3",
+      "afterTarball": "be5c06b78c2d76681a49f9692ecd88e6b63db4fc16a1a173f4b0fcbce2d8e2be",
+      "unchangedFiles": 65,
+      "changes": [
+        {
+          "file": "package/README.md",
+          "change": "version-only",
+          "before": "3ed09e8aaf7452c452099c53bdc72f14b58646050dc50510d7783a4d1c9a7f0b",
+          "after": "026a0e9dbe702e11acb26b5cc10085a22eff6d791dec0ed50a4b3310cb90516c"
+        },
+        {
+          "file": "package/package.json",
+          "change": "version-only",
+          "before": "12c434b946e884045f074c6393e834b7a60f5fbfba72783ab7c94477051fa489",
+          "after": "af0fce9fb7932cccfb8586b12260446d25a74d0e8407ec09e94283d742f8cce9"
+        }
+      ]
+    },
+    {
+      "package": "@pulse-compute/entities",
+      "beforeTarball": "ce62a8a47618d8f78d54b63fc4aa5795ec98cd4b14e99d45e93006bcf1179142",
+      "afterTarball": "7da4d563146a683491401ba2ed4e45b6711e0a35f5a23171c01b3c001a7f1f2c",
+      "unchangedFiles": 38,
+      "changes": [
+        {
+          "file": "package/README.md",
+          "change": "content",
+          "before": "80bbc30cbbb0f249702795d29098e309ea5df476b25eb77e7604053fbaf009a4",
+          "after": "d99b9ed289b0acc16139b44f897bd262ce6768190520b664bb954f3aa32f84e6"
+        },
+        {
+          "file": "package/package.json",
+          "change": "version-only",
+          "before": "942f7d588f5dfe628c11f3340b92e87950d49e39f72427c3ec5c5c368b81d217",
+          "after": "c52bb321eec8cc0c62cf9c90a4deaacb9b5348ef5d7f6749726f96806d3b78ab"
+        }
+      ]
+    },
+    {
+      "package": "@pulse-compute/mcp",
+      "beforeTarball": "e7d1b4e3b51dfd2cece242bdaba78e45b5d7181d21a27f988ba8005563fb48cf",
+      "afterTarball": "8fe901b7d8ac7d05bcd9deb4b754a955a2572ca051fc84f4273b631aa0fbed24",
+      "unchangedFiles": 21,
+      "changes": [
+        {
+          "file": "package/README.md",
+          "change": "version-only",
+          "before": "415642aa917e64030f8ba760430f8b70c4357eefbd0bfc1a7deb20f85b9eb83a",
+          "after": "0f6b38162a1f570cf4b68fa88633e08f77990f7adb90ef88746d4879a6645167"
+        },
+        {
+          "file": "package/package.json",
+          "change": "version-only",
+          "before": "5efdc1136275bb3e02589cc9128b5a6a45d519f5eadf32514ac291f441ad74ba",
+          "after": "ccaae7ebd5b3d876cf54e9c8a5526f2256afcda7c82a01245608b736357674f9"
+        }
+      ]
+    },
+    {
+      "package": "@pulse-compute/s3",
+      "beforeTarball": "83427158e90852686e8e69ffe230c1eebc51bf485c8048cda528e8f066db355b",
+      "afterTarball": "d11941500aa6864acaf8421b22d340ef7c781ae7f70d717ef37d1fcda560df6a",
+      "unchangedFiles": 14,
+      "changes": [
+        {
+          "file": "package/README.md",
+          "change": "version-only",
+          "before": "3a69a0acfbffe297b6e5b607aac308cb72895cbc5708e115b10c62ed0d7218a5",
+          "after": "524c45462cfb31d18a40676b6094061af429e3ae3c00b1fb3563dc9515034674"
+        },
+        {
+          "file": "package/conformance/README.md",
+          "change": "version-only",
+          "before": "dd81cf876309ff4071af8c3fadb99c57878c579291b12f8dcd551d6960f97b01",
+          "after": "97d77fcddee37889ac3a6787650b8f73d838248906b9af8b68f7c12e9536efbb"
+        },
+        {
+          "file": "package/package.json",
+          "change": "version-only",
+          "before": "a0b301d8ee24f345c916b3c2c471c61c27a24507ad8bcf091c9c243478b03fd4",
+          "after": "bc61c434f239dadca2055200045a56f08619da4634a1850d154dae403ccb862b"
+        }
+      ]
+    },
+    {
+      "package": "@pulse-compute/wasm-build-support",
+      "beforeTarball": "ab8a7e93a64a3de22d0f4f62770a42fe495773d9a5ba7c639f9dbab5b163e7b6",
+      "afterTarball": "c736a3c4cc383240428da44130ce368136c0d45c744453aecc7c39e420cff374",
+      "unchangedFiles": 15,
+      "changes": [
+        {
+          "file": "package/README.md",
+          "change": "version-only",
+          "before": "73b27ddea98baf6d2e414b2a07cd6764c7493a52f125b809d67291b57b9b90c0",
+          "after": "f2f06d894132e107f40ec91ee216e4699e972f29de8de555d00d54e144ac26d2"
+        },
+        {
+          "file": "package/package.json",
+          "change": "version-only",
+          "before": "e3d9feccc5c523ff92c21bba1e6da1cf9e5870795539822e5e136ae4cc58d127",
+          "after": "e7064f69fdab40061921da2d64d0a57b88f49f347646d928d459672cd61f8cb7"
+        }
+      ]
+    },
+    {
+      "package": "@pulse-compute/wasm-compiler",
+      "beforeTarball": "0d5517e208c9ad3bd40e5c3f839ad2d6d384f2fba26d7a6ecf44817f8dd02a3f",
+      "afterTarball": "f5aab31f80aab3da1e8b559d2f598bb40509db3f8de53543c64f0fe3c9ca411c",
+      "unchangedFiles": 130,
+      "changes": [
+        {
+          "file": "package/README.md",
+          "change": "version-only",
+          "before": "6ae07946af04c9af98b20a8c4a92e071ac60831cbab87749c4f15efdb92f88c1",
+          "after": "2e28a1b4b53531914b2bfeb680d316be08dfbfb588a678bd825f8b39d244a12e"
+        },
+        {
+          "file": "package/package.json",
+          "change": "version-only",
+          "before": "b58e7dd605fba40ef6e2794b3144a9342420610d7211ee2303c4bcf0f47029fd",
+          "after": "929e06b2cc9639a220de5ac0a6167d9e03948c7c04058a7c68a23bdc410985b7"
+        }
+      ]
+    },
+    {
+      "package": "@pulse-compute/wasm-guest-link",
+      "beforeTarball": "4adce9e2a318f9eababb1f3d1af66aa6435ca5319c0139470513a4de6c89c14e",
+      "afterTarball": "deceee7e5de8f45ef6f7b4779bb0f44cbd07bd79ac5160f4dcdbaf2fa1e90efc",
+      "unchangedFiles": 12,
+      "changes": [
+        {
+          "file": "package/README.md",
+          "change": "version-only",
+          "before": "0a061da75f00d6b451fd80f825429209e8db92da9ca86063a1bb67a4a7253924",
+          "after": "f9666d95cff2bf7a360aaac390d17709c4b45ec52c54f4eb708326f75bc29691"
+        },
+        {
+          "file": "package/package.json",
+          "change": "version-only",
+          "before": "e37b5660e04c4494237de8f808ee755fabf9fce410b2489631231c4c99d56e49",
+          "after": "74c90d49f7aeb46e6fe57e4be74f7dbe07032e25a6cdba2b15b414c88baa3d8b"
+        },
+        {
+          "file": "package/src/constants.js",
+          "change": "content",
+          "before": "ea333668f73174b3b860270820a8c77e6a1896643fa9ba870294cbf65ff2af8d",
+          "after": "d60a47aa2d954bb48d1c5d0f08e4f7b2c595268642e076878fd64af90c0476c6"
+        }
+      ]
+    },
+    {
+      "package": "@pulse-compute/wasm-contracts",
+      "beforeTarball": "6c5afc7675f05f77699666fd6e492d6d4fa25ab22cc735d42f2a6fd4ad54c7f4",
+      "afterTarball": "391eb7cee2dd1d882760bd64fbe7f1435c33eaff4cd1613bcace140366918336",
+      "unchangedFiles": 109,
+      "changes": [
+        {
+          "file": "package/README.md",
+          "change": "content",
+          "before": "bfaa282c10cef1b19692e91a639b3b034dbe17bbe41288d2e8d2b00d7c3f5a33",
+          "after": "ee1a1aa5d541a3cfa83eb59f4965afd9623c0011b1b6a9ec38778fd15a975509"
+        },
+        {
+          "file": "package/package.json",
+          "change": "version-only",
+          "before": "e5e6d66d063c1f4cf0f9a8d14a948db2da4ac84b30ffa8ccb5d02a52da7915a1",
+          "after": "ad83bb95c8f3aec11f9266a671048ee26347c8f5a90d1991b3bc8770511f0208"
+        },
+        {
+          "file": "package/src/diagnostics.js",
+          "change": "version-only",
+          "before": "7ca0ed592be693c26a593f4eb93cb3a25b442eedf6a4e06bf6c9031da9874dde",
+          "after": "a06920696872baeca6facc6d9ba3a94311a76943145f28a131e27e37fef29523"
+        }
+      ]
+    },
+    {
+      "package": "@pulse-compute/wasm-host-runtime",
+      "beforeTarball": "f1292c318ff8d92b89a2051937af93cdb14aec3f6103ea12036d522e313f282d",
+      "afterTarball": "81708d9a67d35a1a33474443ca398a6481985c0baf3e5536b01a1dab74f1f15e",
+      "unchangedFiles": 26,
+      "changes": [
+        {
+          "file": "package/README.md",
+          "change": "version-only",
+          "before": "fc5c77d7c5be264cd874ca70102387429f802089d31c5577055b884ffb27ba14",
+          "after": "7bb4ab2b66d41b7ee6343c434f182e0c68ebe69ce1b01cd0a041cf31ee8626cb"
+        },
+        {
+          "file": "package/package.json",
+          "change": "version-only",
+          "before": "63d56f7cad9a963b7064541241f7dd24a7317c64832d390e1f9f54742593d8e0",
+          "after": "080c7c3e6637b048ae054bfa11c449a1bcf78e9f98b73e098c089fc68dd8d6e0"
+        }
+      ]
+    },
+    {
+      "package": "@pulse-compute/wasm-library-kit",
+      "beforeTarball": "cb6844ee23ced330e634fbe9d1bcf613f94c3ef1aae225b0d3000d8f7fbad7b4",
+      "afterTarball": "b34748dc8b33131433f274d620a3d9621f46a777e43547dc33fe35119e68e6f5",
+      "unchangedFiles": 10,
+      "changes": [
+        {
+          "file": "package/README.md",
+          "change": "version-only",
+          "before": "00fee2574c4afa7c21980cdf3680872155c970ab6de9e27dcecdf71f84ce58b2",
+          "after": "fab1d4f7a89e8282e7021f0baf3d3e22ea6d325ad42b9afa213900d2e1af6d29"
+        },
+        {
+          "file": "package/package.json",
+          "change": "version-only",
+          "before": "e73c135218cb049ffac85f9858f5a34987c9e483ad80a69cb8b1020a7a226a79",
+          "after": "c65da3d472fddc0ca5c276fb2f02a47b6931114e2b5088fc0655bd46491b3118"
+        }
+      ]
+    },
+    {
+      "package": "@pulse-compute/provider-node",
+      "beforeTarball": "e11a274f1b92ff3ad453ddc7c744f51bc2d31cb978c97af036c15afcbd875128",
+      "afterTarball": "6cbffb1b06790af2b35cfd360c256dc96cc9614c9306b5c8f15d0ec0c99d0cab",
+      "unchangedFiles": 52,
+      "changes": [
+        {
+          "file": "package/README.md",
+          "change": "version-only",
+          "before": "bdb86a7af789820b97993f559855d29d408bf955e9acd3f77d4e5ecfb42aa9de",
+          "after": "caca7a774d119230c7cfd4d09a351de563f70a2c7992b936927eb19dcead0b70"
+        },
+        {
+          "file": "package/package.json",
+          "change": "version-only",
+          "before": "375b22fa4e66d393327e21c26b0a074ae72526dd103a6e9b724412f162df1431",
+          "after": "8d71a2da4ec3972c1bf68c489cfce94b7bf443728ddb9eba8ef38670b6fd5b6a"
+        }
+      ]
+    },
+    {
+      "package": "@pulse-compute/wasm-runtime-core-as",
+      "beforeTarball": "b096c63c05453fb2877f169bdfe578f9fb2d70e34be62d1c27e81b323275711b",
+      "afterTarball": "9b9b74f35f363c6efdfc914466e72960792276dbaceb94562b430f928b201242",
+      "unchangedFiles": 37,
+      "changes": [
+        {
+          "file": "package/README.md",
+          "change": "version-only",
+          "before": "383ad78bfbf8b51b37c8d9e8cae8ca80d3fe5fb9ff844fb92e1879c4a033990c",
+          "after": "0442a2622dd0f9f7f2a2b6707a6095067f11f781ef28c6b7d15503b514a017b4"
+        },
+        {
+          "file": "package/package.json",
+          "change": "version-only",
+          "before": "575629e5564e4bef1d49683a38357f0fd379454dc4ea3d9943e0fcc8732e7b26",
+          "after": "1eea4ddf32b6886366df075bb03981a88fcac49d79782a225849b66502611f36"
+        }
+      ]
+    },
+    {
+      "package": "@pulse-compute/wasm-schema-json",
+      "beforeTarball": "685c24d8fb36807693b4ac9f173991f09ad3888029b5de15dbcd0c5afab0d0bf",
+      "afterTarball": "e637ad90d88d90b658068533daa9e9354e4d1707a1807237e9c8d500edd2a5a1",
+      "unchangedFiles": 12,
+      "changes": [
+        {
+          "file": "package/README.md",
+          "change": "version-only",
+          "before": "f21c771eecffa728dda151507b8f9acb4ab05f1d06dfeca1bc1694ff083b71cc",
+          "after": "14ac2b55ea2fd1e5459cfec30c2e6c6cfb8ccef08546b591b571cdcc4e3c4b49"
+        },
+        {
+          "file": "package/package.json",
+          "change": "version-only",
+          "before": "99dbc421b795721a1a451fcb2971c2622ea1c96eb336b57ef54c8d713bdfe8ff",
+          "after": "9e7a901cbe0a027f9d397b878d3a27b24de8d57c31d0ec83238834900f241b47"
+        }
+      ]
+    }
+  ]
+}

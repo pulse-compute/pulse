@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "previousVersion": "1.0.0-beta.11",
+  "version": "1.0.0-rc.1",
+  "productChanged": true,
+  "preparedRelease": true,
+  "sealed": false,
+  "base": "dbad9e9b553d87999ae35a68c2f94335c99b3acc",
+  "head": "06e14e7fd58bcf6118ffd6b7f89aebf1e9f3a4f7"
+}

@@ -1,0 +1,33 @@
+{
+  "candidate": {
+    "sourceRevision": "7a3f513631e2f84c52e390ffd330c6ed6180ea6b",
+    "sourceTree": "b71499b6caa15954c4cb880d556791621efe0c9b",
+    "workingTree": ""
+  },
+  "wasmSha256": "4281bb2afb470649b45d905dee4adcbc1d15799bcbe1fbd4e9bba2fa35dfdd69",
+  "wasmBytes": 70526,
+  "target": {
+    "endpoint": "https://us-central-1.object.fastlystorage.app",
+    "region": "us-central-1",
+    "bucket": "catalog-live-20261101-2da36f-objects",
+    "prefix": "pulse-rc-h04/0c151b89-0bef-46fe-87c1-2a5f0e9845cd/"
+  },
+  "origin": "https://memo-keyboards-listing-keith.trycloudflare.com",
+  "operations": [
+    "/put",
+    "/head",
+    "/text",
+    "/body",
+    "/range",
+    "/conditional",
+    "/absent",
+    "/fetch-get",
+    "/fetch-delete",
+    "/fetch-options",
+    "/timeout",
+    "/body-header",
+    "/body-timed",
+    "/network"
+  ],
+  "instrumentation": false
+}
