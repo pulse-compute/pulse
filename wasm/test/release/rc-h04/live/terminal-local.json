@@ -1,0 +1,206 @@
+{
+  "version": "pulse.terminal-transport.v1",
+  "lane": "local",
+  "status": "passed",
+  "bundleSha256": "9df4b0c7e407ca5d8fad267efa216e88ec78b874879307330b7824210a84d697",
+  "engines": [
+    {
+      "version": "viceroy 0.18.0",
+      "sha256": "e2173c8799f73850e657e3722ce5000d3338ccdf6246790688a6b8ae8e53b896"
+    },
+    {
+      "version": "pushpin 1.42.0",
+      "sha256": "eec3637be3432c80137fdba9154be274feaf6ee60c730d6d379a67ef65c754f5"
+    }
+  ],
+  "startup": [
+    {
+      "id": "fanout",
+      "status": "passed",
+      "attempts": 1
+    },
+    {
+      "id": "websocket",
+      "status": "passed",
+      "attempts": 1
+    },
+    {
+      "id": "fanout-router",
+      "status": "passed",
+      "attempts": 1
+    },
+    {
+      "id": "websocket-router",
+      "status": "passed",
+      "attempts": 1
+    },
+    {
+      "id": "independent",
+      "status": "passed",
+      "attempts": 1
+    }
+  ],
+  "cases": [
+    {
+      "id": "fanout",
+      "status": "passed",
+      "scenario": "ordinary",
+      "artifactSha256": "cd789e57b8b7be4c8ab2fd51cbff81eb7a409e015a72179c7c30f90cdab6175a",
+      "response": {
+        "status": 200,
+        "body": "ordinary response"
+      }
+    },
+    {
+      "id": "fanout",
+      "status": "passed",
+      "scenario": "handoff",
+      "artifactSha256": "cd789e57b8b7be4c8ab2fd51cbff81eb7a409e015a72179c7c30f90cdab6175a",
+      "response": {
+        "status": 200,
+        "body": "terminal-origin"
+      }
+    },
+    {
+      "id": "fanout",
+      "status": "passed",
+      "scenario": "hold-publish",
+      "artifactSha256": "cd789e57b8b7be4c8ab2fd51cbff81eb7a409e015a72179c7c30f90cdab6175a",
+      "response": {
+        "status": 200,
+        "body": "published-ad6bd66efbace54f55622b21"
+      }
+    },
+    {
+      "id": "websocket",
+      "status": "passed",
+      "scenario": "ordinary",
+      "artifactSha256": "a776b28019661b673fcb0faa96fa9b63946276245e0662000f6eb509158c208a",
+      "response": {
+        "status": 200,
+        "body": "ordinary response"
+      }
+    },
+    {
+      "id": "websocket",
+      "status": "passed",
+      "scenario": "handoff",
+      "artifactSha256": "a776b28019661b673fcb0faa96fa9b63946276245e0662000f6eb509158c208a",
+      "response": {
+        "status": 101
+      }
+    },
+    {
+      "id": "websocket",
+      "status": "passed",
+      "scenario": "bidirectional-websocket",
+      "artifactSha256": "a776b28019661b673fcb0faa96fa9b63946276245e0662000f6eb509158c208a",
+      "response": {
+        "status": 101,
+        "frames": 2
+      }
+    },
+    {
+      "id": "fanout-router",
+      "status": "passed",
+      "scenario": "ordinary",
+      "artifactSha256": "ac7db50a833fa62a59f38007558e063abea6234412a0b95eb7362276c625f807",
+      "response": {
+        "status": 200,
+        "body": "ordinary response"
+      }
+    },
+    {
+      "id": "fanout-router",
+      "status": "passed",
+      "scenario": "handoff",
+      "artifactSha256": "ac7db50a833fa62a59f38007558e063abea6234412a0b95eb7362276c625f807",
+      "response": {
+        "status": 200,
+        "body": "terminal-origin"
+      }
+    },
+    {
+      "id": "fanout-router",
+      "status": "passed",
+      "scenario": "hold-publish",
+      "artifactSha256": "ac7db50a833fa62a59f38007558e063abea6234412a0b95eb7362276c625f807",
+      "response": {
+        "status": 200,
+        "body": "published-5b0f453e50ed9bb31dd611a5"
+      }
+    },
+    {
+      "id": "websocket-router",
+      "status": "passed",
+      "scenario": "ordinary",
+      "artifactSha256": "408f00a5e866042760f7b07257da628cb1cd6a6aa6c0a732584911dabe8e33a6",
+      "response": {
+        "status": 200,
+        "body": "ordinary response"
+      }
+    },
+    {
+      "id": "websocket-router",
+      "status": "passed",
+      "scenario": "handoff",
+      "artifactSha256": "408f00a5e866042760f7b07257da628cb1cd6a6aa6c0a732584911dabe8e33a6",
+      "response": {
+        "status": 101
+      }
+    },
+    {
+      "id": "websocket-router",
+      "status": "passed",
+      "scenario": "bidirectional-websocket",
+      "artifactSha256": "408f00a5e866042760f7b07257da628cb1cd6a6aa6c0a732584911dabe8e33a6",
+      "response": {
+        "status": 101,
+        "frames": 2
+      }
+    },
+    {
+      "id": "independent",
+      "status": "passed",
+      "scenario": "ordinary",
+      "artifactSha256": "6cb1231c4582aab621f60436d8537252f490ae09180647013d7580ce1fbad364",
+      "response": {
+        "status": 200,
+        "body": "ordinary response"
+      }
+    },
+    {
+      "id": "independent",
+      "status": "passed",
+      "scenario": "handoff",
+      "artifactSha256": "6cb1231c4582aab621f60436d8537252f490ae09180647013d7580ce1fbad364",
+      "response": {
+        "status": 200,
+        "body": "terminal-origin"
+      }
+    },
+    {
+      "id": "independent",
+      "status": "passed",
+      "scenario": "hold-publish",
+      "artifactSha256": "6cb1231c4582aab621f60436d8537252f490ae09180647013d7580ce1fbad364",
+      "response": {
+        "status": 200,
+        "body": "published-4be1172d819d3c84430c99b3"
+      }
+    }
+  ],
+  "logs": {
+    "fanout-pushpin": "[INFO] 2026-11-26 19:20:26.554 [connmgr] listening on 127.0.0.1:32971\n[INFO] 2026-11-26 19:20:26.556 [proxy] routes loaded with 1 entries\n[INFO] 2026-11-26 19:20:26.558 [handler] http control server: 127.0.0.1:46549\n[INFO] 2026-11-26 19:20:26.558 [handler] started\n[INFO] 2026-11-26 19:20:26.558 [proxy] started\n[INFO] 2026-11-26 19:20:26.575 [connmgr] started\n[INFO] 2026-11-26 19:20:26.722 [proxy] GET http://127.0.0.1:32971/ready -> 127.0.0.1:46415 route=terminal_origin code=200 15\n[INFO] 2026-11-26 19:20:26.789 [proxy] GET http://127.0.0.1:32971/handoff -> 127.0.0.1:46415 route=terminal_origin code=200 15\n[INFO] 2026-11-26 19:20:26.795 [handler] subscribe http://127.0.0.1:32971/handoff channel=pulse-terminal-10bcaa92e9f38b7d65ed0f92\n[INFO] 2026-11-26 19:20:26.795 [proxy] GET http://127.0.0.1:32971/handoff -> 127.0.0.1:46415 route=terminal_origin accept\n[INFO] 2026-11-26 19:20:27.065 [handler] publish channel=pulse-terminal-10bcaa92e9f38b7d65ed0f92 receivers=1\n[INFO] 2026-11-26 19:20:27.070 stopping...\n[INFO] 2026-11-26 19:20:27.070 [connmgr] stopping...\n[INFO] 2026-11-26 19:20:27.070 [proxy] stopping...\n[INFO] 2026-11-26 19:20:27.070 [handler] stopping...\n\r",
+    "fanout": "",
+    "websocket-pushpin": "[INFO] 2026-11-26 19:20:27.103 [connmgr] listening on 127.0.0.1:43759\n[INFO] 2026-11-26 19:20:27.109 [proxy] routes loaded with 1 entries\n[INFO] 2026-11-26 19:20:27.110 [handler] http control server: 127.0.0.1:36441\n[INFO] 2026-11-26 19:20:27.110 [handler] started\n[INFO] 2026-11-26 19:20:27.110 [proxy] started\n[INFO] 2026-11-26 19:20:27.123 [connmgr] started\n[INFO] 2026-11-26 19:20:27.275 [proxy] GET http://127.0.0.1:43759/ready -> 127.0.0.1:46415 route=terminal_origin code=200 15\n[INFO] 2026-11-26 19:20:27.342 stopping...\n[INFO] 2026-11-26 19:20:27.342 [connmgr] stopping...\n[INFO] 2026-11-26 19:20:27.342 [handler] stopping...\n[INFO] 2026-11-26 19:20:27.342 [proxy] stopping...\n\r",
+    "websocket": "",
+    "fanout-router-pushpin": "[INFO] 2026-11-26 19:20:27.377 [connmgr] listening on 127.0.0.1:34049\n[INFO] 2026-11-26 19:20:27.381 [handler] http control server: 127.0.0.1:32877\n[INFO] 2026-11-26 19:20:27.381 [proxy] routes loaded with 1 entries\n[INFO] 2026-11-26 19:20:27.381 [handler] started\n[INFO] 2026-11-26 19:20:27.382 [proxy] started\n[INFO] 2026-11-26 19:20:27.397 [connmgr] started\n[INFO] 2026-11-26 19:20:27.546 [proxy] GET http://127.0.0.1:34049/ready -> 127.0.0.1:46415 route=terminal_origin code=200 15\n[INFO] 2026-11-26 19:20:27.609 [proxy] GET http://127.0.0.1:34049/handoff -> 127.0.0.1:46415 route=terminal_origin code=200 15\n[INFO] 2026-11-26 19:20:27.613 [handler] subscribe http://127.0.0.1:34049/handoff channel=pulse-terminal-0b0b01b793d553490d35677a\n[INFO] 2026-11-26 19:20:27.613 [proxy] GET http://127.0.0.1:34049/handoff -> 127.0.0.1:46415 route=terminal_origin accept\n[INFO] 2026-11-26 19:20:27.882 [handler] publish channel=pulse-terminal-0b0b01b793d553490d35677a receivers=1\n[INFO] 2026-11-26 19:20:27.885 stopping...\n[INFO] 2026-11-26 19:20:27.885 [connmgr] stopping...\n[INFO] 2026-11-26 19:20:27.885 [proxy] stopping...\n[INFO] 2026-11-26 19:20:27.885 [handler] stopping...\n\r",
+    "fanout-router": "",
+    "websocket-router-pushpin": "[INFO] 2026-11-26 19:20:27.915 [connmgr] listening on 127.0.0.1:41775\n[INFO] 2026-11-26 19:20:27.919 [proxy] routes loaded with 1 entries\n[INFO] 2026-11-26 19:20:27.920 [proxy] started\n[INFO] 2026-11-26 19:20:27.921 [handler] http control server: 127.0.0.1:41067\n[INFO] 2026-11-26 19:20:27.921 [handler] started\n[INFO] 2026-11-26 19:20:27.936 [connmgr] started\n[INFO] 2026-11-26 19:20:28.084 [proxy] GET http://127.0.0.1:41775/ready -> 127.0.0.1:46415 route=terminal_origin code=200 15\n[INFO] 2026-11-26 19:20:28.146 stopping...\n[INFO] 2026-11-26 19:20:28.146 [handler] stopping...\n[INFO] 2026-11-26 19:20:28.146 [connmgr] stopping...\n[INFO] 2026-11-26 19:20:28.146 [proxy] stopping...\n\r",
+    "websocket-router": "",
+    "independent-pushpin": "[INFO] 2026-11-26 19:20:28.180 [connmgr] listening on 127.0.0.1:45121\n[INFO] 2026-11-26 19:20:28.184 [proxy] routes loaded with 1 entries\n[INFO] 2026-11-26 19:20:28.185 [proxy] started\n[INFO] 2026-11-26 19:20:28.186 [handler] http control server: 127.0.0.1:44223\n[INFO] 2026-11-26 19:20:28.186 [handler] started\n[INFO] 2026-11-26 19:20:28.201 [connmgr] started\n[INFO] 2026-11-26 19:20:28.349 [proxy] GET http://127.0.0.1:45121/ready -> 127.0.0.1:46415 route=terminal_origin code=200 15\n[INFO] 2026-11-26 19:20:28.411 [proxy] GET http://127.0.0.1:45121/handoff -> 127.0.0.1:46415 route=terminal_origin code=200 15\n[INFO] 2026-11-26 19:20:28.415 [handler] subscribe http://127.0.0.1:45121/handoff channel=pulse-terminal-be2fb24511bd28125f62f996\n[INFO] 2026-11-26 19:20:28.415 [proxy] GET http://127.0.0.1:45121/handoff -> 127.0.0.1:46415 route=terminal_origin accept\n[INFO] 2026-11-26 19:20:28.683 [handler] publish channel=pulse-terminal-be2fb24511bd28125f62f996 receivers=1\n[INFO] 2026-11-26 19:20:28.686 stopping...\n[INFO] 2026-11-26 19:20:28.686 [connmgr] stopping...\n[INFO] 2026-11-26 19:20:28.686 [proxy] stopping...\n[INFO] 2026-11-26 19:20:28.686 [handler] stopping...\n\r",
+    "independent": ""
+  },
+  "cleanup": true
+}

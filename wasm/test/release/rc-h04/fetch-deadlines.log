@@ -1,0 +1,13 @@
+ok - local viceroy-direct 0.18.0: recover/slow 1008ms
+ok - local viceroy-direct 0.18.0: recover/never 1002ms
+ok - local viceroy-direct 0.18.0: recover/body 2ms
+Wasm sha256 (recover) eb2710722446f0a79cae2b2255aebd9bc35bed0182ba8d6773b994112c78da03
+ok - local viceroy-direct 0.18.0: none/slow 1008ms
+ok - local viceroy-direct 0.18.0: none/never 1004ms
+ok - local viceroy-direct 0.18.0: none/body 2ms
+Wasm sha256 (none) d0fdc1cfd74caea6fb8056419f687145fe2d30951d5383fbbd00bad39bcb0521
+ok - local viceroy-direct 0.18.0: budget/slow 604ms
+ok - local viceroy-direct 0.18.0: budget/never 604ms
+ok - local viceroy-direct 0.18.0: budget/body 2ms
+Wasm sha256 (budget) 446c2de2b185d0df7b291acde3cfbddd0114a560580bc6929181b07d78621d1a
+ok - Fastly fetch deadlines: 103 emitted-Wasm ABI cases

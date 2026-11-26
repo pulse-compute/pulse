@@ -1,0 +1,306 @@
+{
+  "version": "pulse.terminal-installed.v1",
+  "status": "passed",
+  "candidate": {
+    "sourceRevision": "a25052124cb670108eecce1710f93c2fb60fd84a",
+    "sourceTree": "edf7b89884e02160e5608891c831296a91d09011",
+    "workingTree": ""
+  },
+  "packageClosureVerified": true,
+  "outsideCheckout": true,
+  "harness": {
+    "prepare.cjs": "281c5c72dd1467f6ad8b3d3301840813c2e451c8ced98721dfeb3a3d3119231d",
+    "installed-worker.cjs": "eb2c44fc548f4233e5622ba0c30de4e46b65e3d718e1afa3b626fb368cccbe24",
+    "bundle.cjs": "b4a46c78e0703e901cdfde83e28a3745909aafba8d5a7a4e9c265bb6f63779da",
+    "local.cjs": "d0c8c9a0ed7f3bea325caf65921df78936ce575d2b4feda5a3a2939b54e902de",
+    "hosted.cjs": "f63b5660daaa6b02ad9b602f97f3df15efc9d71b812e790a788dcd873fd7a244",
+    "origin.cjs": "e91e9f0e5e618657a1e91bcd67faccdd43594748125d76a950a06b624b29458b",
+    "verify.cjs": "8c6f1bb7724dd684d704b9e5d1c76fffc4e8d74f716120f2de4c7dd4c837eb3a",
+    "engines.json": "ede864ade69d19d272ecb74cdac1232ce4272b3db408697d78d89e28d6fb51c7"
+  },
+  "packages": [
+    {
+      "name": "@pulse-compute/runtime",
+      "version": "1.0.0-beta.11",
+      "file": "packages/pulse-compute-runtime-1.0.0-beta.11.tgz",
+      "sha256": "8937e8fd4f0da54633400aaa20d7d61bd9ff1a1dbded762cdb063160a3df5ea8"
+    },
+    {
+      "name": "@pulse-compute/pulse",
+      "version": "1.0.0-beta.11",
+      "file": "packages/pulse-compute-pulse-1.0.0-beta.11.tgz",
+      "sha256": "a2c57c648ca60ba4ea9e78de7066ec458f7395ee274c8a1e6a50ec63ce8e6739"
+    },
+    {
+      "name": "@pulse-compute/cli",
+      "version": "1.0.0-beta.11",
+      "file": "packages/pulse-compute-cli-1.0.0-beta.11.tgz",
+      "sha256": "0718e60199e60174b4a49529abec79a9d8c60191e33ca94a0de2c8023ad7cc95"
+    },
+    {
+      "name": "@pulse-compute/provider-fastly",
+      "version": "1.0.0-beta.11",
+      "file": "packages/pulse-compute-provider-fastly-1.0.0-beta.11.tgz",
+      "sha256": "20ec7ac3201e93077b0473a3fb807459139819fcf00a12a396af490a02d4df3d"
+    },
+    {
+      "name": "@pulse-compute/grip",
+      "version": "1.0.0-beta.11",
+      "file": "packages/pulse-compute-grip-1.0.0-beta.11.tgz",
+      "sha256": "6f1c6d0a0e11c188c29587c64fa5b5b9cbf3c340adcc36981e44a7ec3b1e0476"
+    },
+    {
+      "name": "@pulse-compute/assets",
+      "version": "1.0.0-beta.11",
+      "file": "packages/pulse-compute-assets-1.0.0-beta.11.tgz",
+      "sha256": "4a587ce59c7832ed7be130a5e550eb8d0e61d3133ca979bb88ff771445b64e66"
+    },
+    {
+      "name": "@pulse-compute/crypto",
+      "version": "1.0.0-beta.11",
+      "file": "packages/pulse-compute-crypto-1.0.0-beta.11.tgz",
+      "sha256": "83c7ac0cdaf65ebae2b0221bf5f6d7c629f1e4c1eca86da62e6f4e8c6f6d346a"
+    },
+    {
+      "name": "@pulse-compute/jwt",
+      "version": "1.0.0-beta.11",
+      "file": "packages/pulse-compute-jwt-1.0.0-beta.11.tgz",
+      "sha256": "4655cca2737e868f45acf889ef2be65aff902a9f31e7cfc521437efde70b30a3"
+    },
+    {
+      "name": "@pulse-compute/entities",
+      "version": "1.0.0-beta.11",
+      "file": "packages/pulse-compute-entities-1.0.0-beta.11.tgz",
+      "sha256": "ce62a8a47618d8f78d54b63fc4aa5795ec98cd4b14e99d45e93006bcf1179142"
+    },
+    {
+      "name": "@pulse-compute/mcp",
+      "version": "1.0.0-beta.11",
+      "file": "packages/pulse-compute-mcp-1.0.0-beta.11.tgz",
+      "sha256": "e7d1b4e3b51dfd2cece242bdaba78e45b5d7181d21a27f988ba8005563fb48cf"
+    },
+    {
+      "name": "@pulse-compute/s3",
+      "version": "1.0.0-beta.11",
+      "file": "packages/pulse-compute-s3-1.0.0-beta.11.tgz",
+      "sha256": "83427158e90852686e8e69ffe230c1eebc51bf485c8048cda528e8f066db355b"
+    },
+    {
+      "name": "@pulse-compute/wasm-build-support",
+      "version": "1.0.0-beta.11",
+      "file": "packages/pulse-compute-wasm-build-support-1.0.0-beta.11.tgz",
+      "sha256": "ab8a7e93a64a3de22d0f4f62770a42fe495773d9a5ba7c639f9dbab5b163e7b6"
+    },
+    {
+      "name": "@pulse-compute/wasm-compiler",
+      "version": "1.0.0-beta.11",
+      "file": "packages/pulse-compute-wasm-compiler-1.0.0-beta.11.tgz",
+      "sha256": "0d5517e208c9ad3bd40e5c3f839ad2d6d384f2fba26d7a6ecf44817f8dd02a3f"
+    },
+    {
+      "name": "@pulse-compute/wasm-guest-link",
+      "version": "1.0.0-beta.11",
+      "file": "packages/pulse-compute-wasm-guest-link-1.0.0-beta.11.tgz",
+      "sha256": "4adce9e2a318f9eababb1f3d1af66aa6435ca5319c0139470513a4de6c89c14e"
+    },
+    {
+      "name": "@pulse-compute/wasm-contracts",
+      "version": "1.0.0-beta.11",
+      "file": "packages/pulse-compute-wasm-contracts-1.0.0-beta.11.tgz",
+      "sha256": "6c5afc7675f05f77699666fd6e492d6d4fa25ab22cc735d42f2a6fd4ad54c7f4"
+    },
+    {
+      "name": "@pulse-compute/wasm-host-runtime",
+      "version": "1.0.0-beta.11",
+      "file": "packages/pulse-compute-wasm-host-runtime-1.0.0-beta.11.tgz",
+      "sha256": "f1292c318ff8d92b89a2051937af93cdb14aec3f6103ea12036d522e313f282d"
+    },
+    {
+      "name": "@pulse-compute/wasm-library-kit",
+      "version": "1.0.0-beta.11",
+      "file": "packages/pulse-compute-wasm-library-kit-1.0.0-beta.11.tgz",
+      "sha256": "cb6844ee23ced330e634fbe9d1bcf613f94c3ef1aae225b0d3000d8f7fbad7b4"
+    },
+    {
+      "name": "@pulse-compute/provider-node",
+      "version": "1.0.0-beta.11",
+      "file": "packages/pulse-compute-provider-node-1.0.0-beta.11.tgz",
+      "sha256": "e11a274f1b92ff3ad453ddc7c744f51bc2d31cb978c97af036c15afcbd875128"
+    },
+    {
+      "name": "@pulse-compute/wasm-runtime-core-as",
+      "version": "1.0.0-beta.11",
+      "file": "packages/pulse-compute-wasm-runtime-core-as-1.0.0-beta.11.tgz",
+      "sha256": "b096c63c05453fb2877f169bdfe578f9fb2d70e34be62d1c27e81b323275711b"
+    },
+    {
+      "name": "@pulse-compute/wasm-schema-json",
+      "version": "1.0.0-beta.11",
+      "file": "packages/pulse-compute-wasm-schema-json-1.0.0-beta.11.tgz",
+      "sha256": "685c24d8fb36807693b4ac9f173991f09ad3888029b5de15dbcd0c5afab0d0bf"
+    }
+  ],
+  "fixture": {
+    "name": "@independent/rc-terminal",
+    "version": "91.7.3",
+    "file": "independent-rc-terminal-91.7.3.tgz",
+    "sha256": "c3faacee51ca4c4a211b4ff3fe3b3f41d5dea4c6f16797c9cb6f8479e1e5d990"
+  },
+  "artifacts": [
+    {
+      "id": "fanout",
+      "file": "fanout.wasm",
+      "sha256": "cd789e57b8b7be4c8ab2fd51cbff81eb7a409e015a72179c7c30f90cdab6175a",
+      "bytes": 27510,
+      "abi": "redirect_to_grip_proxy_v2",
+      "report": {
+        "file": "fanout.report.json",
+        "sha256": "fc45f32972d12c2ff2253bd4f0a4d79f9a690957090e99aae49c4f349dc1da92"
+      }
+    },
+    {
+      "id": "fanout-router",
+      "file": "fanout-router.wasm",
+      "sha256": "ac7db50a833fa62a59f38007558e063abea6234412a0b95eb7362276c625f807",
+      "bytes": 29073,
+      "abi": "redirect_to_grip_proxy_v2",
+      "report": {
+        "file": "fanout-router.report.json",
+        "sha256": "ce3a20758d786c540f69978035c6e3756aa3113cf2211b5b1f309cc8eef89ffa"
+      }
+    },
+    {
+      "id": "websocket",
+      "file": "websocket.wasm",
+      "sha256": "a776b28019661b673fcb0faa96fa9b63946276245e0662000f6eb509158c208a",
+      "bytes": 27515,
+      "abi": "redirect_to_websocket_proxy_v2",
+      "report": {
+        "file": "websocket.report.json",
+        "sha256": "3f2e6f248e79d43f458af2e1d8ff90a420f453b4aa879677709aa4040759cf41"
+      }
+    },
+    {
+      "id": "websocket-router",
+      "file": "websocket-router.wasm",
+      "sha256": "408f00a5e866042760f7b07257da628cb1cd6a6aa6c0a732584911dabe8e33a6",
+      "bytes": 29078,
+      "abi": "redirect_to_websocket_proxy_v2",
+      "report": {
+        "file": "websocket-router.report.json",
+        "sha256": "fe9762d20043a4cac24974d57289e6a3d32a17f7e5a622721f5fbab9d5753fb7"
+      }
+    },
+    {
+      "id": "independent",
+      "file": "independent.wasm",
+      "sha256": "6cb1231c4582aab621f60436d8537252f490ae09180647013d7580ce1fbad364",
+      "bytes": 27510,
+      "abi": "redirect_to_grip_proxy_v2",
+      "report": {
+        "file": "independent.report.json",
+        "sha256": "3029254e32837af29c8a7e45801a8e7d59676cf5f85dbf9d3b46edd1380bfaf3"
+      }
+    },
+    {
+      "id": "absent",
+      "file": "absent.wasm",
+      "sha256": "af970ab8e57e822cebf3c16c08a710b03f0db9bc211cf79c53c583c9cab31360",
+      "bytes": 23444,
+      "abi": null,
+      "report": {
+        "file": "absent.report.json",
+        "sha256": "9ca2673e1d139281a5617d895781e1ec3c91f592df572e9f0ad10454d354eead"
+      }
+    },
+    {
+      "id": "unused",
+      "file": "unused.wasm",
+      "sha256": "c072be3c3186cd450587e219615f9ec14fc1d6787b8e90816df6b2d4b3aa2b11",
+      "bytes": 23444,
+      "abi": null,
+      "report": {
+        "file": "unused.report.json",
+        "sha256": "d6491bdc031f5c472bd6ce52eab9d2b6370a57582faef1a329aea0d77c3b8ffe"
+      }
+    },
+    {
+      "id": "generic",
+      "file": "generic.wasm",
+      "sha256": "cbcf6abf78f3304143847248049ac481314a059db91bd5056952f2663dca4d2e",
+      "bytes": 25175,
+      "abi": null,
+      "report": {
+        "file": "generic.report.json",
+        "sha256": "689e105e0da764c97f93bc05ae3c2cfa75439916e0b4488ceb8a73818625e194"
+      }
+    }
+  ],
+  "negative": [
+    {
+      "id": "surrounding-effect",
+      "status": "passed"
+    },
+    {
+      "id": "escaped-token",
+      "status": "passed"
+    },
+    {
+      "id": "parallel",
+      "status": "passed"
+    },
+    {
+      "id": "helper",
+      "status": "passed"
+    },
+    {
+      "id": "dynamic-backend",
+      "status": "passed"
+    },
+    {
+      "id": "middleware",
+      "status": "passed"
+    },
+    {
+      "id": "fanout-node-native",
+      "status": "passed"
+    },
+    {
+      "id": "websocket-node-native",
+      "status": "passed"
+    },
+    {
+      "id": "independent-node-native",
+      "status": "passed"
+    },
+    {
+      "id": "fanout-node-javascript",
+      "status": "passed"
+    },
+    {
+      "id": "websocket-node-javascript",
+      "status": "passed"
+    },
+    {
+      "id": "independent-node-javascript",
+      "status": "passed"
+    },
+    {
+      "id": "fanout-fastly-javascript",
+      "status": "passed"
+    },
+    {
+      "id": "websocket-fastly-javascript",
+      "status": "passed"
+    },
+    {
+      "id": "independent-fastly-javascript",
+      "status": "passed"
+    }
+  ],
+  "unusedDeclarationsByteIdentical": true,
+  "injected": {
+    "file": "injected.json",
+    "sha256": "082fe23f8bfbc5a1c094b39f1564d69b8e35ea2438a5650b5e1ca38994f9261a"
+  }
+}

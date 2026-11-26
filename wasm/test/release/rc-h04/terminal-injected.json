@@ -1,0 +1,132 @@
+{
+  "version": "pulse.terminal-injected.v1",
+  "status": "passed",
+  "cases": [
+    {
+      "id": "fanout",
+      "scenario": "nonzero-status",
+      "status": "passed",
+      "artifactSha256": "cd789e57b8b7be4c8ab2fd51cbff81eb7a409e015a72179c7c30f90cdab6175a"
+    },
+    {
+      "id": "fanout",
+      "scenario": "dispatch-trap",
+      "status": "passed",
+      "artifactSha256": "cd789e57b8b7be4c8ab2fd51cbff81eb7a409e015a72179c7c30f90cdab6175a"
+    },
+    {
+      "id": "fanout",
+      "scenario": "cleanup-failure",
+      "status": "passed",
+      "artifactSha256": "cd789e57b8b7be4c8ab2fd51cbff81eb7a409e015a72179c7c30f90cdab6175a"
+    },
+    {
+      "id": "fanout",
+      "scenario": "success",
+      "status": "passed",
+      "scope": "injected ABI success; not transport",
+      "artifactSha256": "cd789e57b8b7be4c8ab2fd51cbff81eb7a409e015a72179c7c30f90cdab6175a"
+    },
+    {
+      "id": "fanout-router",
+      "scenario": "nonzero-status",
+      "status": "passed",
+      "artifactSha256": "ac7db50a833fa62a59f38007558e063abea6234412a0b95eb7362276c625f807"
+    },
+    {
+      "id": "fanout-router",
+      "scenario": "dispatch-trap",
+      "status": "passed",
+      "artifactSha256": "ac7db50a833fa62a59f38007558e063abea6234412a0b95eb7362276c625f807"
+    },
+    {
+      "id": "fanout-router",
+      "scenario": "cleanup-failure",
+      "status": "passed",
+      "artifactSha256": "ac7db50a833fa62a59f38007558e063abea6234412a0b95eb7362276c625f807"
+    },
+    {
+      "id": "fanout-router",
+      "scenario": "success",
+      "status": "passed",
+      "scope": "injected ABI success; not transport",
+      "artifactSha256": "ac7db50a833fa62a59f38007558e063abea6234412a0b95eb7362276c625f807"
+    },
+    {
+      "id": "websocket",
+      "scenario": "nonzero-status",
+      "status": "passed",
+      "artifactSha256": "a776b28019661b673fcb0faa96fa9b63946276245e0662000f6eb509158c208a"
+    },
+    {
+      "id": "websocket",
+      "scenario": "dispatch-trap",
+      "status": "passed",
+      "artifactSha256": "a776b28019661b673fcb0faa96fa9b63946276245e0662000f6eb509158c208a"
+    },
+    {
+      "id": "websocket",
+      "scenario": "cleanup-failure",
+      "status": "passed",
+      "artifactSha256": "a776b28019661b673fcb0faa96fa9b63946276245e0662000f6eb509158c208a"
+    },
+    {
+      "id": "websocket",
+      "scenario": "success",
+      "status": "passed",
+      "scope": "injected ABI success; not transport",
+      "artifactSha256": "a776b28019661b673fcb0faa96fa9b63946276245e0662000f6eb509158c208a"
+    },
+    {
+      "id": "websocket-router",
+      "scenario": "nonzero-status",
+      "status": "passed",
+      "artifactSha256": "408f00a5e866042760f7b07257da628cb1cd6a6aa6c0a732584911dabe8e33a6"
+    },
+    {
+      "id": "websocket-router",
+      "scenario": "dispatch-trap",
+      "status": "passed",
+      "artifactSha256": "408f00a5e866042760f7b07257da628cb1cd6a6aa6c0a732584911dabe8e33a6"
+    },
+    {
+      "id": "websocket-router",
+      "scenario": "cleanup-failure",
+      "status": "passed",
+      "artifactSha256": "408f00a5e866042760f7b07257da628cb1cd6a6aa6c0a732584911dabe8e33a6"
+    },
+    {
+      "id": "websocket-router",
+      "scenario": "success",
+      "status": "passed",
+      "scope": "injected ABI success; not transport",
+      "artifactSha256": "408f00a5e866042760f7b07257da628cb1cd6a6aa6c0a732584911dabe8e33a6"
+    },
+    {
+      "id": "independent",
+      "scenario": "nonzero-status",
+      "status": "passed",
+      "artifactSha256": "6cb1231c4582aab621f60436d8537252f490ae09180647013d7580ce1fbad364"
+    },
+    {
+      "id": "independent",
+      "scenario": "dispatch-trap",
+      "status": "passed",
+      "artifactSha256": "6cb1231c4582aab621f60436d8537252f490ae09180647013d7580ce1fbad364"
+    },
+    {
+      "id": "independent",
+      "scenario": "cleanup-failure",
+      "status": "passed",
+      "artifactSha256": "6cb1231c4582aab621f60436d8537252f490ae09180647013d7580ce1fbad364"
+    },
+    {
+      "id": "independent",
+      "scenario": "success",
+      "status": "passed",
+      "scope": "injected ABI success; not transport",
+      "artifactSha256": "6cb1231c4582aab621f60436d8537252f490ae09180647013d7580ce1fbad364"
+    }
+  ],
+  "transportQualified": false
+}
