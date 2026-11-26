@@ -1,0 +1,93 @@
+name: Temporary RC-H04 fixture origins
+on:
+  push:
+    branches: [evidence/rc-h04-live-origin]
+    paths: ['.github/workflows/rc-h04-live-origin.yml']
+concurrency:
+  group: temporary-rc-h04-origin
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  origin:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          ref: d012f547f804af6e272cb1a6aeafe970c22e0b77
+          persist-credentials: false
+      - name: Start bounded credential-free origins
+        shell: bash
+        run: |
+          set -euo pipefail
+          proof="$RUNNER_TEMP/origin-evidence"
+          mkdir -p "$proof"
+          curl --fail --location --retry 2 https://github.com/cloudflare/cloudflared/releases/download/2026.11.2/cloudflared-linux-amd64 -o "$RUNNER_TEMP/cloudflared"
+          echo "56f13335143ec0e22772963290683a84a04114a35ec64cbc794a4d39ff9bb8cf  $RUNNER_TEMP/cloudflared" | sha256sum --check
+          chmod +x "$RUNNER_TEMP/cloudflared"
+          node wasm/test/qualification/terminal/origin.cjs 18715 > "$proof/terminal.log" 2>&1 &
+          echo "$!" > "$proof/terminal.pid"
+          cat > "$proof/fetch.cjs" <<'JS'
+          const http=require('node:http');
+          let count=0;const timers=new Set();
+          const s=http.createServer((req,res)=>{
+            const url=new URL(req.url,'http://origin');
+            if(url.pathname==='/counts'){res.setHeader('content-type','application/json');res.end(JSON.stringify({count}));return;}
+            count++;console.log(JSON.stringify({number:count,method:req.method,path:url.pathname}));
+            let n=0;req.on('data',b=>{n+=b.length;if(n>65536)req.destroy();});
+            req.on('end',()=>{
+              const send=()=>{res.writeHead(202,{'x-ack':'accepted','x-observed-method':req.method,'cache-control':'no-store'});res.end('origin-'+req.method);};
+              if(url.pathname==='/reset'){req.socket.destroy();return;}
+              if(url.pathname==='/slow'){const t=setTimeout(()=>{timers.delete(t);send();},1800);timers.add(t);return;}
+              if(url.pathname==='/body'){res.writeHead(202,{'x-ack':'accepted','cache-control':'no-store'});res.flushHeaders();const t=setTimeout(()=>{timers.delete(t);res.end('late-body');},1800);timers.add(t);return;}
+              send();
+            });
+          });s.listen(18716,'127.0.0.1');
+          process.on('SIGTERM',()=>{for(const t of timers)clearTimeout(t);s.closeAllConnections();s.close(()=>process.exit(0));});
+          JS
+          node "$proof/fetch.cjs" > "$proof/fetch.log" 2>&1 &
+          echo "$!" > "$proof/fetch.pid"
+          for item in terminal:18715 fetch:18716; do
+            label=${item%:*}; port=${item#*:}
+            "$RUNNER_TEMP/cloudflared" tunnel --url "http://127.0.0.1:$port" --no-autoupdate --protocol http2 > "$proof/$label-tunnel.log" 2>&1 &
+            echo "$!" > "$proof/$label-tunnel.pid"
+            for attempt in $(seq 1 60); do
+              url=$(grep -oE 'https://[a-z0-9-]+\.trycloudflare.com' "$proof/$label-tunnel.log" | head -1 || true)
+              if [ -n "$url" ]; then
+                printf '%s\n' "$url" > "$proof/$label-url.txt"
+                echo "Fixture $label origin: $url"
+                break
+              fi
+              sleep 1
+            done
+            test -s "$proof/$label-url.txt"
+          done
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: rc-h04-origin-endpoints
+          path: ${{ runner.temp }}/origin-evidence
+          retention-days: 3
+      - name: Keep test origins available
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 240); do
+            for file in "$RUNNER_TEMP/origin-evidence/"*.pid; do kill -0 "$(cat "$file")"; done
+            if curl --fail --silent https://raw.githubusercontent.com/pulse-compute/pulse/evidence/rc-h04-live-origin/stop-origin.txt >/dev/null; then break; fi
+            sleep 10
+          done
+      - name: Stop owned fixture processes
+        if: always()
+        shell: bash
+        run: |
+          for file in "$RUNNER_TEMP/origin-evidence/"*.pid; do
+            test -f "$file" && kill "$(cat "$file")" 2>/dev/null || true
+          done
+          echo 'Owned origin and tunnel processes signaled to stop' > "$RUNNER_TEMP/origin-evidence/cleanup.txt"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: rc-h04-origin-final
+          path: ${{ runner.temp }}/origin-evidence
+          retention-days: 14
