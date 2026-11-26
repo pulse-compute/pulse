@@ -6,7 +6,7 @@ Pulse uses a machine-readable maintenance policy so repository automation and Co
 
 - **Policy schema:** `pulse.maintenance-policy.v2`
 - **Policy version:** `14`
-- **Release:** `1.0.0-beta.11`
+- **Release:** `1.0.0-rc.1`
 - **Reviewed:** `2026-10-28`
 - **Resident maintainer:** Codex
 - **Merge authority:** human-only
@@ -131,7 +131,7 @@ The deterministic scope gate compares that declaration with changed paths. It fa
 | `scope-proposal.yml` | `scope-expansion` | `type:scope-proposal`, `decision:human-required` |
 | `support.yml` | `evidence` | `type:support` |
 
-Labels are synchronized by the manual **Maintainer labels** workflow. Issue labels classify incoming evidence; they do not authorize implementation or widen the Beta contract.
+Labels are synchronized by the manual **Maintainer labels** workflow. Issue labels classify incoming evidence; they do not authorize implementation or widen the current release contract.
 
 ## Codex operation
 

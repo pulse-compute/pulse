@@ -494,7 +494,7 @@ The deterministic scope gate compares that declaration with changed paths. It fa
 |---|---|---|
 ${formRows.join('\n')}
 
-Labels are synchronized by the manual **Maintainer labels** workflow. Issue labels classify incoming evidence; they do not authorize implementation or widen the Beta contract.
+Labels are synchronized by the manual **Maintainer labels** workflow. Issue labels classify incoming evidence; they do not authorize implementation or widen the current release contract.
 
 ## Codex operation
 

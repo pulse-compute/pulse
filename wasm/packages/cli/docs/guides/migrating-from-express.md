@@ -131,7 +131,7 @@ An unhandled normal lane ends as `404 Not Found`; an unhandled error lane ends a
 
 ## Reduce routing to the static topology
 
-The Beta Router supports:
+The Release Candidate Router supports:
 
 - `use`, `get`, `head`, `post`, `put`, `patch`, `delete`, `mount`, and `error`;
 - exact paths, named `:parameters`, and a trailing `*` wildcard;

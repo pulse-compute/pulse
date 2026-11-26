@@ -1,6 +1,6 @@
 {
   "schemaVersion": "pulse.public-site.v1",
-  "releaseVersion": "1.0.0-beta.11",
+  "releaseVersion": "1.0.0-rc.1",
   "product": {
     "name": "Pulse",
     "eyebrow": "TypeScript in / inspectable Wasm out",
@@ -143,7 +143,7 @@
     },
     "preview-scope": {
       "source": "docs/preview-scope.md",
-      "label": "Beta scope"
+      "label": "Release Candidate scope"
     },
     "s3-package": {
       "source": "docs/packages/s3.md",
@@ -497,7 +497,7 @@
         "document": "getting-started"
       },
       "scopeAction": {
-        "label": "What the Beta supports",
+        "label": "What the Release Candidate supports",
         "document": "preview-scope"
       },
       "terminal": [
@@ -632,7 +632,7 @@
       {
         "id": "scope",
         "type": "scope",
-        "eyebrow": "Beta",
+        "eyebrow": "Release Candidate",
         "title": "Four proven execution modes. One conformance contract.",
         "body": "Node and Fastly each execute explicit Native and JavaScript targets through one four-mode conformance corpus. ESP32 and browser event conformity remain clearly labeled forward host work.",
         "supported": [

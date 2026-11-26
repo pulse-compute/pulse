@@ -208,7 +208,7 @@
       "sections": [
         {
           "id": "contract/targets",
-          "heading": "Current Beta targets",
+          "heading": "Current Release Candidate targets",
           "tags": [
             "provider",
             "Native",

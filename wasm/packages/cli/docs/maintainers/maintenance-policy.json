@@ -1,7 +1,7 @@
 {
   "schemaVersion": "pulse.maintenance-policy.v2",
   "policyVersion": 14,
-  "releaseVersion": "1.0.0-beta.11",
+  "releaseVersion": "1.0.0-rc.1",
   "reviewedAt": "2026-10-28",
   "maintainerModel": {
     "residentMaintainer": "Codex",
@@ -156,7 +156,7 @@
   },
   "scopeStates": {
     "inside-developer-preview": {
-      "label": "Inside Beta",
+      "label": "Inside Release Candidate",
       "humanDecisionRequired": false
     },
     "evidence-only": {

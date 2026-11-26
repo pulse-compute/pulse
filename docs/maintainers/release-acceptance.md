@@ -7,8 +7,8 @@ pulse-doc-meta:end -->
 
 # Release packages and clean-consumer acceptance
 
-The current Beta candidate contains twenty publishable packages
-synchronized at version `1.0.0-beta.11`. The product-facing packages are:
+The current Release Candidate candidate contains twenty publishable packages
+synchronized at version `1.0.0-rc.1`. The product-facing packages are:
 
 ```text
 @pulse-compute/pulse

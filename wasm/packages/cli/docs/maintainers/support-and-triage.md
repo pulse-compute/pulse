@@ -36,7 +36,7 @@ Then classify the report as defect, hardening, documentation, evidence, scope ex
 
 ## Quiet-launch posture
 
-The Beta makes no response-time or compatibility guarantee beyond
+The Release Candidate makes no response-time or compatibility guarantee beyond
 its documented release contract. Normal maintenance priority is:
 
 1. containment, secret exposure, artifact escape, or release-integrity failures;
@@ -66,7 +66,7 @@ Scope, architecture, and release proposals remain analysis until the human autho
 Close an issue with one of four clear outcomes:
 
 - fixed in a named release or commit;
-- documented as expected Beta behavior;
+- documented as expected Release Candidate behavior;
 - retained as evidence for a future decision;
 - declined because it conflicts with a stated invariant.
 

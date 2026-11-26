@@ -11,7 +11,7 @@ pulse-doc-meta:end -->
 lowerer. This page records the package-specific boundary; the general protocol
 remains authoritative in [Package lowerer contract](./package-lowerer-contract.md).
 
-The package is part of the synchronized Beta release. Changes here do not alter
+The package is part of the synchronized Release Candidate release. Changes here do not alter
 release membership, publish it, or make its internal toolchain subpaths a
 public extension API.
 

@@ -6,7 +6,7 @@
 operations through the first-party JSON-RPC adapter.
 
 ```bash
-npm install @pulse-compute/entities@1.0.0-beta.11
+npm install @pulse-compute/entities@1.0.0-rc.1
 ```
 
 ## Declare an entity router
@@ -113,7 +113,7 @@ direct handler or runtime-registry API.
 
 ## Target status
 
-| Mode | Beta evidence | Important boundary |
+| Mode | Release Candidate evidence | Important boundary |
 |---|---|---|
 | Node JavaScript | Ordinary doctor, inspect, test, dev, and build workflow | Package JavaScript runtime |
 | Fastly JavaScript | Measured with Viceroy 0.20.1 | Provider JavaScript package/runtime |
@@ -151,7 +151,7 @@ projections when generating the application.
 
 ## Diagnostics
 
-These codes are package-owned entries in the synchronized Beta diagnostic
+These codes are package-owned entries in the synchronized Release Candidate diagnostic
 catalog.
 
 | Code or family | Meaning | Remediation |

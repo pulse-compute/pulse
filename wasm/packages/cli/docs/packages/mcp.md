@@ -2,12 +2,12 @@
 
 **npm:** [`@pulse-compute/mcp`](https://www.npmjs.com/package/@pulse-compute/mcp)
 
-`@pulse-compute/mcp` is a supported Beta extension for bounded MCP HTTP
-integration, published as `1.0.0-beta.11` in the synchronized release set.
+`@pulse-compute/mcp` is a supported Release Candidate extension for bounded MCP HTTP
+integration, published as `1.0.0-rc.1` in the synchronized release set.
 Its static binding depends on Entities and Runtime; it does not depend on the Pulse CLI or corpus.
 
 ```bash
-npm install @pulse-compute/mcp@1.0.0-beta.11
+npm install @pulse-compute/mcp@1.0.0-rc.1
 ```
 
 Use matching exact versions of Pulse packages.
@@ -90,7 +90,7 @@ effects and output authority. Optional OAuth resource-server admission uses an
 external authorization server and authenticated introspection; the adapter does
 not issue tokens. Its fixed limits and redacted errors remain in force.
 
-The [package contract](https://github.com/pulse-compute/pulse/blob/v1.0.0-beta.11/packages/mcp/README.md) documents construction,
+The [package contract](https://github.com/pulse-compute/pulse/blob/v1.0.0-rc.1/packages/mcp/README.md) documents construction,
 limits, authorization, protocol versions and supported client qualification.
 There is no stdio transport, resource/prompt API, filesystem access or execution
 service in this package.

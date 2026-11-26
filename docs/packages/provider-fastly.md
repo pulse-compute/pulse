@@ -35,7 +35,7 @@ For Native build settings, see [Native build optimization](../reference/native-b
 ## Install
 
 ```bash
-npm install @pulse-compute/provider-fastly@1.0.0-beta.11
+npm install @pulse-compute/provider-fastly@1.0.0-rc.1
 ```
 
 ## Configure a project
@@ -345,7 +345,7 @@ Do not import Fastly SDK objects into canonical handlers. Bindings belong in pro
 - Dynamic backends are disabled unless explicitly enabled.
 - GRIP requires the documented Fanout/publish bindings for the operations used.
 - Full userland stream processing and provider SDK escape hatches remain
-  outside the Beta.
+  outside the Release Candidate.
 
 ## Related documentation
 

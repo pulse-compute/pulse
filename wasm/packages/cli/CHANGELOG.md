@@ -4,6 +4,8 @@ Pulse follows semantic versioning for public releases. The repository begins its
 
 ## Unreleased
 
+## 1.0.0-rc.1 — Release Candidate (2026-11-26)
+
 - Align canonical host fetch admission with the JavaScript runtime: reject invalid
   methods and malformed headers before dispatch, and preserve an explicit empty
   JSON content type. Add installed-runtime DELETE/OPTIONS HTTP regressions.

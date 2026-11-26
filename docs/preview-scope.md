@@ -1,11 +1,11 @@
-# Beta scope
+# Release Candidate scope
 
-Pulse `1.0.0-beta.11` is a Beta of one provider-neutral application contract
+Pulse `1.0.0-rc.1` is a Release Candidate of one provider-neutral application contract
 with explicit Native and JavaScript execution targets. The intended 1.0
 surface is present, but deliberate corrections may still occur before the
 stable `1.0.0` release.
 
-The Beta is intentionally strict: Pulse builds the target selected by the
+The Release Candidate is intentionally strict: Pulse builds the target selected by the
 active `.pulse/config.ts` profile, and unsupported source stops at the exact
 lowering boundary with a stable diagnostic. Pulse never silently switches
 targets.
@@ -50,7 +50,7 @@ targets.
 
 ## Execution contract
 
-The Beta has two target classes and four explicitly selected
+The Release Candidate has two target classes and four explicitly selected
 execution modes over one application model:
 
 ```text
@@ -153,6 +153,6 @@ pass it through → opaque handle
   released.
 
 The release manifest explicitly selects the npm `latest` dist-tag while package
-versions retain the Beta prerelease suffix. The npm tag and Git branch are
+versions retain the `rc.1` prerelease suffix. The npm tag and Git branch are
 separate names. Publication remains a distinct human-authorized action; this
 support cleanup does not change that policy.

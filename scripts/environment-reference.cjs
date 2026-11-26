@@ -171,7 +171,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
     precedence: 'An explicit `binary` option wins, then `PULSE_FASTLY_BIN`, then `PATH` discovery.',
     consumer: 'Fastly CLI inspection and the external Compute reality gate.',
     secretSafety: 'Not a secret. Do not point it at an untrusted executable.',
-    stability: 'Supported Beta tooling override.',
+    stability: 'Supported tooling override.',
     description: 'Selects the Fastly CLI binary used for external target inspection and local Compute execution.',
     sourceFiles: ['packages/provider-fastly/src/testing/fastly-cli.js']
   }),
@@ -183,7 +183,7 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
     precedence: 'An explicit launcher choice wins. Without one, an explicit Fastly CLI path selects CLI ownership; otherwise an explicit `viceroyBinary` or `PULSE_VICEROY_BIN` selects direct Viceroy execution.',
     consumer: 'External Fastly Compute reality gates, either as the direct local engine or as an explicit Fastly CLI engine override.',
     secretSafety: 'Not a secret. Do not point it at an untrusted executable.',
-    stability: 'Supported Beta tooling override.',
+    stability: 'Supported tooling override.',
     description: 'Selects an inspected Viceroy executable for direct local Compute execution when no explicit Fastly CLI launcher is selected.',
     sourceFiles: ['packages/provider-fastly/src/testing/fastly-cli.js']
   }),

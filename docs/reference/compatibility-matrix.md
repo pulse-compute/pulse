@@ -1,6 +1,6 @@
 # Provider and target compatibility
 
-This page is the single compatibility matrix for the Pulse Beta.
+This page is the single compatibility matrix for the Pulse Release Candidate.
 It records the tested source forms, provider bindings, target realizations, and
 deployment boundary for the four explicit execution modes. The same managed
 handler and Router contract applies in every column; target selection changes
@@ -77,7 +77,7 @@ cell names the provider-owned binding or artifact that realizes it.
 | Deployment candidate | Source package | Source package plus downstream runtime Wasm | Node build | `bin/main.wasm` | A candidate records the selected target and does not contain an automatic fallback artifact. |
 | Production deployment and activation | Host-operated | Human-operated | Host-operated | Human-operated | The Node launcher does not create infrastructure or supervise processes; Fastly reality, deployment, and activation remain explicit external gates. |
 
-## Entities Beta package
+## Entities package
 
 This table records measured behavior for the implemented
 `@pulse-compute/entities` package. Release membership does not erase the
@@ -104,10 +104,10 @@ must be supported by the selected provider; Fastly JavaScript rejects request
 deadlines. An injected JavaScript runtime proof does not establish downstream
 Compute packaging or deployed acceptance.
 
-## JWT and crypto Beta packages
+## JWT and crypto packages
 
 This table records the sealed Phase D and E behavior of the synchronized
-`1.0.0-beta.11` JWT/crypto packages. Validation does not itself authorize npm
+`1.0.0-rc.1` JWT/crypto packages. Validation does not itself authorize npm
 publication.
 
 | Candidate capability | Node JS | Fastly JS | Node Native | Fastly Native | Notes |
@@ -189,7 +189,7 @@ owners. Runtime behavior remains covered by the owning tests above.
 ## Related reference
 
 - [Managed handler TypeScript and JavaScript](./handler-authoring.md)
-- [Beta scope](../preview-scope.md)
+- [Release Candidate scope](../preview-scope.md)
 - [Node build and execution](../guides/deploying-node.md)
 - [Fastly deployment candidates](../guides/deploying-fastly.md)
 - [Diagnostics and remediation](./diagnostics.md)

@@ -6,7 +6,7 @@
 Pulse handlers.
 
 ```bash
-npm install @pulse-compute/jwt@1.0.0-beta.11
+npm install @pulse-compute/jwt@1.0.0-rc.1
 ```
 
 ## Verify a bearer token
@@ -40,7 +40,7 @@ to ordinary JavaScript projects that use the canonical package lowerer.
 
 ## Algorithms and keys
 
-The Beta supports HS256, ES256 and RS256 verification. ES256 accepts inline public
+The Release Candidate supports HS256, ES256 and RS256 verification. ES256 accepts inline public
 P-256 JWKs or static JWKS values with at most 16 entries. Key selection is
 deterministic and fails closed for duplicate, missing, ambiguous, or unknown
 identities.

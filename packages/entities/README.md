@@ -5,11 +5,11 @@
 > **Audience:** Applications declaring bounded schema-backed entity operations through the first-party JSON-RPC adapter.<br>
 > **Install directly:** Yes, when an application declares entity operations.<br>
 > **Supported entry points:** `@pulse-compute/entities`<br>
-> **Stability:** The package root and first-party JSON-RPC adapter are supported Beta contracts; compiler integration subpaths remain toolchain-only.<br>
+> **Stability:** The package root and first-party JSON-RPC adapter are supported Release Candidate contracts; compiler integration subpaths remain toolchain-only.<br>
 > **npm:** [`@pulse-compute/entities`](https://www.npmjs.com/package/@pulse-compute/entities)<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.11/packages/entities/)
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-rc.1/packages/entities/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.11` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-rc.1` package policy.
 <!-- pulse-package-status:end -->
 
 Bounded, statically declared operations for Pulse applications.
@@ -109,8 +109,8 @@ groups are:
 - eligibility: `PULSE_ENTITIES_TARGET_INELIGIBLE`.
 
 The package diagnostics are part of the synchronized Beta diagnostic catalog.
-See the [Entities package guide](https://pulsecompute.io/v1.0.0-beta.11/packages/entities/)
-for remediation and the [entity/adapter model](https://pulsecompute.io/v1.0.0-beta.11/concepts/entities-and-adapters/)
+See the [Entities package guide](https://pulsecompute.io/v1.0.0-rc.1/packages/entities/)
+for remediation and the [entity/adapter model](https://pulsecompute.io/v1.0.0-rc.1/concepts/entities-and-adapters/)
 for the authority boundary.
 
 ## Deliberate exclusions
