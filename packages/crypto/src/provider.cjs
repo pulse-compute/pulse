@@ -45,9 +45,9 @@ const digestFailures = Object.freeze(Object.fromEntries(
   ['invalid-text', 'too-large', 'unavailable', 'realization-failure'].map(reason => [reason, Object.freeze({ status: 'failed', reason })])
 ));
 // Count scalar UTF-8 bytes before allocating staging; do not replace surrogates.
-function textDigestByteLength(text) {
+function textDigestByteLength(text, maximum = DIGEST_TEXT_MAX_BYTES) {
   if (typeof text !== 'string') return -1;
-  if (text.length > DIGEST_TEXT_MAX_BYTES) return -2;
+  if (text.length > maximum) return -2;
   let bytes = 0;
   for (let i = 0; i < text.length; i++) {
     const c = text.charCodeAt(i);
@@ -58,7 +58,7 @@ function textDigestByteLength(text) {
     } else if (c >= 0xdc00 && c <= 0xdfff) return -1;
     else bytes += c < 0x80 ? 1 : c < 0x800 ? 2 : 3;
   }
-  return bytes > DIGEST_TEXT_MAX_BYTES ? -2 : bytes;
+  return bytes > maximum ? -2 : bytes;
 }
 function normalizeTextDigestResult(value) {
   const failed = digestFailures['realization-failure'];
@@ -214,5 +214,69 @@ function normalizeMacTextResult(value) {
   return Object.freeze({ status: 'realization-failure' });
 }
 
-module.exports = Object.freeze({ normalizeMacTextOptions, normalizeMacTextResult, rsaPrivateKeyBytes, bindJavascriptRs256Signer, bindJavascriptEs256Signer, IMPLEMENTATIONS, bindJavascriptDigestMac, DIGEST_TEXT_MAX_BYTES,
+
+// Request-owned framing. Secret lookup and realization are explicit provider
+// authority; no ambient secret access or algorithm fallback lives here.
+async function executeMacText(effect, options = {}) {
+  if (!effect || effect.package !== '@pulse-compute/crypto' || effect.contractId !== 'pulse.crypto'
+    || effect.providerKind !== 'crypto' || effect.operation !== 'verifyMacText'
+    || effect.kind !== 'crypto.verifyMacText' || effect.capability !== effect.kind) throw new TypeError('Invalid Crypto MAC effect authority.');
+  const active = () => options.signal?.throwIfAborted();
+  const result = status => normalizeMacTextResult({ status });
+  active();
+  const payload = effect.payload;
+  const descriptor = normalizeMacTextOptions({ algorithm: payload?.algorithm, key: payload?.key });
+  if (!descriptor) return result('invalid-input');
+  const length = textDigestByteLength(payload.message, 65536);
+  if (length < 0) return result(length === -2 ? 'too-large' : 'invalid-input');
+  if (typeof payload.tag !== 'string' || payload.tag.length !== 64 || !/^[0-9a-f]{64}$/.test(payload.tag)) return result('invalid-input');
+  const realization = options.cryptoTarget === 'javascript' ? 'runtime-builtin' : 'guest-source:pulse-hmac-as';
+  const implementation = realization === 'runtime-builtin' ? 'webcrypto.subtle.hmac-sha-256.v1' : 'pulse-hmac-as.v1';
+  const verify = options.cryptoVerifier?.macText?.verify;
+  if (typeof options.secretLookup !== 'function' || typeof verify !== 'function'
+    || options.cryptoRealization?.automaticFallback !== false
+    || !Array.isArray(options.cryptoRealization?.algorithms)
+    || !options.cryptoRealization.algorithms.some(entry => entry?.algorithm === 'HS256'
+      && entry.realization === realization && entry.implementation === implementation && entry.available === true)) return result('unavailable');
+  let key, data, tag;
+  try {
+    const value = await options.secretLookup(descriptor.key.binding);
+    active();
+    if (typeof value === 'string') {
+      const keyLength = textDigestByteLength(value, 4096);
+      if (keyLength < 32) return result('invalid-key');
+      key = new TextEncoder().encode(value);
+    } else if (value instanceof Uint8Array && value.byteLength >= 32 && value.byteLength <= 4096) {
+      key = new Uint8Array(value);
+    } else return result('invalid-key');
+    data = new TextEncoder().encode(payload.message);
+    tag = new Uint8Array(32);
+    for (let i = 0; i < 32; i++) tag[i] = parseInt(payload.tag.slice(i * 2, i * 2 + 2), 16);
+    const verified = normalizeMacTextResult(await verify({ algorithm: 'HS256', key: { type: 'hmac-key-bytes', bytes: key }, data, tag }));
+    active();
+    return ['valid', 'invalid-authenticator', 'realization-failure'].includes(verified.status) ? verified : result('realization-failure');
+  } catch {
+    active();
+    return result('realization-failure');
+  } finally { key?.fill(0); data?.fill(0); tag?.fill(0); }
+}
+function createJavascriptMacText(options = {}) {
+  return async (effect, execution = {}) => {
+    let selected;
+    let subtle;
+    try { subtle = options.macSubtle === undefined ? globalThis.crypto?.subtle : options.macSubtle; } catch {}
+    if (typeof subtle?.importKey === 'function' && typeof subtle?.verify === 'function') {
+      selected = { macText: { async verify(request) {
+        const { verifyHs256WithSubtle } = await import('../dist/internal/realization.js');
+        return verifyHs256WithSubtle(request, subtle, 'realization-failure');
+      } } };
+    }
+    return executeMacText(effect, { signal: execution.signal, secretLookup: options.secretLookup,
+      cryptoTarget: 'javascript', cryptoVerifier: selected,
+      cryptoRealization: { automaticFallback: false, algorithms: [{ algorithm: 'HS256', realization: 'runtime-builtin',
+        implementation: 'webcrypto.subtle.hmac-sha-256.v1', available: !!selected }] } });
+  };
+}
+
+module.exports = Object.freeze({ executeMacText, createJavascriptMacText, normalizeMacTextOptions, normalizeMacTextResult, rsaPrivateKeyBytes, bindJavascriptRs256Signer, bindJavascriptEs256Signer, IMPLEMENTATIONS, bindJavascriptDigestMac, DIGEST_TEXT_MAX_BYTES,
   textDigestByteLength, normalizeTextDigestResult, executeTextDigest, createJavascriptTextDigest });

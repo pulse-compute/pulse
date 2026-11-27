@@ -244,8 +244,10 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'crypto profile replacement, reachable requirements, and deterministic target realization planning'
   }),
+  'crypto-mac-text-provider': nodeTask('test/crypto/assert-mac-text-provider.cjs', {timeoutMs:180000,evidence:'unit',description:'MAC provider precedence, secret snapshots, cleanup and cancellation'}),
+  'crypto-mac-text-conformance': nodeTask('test/crypto/assert-mac-text-conformance.cjs', {timeoutMs:180000,evidence:'conformance',description:'Exact-text MAC corpus across Node/Fastly Native/JavaScript dispatch'}),
   'crypto-mac-text-contract': nodeTask('test/crypto/assert-mac-text-contract.cjs', {
-    description: 'MAC-01 authoring, trusted dispatch bounds, status projection and unavailable target admission'
+    description: 'MAC authoring, trusted dispatch bounds, status projection and explicit target admission'
   }),
   'crypto-mac-text-corpus': nodeTask('test/crypto/assert-mac-text-corpus.cjs', {
     description: 'MAC-00 reference-only HMAC text known answers, classification and bounded envelope evidence'
@@ -1544,6 +1546,7 @@ const profiles = Object.freeze({
     'crypto-digest-text-contract',
     'crypto-mac-text-corpus',
     'crypto-mac-text-contract',
+    'crypto-mac-text-provider',
     'reachable-graph',
     'project-modules',
     'package-reachability',
@@ -1669,6 +1672,7 @@ const profiles = Object.freeze({
     'jwt-rs256',
     's3-write-conformance',
     'crypto-cross-target-conformance',
+    'crypto-mac-text-conformance',
     'crypto-digest-text-conformance',
     'crypto-digest-storage-conformance',
     'multifile-source-identity',

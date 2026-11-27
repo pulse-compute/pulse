@@ -72,10 +72,12 @@ another realization. Applications must select a compatible capacity profile.
 
 ## Exact-text MAC authoring (implementation in progress)
 
-The MAC-01 source API adds `crypto.verifyMacText(ctx, message, tag, options)`
-and the named `verifyMacText` export. Provider realization is pending MAC-02:
-current Node/Fastly Native and JavaScript managed builds reject the operation
-with `PULSE_PROVIDER_CAPABILITY_UNSUPPORTED`. This is not a beta.11 availability
+The source API provides `crypto.verifyMacText(ctx, message, tag, options)`
+and the named `verifyMacText` export. MAC-02 implements Node/Fastly Native
+with selected `guest-source:pulse-hmac-as`, and Node/Fastly JavaScript with
+selected `runtime-builtin`. All require explicit `HS256` configuration and
+provider secret authority. Local dispatch parity is qualified; packed-consumer
+and deployed Fastly proof remain MAC-03 work. This is not a beta.11 publication
 claim, and no target silently falls back.
 
 ```ts
@@ -110,11 +112,22 @@ operations retain their existing bounds.
 fields normalize to `realization-failure`. Payload and tag values are absent
 from lowering artifacts and effect observations. Only `valid` means success.
 
-MAC-02 must implement and qualify scalar/byte validation, strict tag decoding,
-secret authority and lookup, selected verification, Native framing, and
-cancellation/cleanup before any provider advertises this capability. The current
-reference corpus and injected adapter tests do not establish cryptographic or
-hosted execution. Raw-byte verification and JWT are unchanged. Applications
+Validation precedes lookup: options, message type, early code-unit bound,
+scalar validity, UTF-8 byte bound, tag, selected authority/primitive, secret
+lookup, key validity, verification. Explicit absence is `invalid-key`; an
+unexpected lookup or primitive failure is `realization-failure`. Cancellation
+and deadlines terminate through the existing request lifecycle rather than
+returning a verification status. Fastly JavaScript retains its existing lack
+of a request deadline; cancellation is supported.
+
+Both Native adapters borrow the existing 73,760-byte Crypto frame without
+per-call frame growth. JavaScript uses the existing Web Crypto HMAC verify
+primitive. Owned key/message/tag buffers and native staging are erased on
+normal and returned-error paths; the Node bridge also clears its frame after
+a caught Wasm trap. A terminal Fastly guest trap cannot run cleanup inside
+that guest: the instance is abandoned, and no in-guest erasure claim is made.
+Immutable provider strings and Web Crypto key objects cannot be explicitly
+erased. Raw-byte verification and JWT semantics are unchanged. Applications
 still own request canonicalization, freshness, replay and key rotation; this
 operation does not read or modify Authorization or the request body.
 

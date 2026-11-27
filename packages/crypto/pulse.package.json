@@ -3,7 +3,7 @@
   "kind": "pulse.package-contract",
   "contractId": "pulse.crypto",
   "npmPackage": "@pulse-compute/crypto",
-  "description": "Bounded exact-text digest and HMAC verification authoring through execution-owned effects; MAC provider realization pending.",
+  "description": "Bounded exact-text digest and HMAC verification authoring through execution-owned effects.",
   "authoring": {
     "namespace": "crypto",
     "import": "@pulse-compute/crypto",
