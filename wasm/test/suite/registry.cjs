@@ -244,6 +244,9 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'crypto profile replacement, reachable requirements, and deterministic target realization planning'
   }),
+  'crypto-mac-text-contract': nodeTask('test/crypto/assert-mac-text-contract.cjs', {
+    description: 'MAC-01 authoring, trusted dispatch bounds, status projection and unavailable target admission'
+  }),
   'crypto-mac-text-corpus': nodeTask('test/crypto/assert-mac-text-corpus.cjs', {
     description: 'MAC-00 reference-only HMAC text known answers, classification and bounded envelope evidence'
   }),
@@ -1540,6 +1543,7 @@ const profiles = Object.freeze({
     'crypto-rs256',
     'crypto-digest-text-contract',
     'crypto-mac-text-corpus',
+    'crypto-mac-text-contract',
     'reachable-graph',
     'project-modules',
     'package-reachability',

@@ -70,6 +70,54 @@ The separate fixed-memory ES256 guest ABI remains unchanged; its smaller heap
 cannot establish the 2 MiB capacity profile. Allocation failure never enables
 another realization. Applications must select a compatible capacity profile.
 
+## Exact-text MAC authoring (implementation in progress)
+
+The MAC-01 source API adds `crypto.verifyMacText(ctx, message, tag, options)`
+and the named `verifyMacText` export. Provider realization is pending MAC-02:
+current Node/Fastly Native and JavaScript managed builds reject the operation
+with `PULSE_PROVIDER_CAPABILITY_UNSUPPORTED`. This is not a beta.11 availability
+claim, and no target silently falls back.
+
+```ts
+const proof = await crypto.verifyMacText(ctx, message, tag, {
+  algorithm: 'HS256',
+  key: { type: 'secret', binding: 'REQUEST_PROOF_KEY' }
+})
+if (proof.status !== 'valid') return ctx.text('Verification failed', { status: 401 })
+```
+
+Direct await into a local is the initial lowering shape. Default and named
+facades and direct named import aliases are recognized; detached operations,
+dynamic access, shadowed imports and parallel groups are rejected. Native
+options must be an exact static object literal, with no extra fields, spreads,
+accessors or computed properties. A secret binding is nonempty scalar text,
+up to 256 UTF-8 bytes, without NUL; it is preserved without trimming. The
+lowerer records the binding selector, `crypto.verifyMacText` and `secret.get`
+requirements, and exact `HS256` demand. It never resolves a secret.
+
+`MAC_TEXT_MAX_BYTES` is 65,536. The implementation contract uses exact scalar
+text encoded as UTF-8, a full 64-character lowercase hex tag, and provider-owned
+32–4,096-byte secret material. The facade bounds runtime message and tag inputs
+before cloning or serialization. Over-limit prefixes retain 65,537 and 65 code
+units respectively so truncation cannot turn them into valid inputs. Non-text
+inputs become null; invalid option descriptors return `invalid-input` without
+dispatch. This operation alone has a 458,752-byte effect envelope; unrelated
+operations retain their existing bounds.
+
+`MacTextVerificationResult` is a frozen status-only record: `valid`,
+`invalid-authenticator`, `invalid-input`, `too-large`, `unavailable`,
+`invalid-key`, or `realization-failure`. Unexpected or extra provider result
+fields normalize to `realization-failure`. Payload and tag values are absent
+from lowering artifacts and effect observations. Only `valid` means success.
+
+MAC-02 must implement and qualify scalar/byte validation, strict tag decoding,
+secret authority and lookup, selected verification, Native framing, and
+cancellation/cleanup before any provider advertises this capability. The current
+reference corpus and injected adapter tests do not establish cryptographic or
+hosted execution. Raw-byte verification and JWT are unchanged. Applications
+still own request canonicalization, freshness, replay and key rotation; this
+operation does not read or modify Authorization or the request body.
+
 ## Verification surface
 
 Applications may import the package root and request MAC or signature

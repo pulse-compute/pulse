@@ -178,5 +178,41 @@ function bindJavascriptRs256Signer(subtle = globalThis.crypto?.subtle) {
   } }) });
 }
 
-module.exports = Object.freeze({ rsaPrivateKeyBytes, bindJavascriptRs256Signer, bindJavascriptEs256Signer, IMPLEMENTATIONS, bindJavascriptDigestMac, DIGEST_TEXT_MAX_BYTES,
+// MAC-01 owns descriptor admission and projection; provider execution follows in MAC-02.
+function macTextRecord(value, names) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const prototype = Object.getPrototypeOf(value);
+  if (prototype !== Object.prototype && prototype !== null) return null;
+  const keys = Reflect.ownKeys(value);
+  if (keys.length !== names.length || keys.some(key => !names.includes(key))) return null;
+  const result = Object.create(null);
+  for (const name of names) {
+    const descriptor = Object.getOwnPropertyDescriptor(value, name);
+    if (!descriptor || !descriptor.enumerable || !Object.hasOwn(descriptor, 'value')) return null;
+    result[name] = descriptor.value;
+  }
+  return result;
+}
+function normalizeMacTextOptions(value) {
+  try {
+    const options = macTextRecord(value, ['algorithm', 'key']);
+    const key = options && macTextRecord(options.key, ['type', 'binding']);
+    if (!options || options.algorithm !== 'HS256' || !key || key.type !== 'secret'
+      || typeof key.binding !== 'string' || !key.binding.length || key.binding.length > 256
+      || key.binding.includes('\0') || !key.binding.isWellFormed()
+      || new TextEncoder().encode(key.binding).length > 256) return null;
+    return Object.freeze({ algorithm: 'HS256', key: Object.freeze({ type: 'secret', binding: key.binding }) });
+  } catch { return null; }
+}
+function normalizeMacTextResult(value) {
+  try {
+    const record = macTextRecord(value, ['status']);
+    if (record && ['valid', 'invalid-authenticator', 'invalid-input', 'too-large', 'unavailable', 'invalid-key', 'realization-failure'].includes(record.status)) {
+      return Object.freeze({ status: record.status });
+    }
+  } catch { /* Provider details never cross the result boundary. */ }
+  return Object.freeze({ status: 'realization-failure' });
+}
+
+module.exports = Object.freeze({ normalizeMacTextOptions, normalizeMacTextResult, rsaPrivateKeyBytes, bindJavascriptRs256Signer, bindJavascriptEs256Signer, IMPLEMENTATIONS, bindJavascriptDigestMac, DIGEST_TEXT_MAX_BYTES,
   textDigestByteLength, normalizeTextDigestResult, executeTextDigest, createJavascriptTextDigest });

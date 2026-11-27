@@ -209,6 +209,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'external-lowerers',
       'package-runtime',
       'crypto-digest-text-contract',
+      'crypto-mac-text-contract',
       'crypto-mac-text-corpus',
       'crypto-digest-text-conformance',
       'crypto-digest-storage-conformance',

@@ -2629,6 +2629,16 @@ an imported facade named `crypto` only for an exactly recognized package call;
 ambient crypto calls and authority in its arguments remain rejected. HMAC/JWT
 limits, fallback policy, and S3/Catalog capacity are separate contracts.
 
+MAC-01 adds the package-owned `crypto.verifyMacText` authoring and trusted
+runtime registration seam with direct-await placement, literal HS256/secret
+options, runtime message/tag inputs, and a closed `mac-text-verification`
+result. Static metadata demands both the operation and `secret.get`; no secret
+bytes enter compiler artifacts. The JavaScript facade bounds message/tag code
+units before the fixed operation-only 458,752-byte envelope is cloned. Existing
+providers do not advertise this operation and managed builds reject it without
+fallback. Provider validation, Native framing, secret realization and lifecycle
+qualification remain MAC-02 work; see [Crypto](../packages/crypto.md#exact-text-mac-authoring-implementation-in-progress).
+
 S3 operations require exact `SHA-256` and `HMAC-SHA256` selection. Native
 composes the same Crypto-owned source once; Node JavaScript explicitly selects
 Crypto's `runtime-builtin` Web Crypto byte realization through the trusted
