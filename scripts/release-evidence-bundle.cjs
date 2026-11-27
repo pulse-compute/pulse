@@ -212,6 +212,8 @@ const SHARD_DEFINITIONS = Object.freeze([
       'crypto-mac-text-contract',
       'crypto-mac-text-provider',
       'crypto-mac-text-conformance',
+      'crypto-mac-text-installed',
+      'crypto-mac-text-proof-contract',
       'crypto-mac-text-corpus',
       'crypto-digest-text-conformance',
       'crypto-digest-storage-conformance',

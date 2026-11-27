@@ -244,6 +244,8 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'crypto profile replacement, reachable requirements, and deterministic target realization planning'
   }),
+  'crypto-mac-text-installed': nodeTask('test/crypto/mac03/installed.cjs', {timeoutMs:600000,evidence:'external',scheduling:{compiler:true},description:'MAC-03 exact tarball consumers and independent proof headers across four targets; no hosted claim'}),
+  'crypto-mac-text-proof-contract': nodeTask('test/crypto/mac03/assert-proof.cjs', {evidence:'unit',description:'MAC-03 evidence binding, bounded redaction and unchanged Bearer proof controls'}),
   'crypto-mac-text-provider': nodeTask('test/crypto/assert-mac-text-provider.cjs', {timeoutMs:180000,evidence:'unit',description:'MAC provider precedence, secret snapshots, cleanup and cancellation'}),
   'crypto-mac-text-conformance': nodeTask('test/crypto/assert-mac-text-conformance.cjs', {timeoutMs:180000,evidence:'conformance',description:'Exact-text MAC corpus across Node/Fastly Native/JavaScript dispatch'}),
   'crypto-mac-text-contract': nodeTask('test/crypto/assert-mac-text-contract.cjs', {
@@ -1547,6 +1549,7 @@ const profiles = Object.freeze({
     'crypto-mac-text-corpus',
     'crypto-mac-text-contract',
     'crypto-mac-text-provider',
+    'crypto-mac-text-proof-contract',
     'reachable-graph',
     'project-modules',
     'package-reachability',
@@ -1760,6 +1763,7 @@ const profiles = Object.freeze({
     'fastly-request-headers'
   ]),
   release: Object.freeze([
+    'crypto-mac-text-installed',
     '@unit',
     '@native',
     '@javascript',
