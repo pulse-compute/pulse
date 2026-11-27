@@ -2642,8 +2642,9 @@ precedes lookup, errors project closed statuses, and request cancellation or
 deadlines outrank projection. Owned staging is wiped on returned paths and
 the Node bridge clears its frame after caught traps; terminal Fastly guest
 traps abandon the instance without an in-guest erasure guarantee. Local
-provider/fixture parity is established; packed and hosted qualification remains
-MAC-03 work; see [Crypto](../packages/crypto.md#exact-text-mac-authoring-implementation-in-progress).
+provider/fixture parity is established. MAC-03 adds exact-tarball consumer
+qualification and a separate hosted runner; deployed qualification remains
+pending its exact-artifact receipt. See [Crypto](../packages/crypto.md#exact-text-mac-authoring-implementation-in-progress).
 
 S3 operations require exact `SHA-256` and `HMAC-SHA256` selection. Native
 composes the same Crypto-owned source once; Node JavaScript explicitly selects

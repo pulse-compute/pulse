@@ -76,8 +76,10 @@ The source API provides `crypto.verifyMacText(ctx, message, tag, options)`
 and the named `verifyMacText` export. MAC-02 implements Node/Fastly Native
 with selected `guest-source:pulse-hmac-as`, and Node/Fastly JavaScript with
 selected `runtime-builtin`. All require explicit `HS256` configuration and
-provider secret authority. Local dispatch parity is qualified; packed-consumer
-and deployed Fastly proof remain MAC-03 work. This is not a beta.11 publication
+provider secret authority. MAC-03 adds an isolated exact-tarball consumer proof
+and a separately gated hosted Fastly runner; see the repository evidence in
+`wasm/test/crypto/mac-03.md`. Local or injected-host results do not qualify a
+deployed service. This is not a beta.11 publication
 claim, and no target silently falls back.
 
 ```ts
