@@ -1,0 +1,666 @@
+{
+  "schemaVersion": "pulse.rc-h03-installed-checkpoint.v1",
+  "status": "passed",
+  "classification": "development installed snapshot; not an aggregate release seal",
+  "baseCommit": "ea60368a3add774b6672edb115f9457be5a0b1a3",
+  "sourceRevision": "b716082b9fdb414d47df36961020a1e43dbf0f67",
+  "sourceTree": "e97fc8747fed3df74e7b05f354795244d07cdcd0",
+  "workingTree": "",
+  "toolchain": {
+    "node": "24.18.0",
+    "npm": "11.15.0",
+    "pnpm": "12.4.2"
+  },
+  "lockfileSha256": "c2f2f034698dc635f610e1b33f27228f9766fbef90b05d1605e4534b5ec92cb0",
+  "packageManifestSha256": "ed9a5ca5a198f87183d35541e8e1d79deb97a28d80464492e006a78a77f6e2c4",
+  "sharedPackReceiptSha256": "69e039fd624bd0bad56118a486d5e974816ed1dd899e8985d2d272e8ea51bc58",
+  "claimsFile": "packed-claims.json",
+  "core": {
+    "runId": "2026-11-26T09-21-48-432Z--22",
+    "status": "passed",
+    "reportSha256": "06ca5d177427a121ef3c172be70abb020561dff0546a05476a5a555a2bcf1e56",
+    "selectedTasks": [
+      "release-packages",
+      "clean-machine-acceptance"
+    ],
+    "results": [
+      {
+        "name": "release-packages",
+        "status": "passed",
+        "durationMs": 892,
+        "exitCode": 0,
+        "cleanup": {
+          "status": "passed"
+        },
+        "logSha256": "9a9f9cab6e0fb54260c5489dd23fb56d711443912b377f8939665d9ac3501402"
+      },
+      {
+        "name": "clean-machine-acceptance",
+        "status": "passed",
+        "durationMs": 270045,
+        "exitCode": 0,
+        "cleanup": {
+          "status": "passed"
+        },
+        "logSha256": "c4d53b799814aca133e2d4b34794419c2c401ce426866c72acd2dc16b75fbcf4"
+      }
+    ]
+  },
+  "features": {
+    "status": "passed",
+    "sourceRevision": "b716082b9fdb414d47df36961020a1e43dbf0f67",
+    "sourceTree": "e97fc8747fed3df74e7b05f354795244d07cdcd0",
+    "workingTree": "",
+    "reportSha256": "65997669f85f48dfb9fb24874904534e2d75290c0342a0a0a6aa26801bf98c6a",
+    "runnerReportSha256": "4d221ab4154f69ddfb0d4b5ff0294f3c41d305f6ae4f7ff3d57a530a7c362f48",
+    "requiredTasks": [
+      "terminal-installed",
+      "str02b-installed",
+      "node01-installed",
+      "arc01-installed",
+      "jwt-installed-workflow",
+      "str02-installed",
+      "str03b-installed",
+      "ast01-installed",
+      "ast02b-installed",
+      "ast02d-installed",
+      "mcp-installed",
+      "s3-body-installed"
+    ],
+    "results": [
+      {
+        "name": "terminal-installed",
+        "status": "passed",
+        "durationMs": 46541,
+        "exitCode": 0,
+        "cleanup": {
+          "status": "passed"
+        },
+        "logSha256": "83076c510ddb2833f8a2f1d5f9aa62062877be385fa71e4009d6ce45f29fbf37"
+      },
+      {
+        "name": "str02b-installed",
+        "status": "passed",
+        "durationMs": 28283,
+        "exitCode": 0,
+        "cleanup": {
+          "status": "passed"
+        },
+        "logSha256": "88513d9c1abe63db53ea1da9b12982771f93291431daee75158a482fab5f1593"
+      },
+      {
+        "name": "node01-installed",
+        "status": "passed",
+        "durationMs": 19995,
+        "exitCode": 0,
+        "cleanup": {
+          "status": "passed"
+        },
+        "logSha256": "c3c4f9d275f9b0f7e2df492cc591dd6e5fef1eb043da56d16ccf7fd2ba1172a1"
+      },
+      {
+        "name": "arc01-installed",
+        "status": "passed",
+        "durationMs": 60152,
+        "exitCode": 0,
+        "cleanup": {
+          "status": "passed"
+        },
+        "logSha256": "cd13b0bb0c234f78dbb5188b9b212ea28a20c355aad8ca594e79008e29a1da45"
+      },
+      {
+        "name": "jwt-installed-workflow",
+        "status": "passed",
+        "durationMs": 300607,
+        "exitCode": 0,
+        "cleanup": {
+          "status": "passed"
+        },
+        "logSha256": "c711bbbc518b921a3e3ea660db3f25a27e0738dcc6e71496f92ad3d6a71629a4"
+      },
+      {
+        "name": "str02-installed",
+        "status": "passed",
+        "durationMs": 24354,
+        "exitCode": 0,
+        "cleanup": {
+          "status": "passed"
+        },
+        "logSha256": "aaeadd76ffda6ab718386f5994f2726c3f4fa26203dcef81a6d24cecca5c77c6"
+      },
+      {
+        "name": "str03b-installed",
+        "status": "passed",
+        "durationMs": 41232,
+        "exitCode": 0,
+        "cleanup": {
+          "status": "passed"
+        },
+        "logSha256": "8a491506e61e21bdcbdc8e9ab9e61038a7612a7efd0d82dd0bed631c8d2b583f"
+      },
+      {
+        "name": "ast01-installed",
+        "status": "passed",
+        "durationMs": 2389,
+        "exitCode": 0,
+        "cleanup": {
+          "status": "passed"
+        },
+        "logSha256": "f6983c698b06999a31cb890a5448d08b8824e076cacadc27e7131ae9572316ae"
+      },
+      {
+        "name": "ast02b-installed",
+        "status": "passed",
+        "durationMs": 2744,
+        "exitCode": 0,
+        "cleanup": {
+          "status": "passed"
+        },
+        "logSha256": "91c75ac4d67715aae674881376e249aeadb8b058b3ef1be78d63283bf972ef8e"
+      },
+      {
+        "name": "ast02d-installed",
+        "status": "passed",
+        "durationMs": 23936,
+        "exitCode": 0,
+        "cleanup": {
+          "status": "passed"
+        },
+        "logSha256": "6424b8410eda2d2f341e39b36b082991ba691d0519bf96d9bcd802352ffd2121"
+      },
+      {
+        "name": "mcp-installed",
+        "status": "passed",
+        "durationMs": 164668,
+        "exitCode": 0,
+        "cleanup": {
+          "status": "passed"
+        },
+        "logSha256": "7b49c9bf21b01153eb69ac8672450a937216d4720cf500957c393f0fa489b921"
+      },
+      {
+        "name": "s3-body-installed",
+        "status": "passed",
+        "durationMs": 16665,
+        "exitCode": 0,
+        "cleanup": {
+          "status": "passed"
+        },
+        "logSha256": "47adb43fb0542735a364aba547024a1b4c3329e2e3fc81ed5647bd9e708f4068"
+      }
+    ],
+    "gates": [
+      {
+        "task": "terminal-installed",
+        "feature": "Versioned terminal package contract and both GRIP ABIs; transport evidence remains separate",
+        "classification": "required-feature",
+        "status": "passed",
+        "reportSha256": "84f4c33210d8215c53400441a76ebc6af7cd8e55e9b611cd366c4823c5858e68",
+        "installedPackages": [
+          "@pulse-compute/runtime",
+          "@pulse-compute/pulse",
+          "@pulse-compute/cli",
+          "@pulse-compute/provider-fastly",
+          "@pulse-compute/grip",
+          "@pulse-compute/assets",
+          "@pulse-compute/crypto",
+          "@pulse-compute/jwt",
+          "@pulse-compute/entities",
+          "@pulse-compute/mcp",
+          "@pulse-compute/s3",
+          "@pulse-compute/wasm-build-support",
+          "@pulse-compute/wasm-compiler",
+          "@pulse-compute/wasm-guest-link",
+          "@pulse-compute/wasm-contracts",
+          "@pulse-compute/wasm-host-runtime",
+          "@pulse-compute/wasm-library-kit",
+          "@pulse-compute/provider-node",
+          "@pulse-compute/wasm-runtime-core-as",
+          "@pulse-compute/wasm-schema-json"
+        ]
+      },
+      {
+        "task": "str02b-installed",
+        "feature": "Node Native request-body forwarding",
+        "classification": "required-feature",
+        "status": "passed",
+        "reportSha256": "d9abfb3d1d347ba550f4577b54ba97bb4a402d39a08767c2dabc46aa55a4aab6",
+        "installedPackages": [
+          "@pulse-compute/cli",
+          "@pulse-compute/crypto",
+          "@pulse-compute/jwt",
+          "@pulse-compute/provider-fastly",
+          "@pulse-compute/provider-node",
+          "@pulse-compute/pulse",
+          "@pulse-compute/runtime",
+          "@pulse-compute/s3",
+          "@pulse-compute/wasm-build-support",
+          "@pulse-compute/wasm-compiler",
+          "@pulse-compute/wasm-contracts",
+          "@pulse-compute/wasm-guest-link",
+          "@pulse-compute/wasm-host-runtime",
+          "@pulse-compute/wasm-library-kit",
+          "@pulse-compute/wasm-runtime-core-as",
+          "@pulse-compute/wasm-schema-json"
+        ]
+      },
+      {
+        "task": "node01-installed",
+        "feature": "Finite production Node HTTP launcher",
+        "classification": "required-feature",
+        "status": "passed",
+        "reportSha256": "792b366a8a94afe4f8aa3f3d450d5eb654041a809349e4ed01ed0e6bb7728455",
+        "installedPackages": [
+          "@pulse-compute/cli",
+          "@pulse-compute/crypto",
+          "@pulse-compute/jwt",
+          "@pulse-compute/provider-fastly",
+          "@pulse-compute/provider-node",
+          "@pulse-compute/pulse",
+          "@pulse-compute/runtime",
+          "@pulse-compute/s3",
+          "@pulse-compute/wasm-build-support",
+          "@pulse-compute/wasm-compiler",
+          "@pulse-compute/wasm-contracts",
+          "@pulse-compute/wasm-guest-link",
+          "@pulse-compute/wasm-host-runtime",
+          "@pulse-compute/wasm-library-kit",
+          "@pulse-compute/wasm-runtime-core-as",
+          "@pulse-compute/wasm-schema-json"
+        ]
+      },
+      {
+        "task": "arc01-installed",
+        "feature": "Package-owned execution and provider loading",
+        "classification": "required-feature",
+        "status": "passed",
+        "reportSha256": "94d18aed18dfbd234942713d0c78e9ad811d0b02afa4a17b2e79d5d2c508ffb9",
+        "installedPackages": [
+          "@pulse-compute/crypto",
+          "@pulse-compute/runtime",
+          "@pulse-compute/wasm-build-support",
+          "@pulse-compute/wasm-compiler",
+          "@pulse-compute/wasm-contracts",
+          "@pulse-compute/wasm-guest-link",
+          "@pulse-compute/wasm-host-runtime",
+          "@pulse-compute/wasm-library-kit",
+          "@pulse-compute/wasm-runtime-core-as",
+          "@pulse-compute/wasm-schema-json",
+          "@pulse-compute/crypto",
+          "@pulse-compute/jwt",
+          "@pulse-compute/provider-node",
+          "@pulse-compute/runtime",
+          "@pulse-compute/s3",
+          "@pulse-compute/wasm-build-support",
+          "@pulse-compute/wasm-compiler",
+          "@pulse-compute/wasm-contracts",
+          "@pulse-compute/wasm-guest-link",
+          "@pulse-compute/wasm-host-runtime",
+          "@pulse-compute/wasm-library-kit",
+          "@pulse-compute/wasm-runtime-core-as",
+          "@pulse-compute/wasm-schema-json",
+          "@pulse-compute/crypto",
+          "@pulse-compute/jwt",
+          "@pulse-compute/provider-fastly",
+          "@pulse-compute/runtime",
+          "@pulse-compute/s3",
+          "@pulse-compute/wasm-build-support",
+          "@pulse-compute/wasm-compiler",
+          "@pulse-compute/wasm-contracts",
+          "@pulse-compute/wasm-guest-link",
+          "@pulse-compute/wasm-host-runtime",
+          "@pulse-compute/wasm-library-kit",
+          "@pulse-compute/wasm-runtime-core-as",
+          "@pulse-compute/wasm-schema-json",
+          "@pulse-compute/cli",
+          "@pulse-compute/crypto",
+          "@pulse-compute/jwt",
+          "@pulse-compute/provider-fastly",
+          "@pulse-compute/provider-node",
+          "@pulse-compute/pulse",
+          "@pulse-compute/runtime",
+          "@pulse-compute/s3",
+          "@pulse-compute/wasm-build-support",
+          "@pulse-compute/wasm-compiler",
+          "@pulse-compute/wasm-contracts",
+          "@pulse-compute/wasm-guest-link",
+          "@pulse-compute/wasm-host-runtime",
+          "@pulse-compute/wasm-library-kit",
+          "@pulse-compute/wasm-runtime-core-as",
+          "@pulse-compute/wasm-schema-json"
+        ]
+      },
+      {
+        "task": "jwt-installed-workflow",
+        "feature": "JWT signing, verification, cleanup and eligibility",
+        "classification": "required-feature",
+        "status": "passed",
+        "reportSha256": "57077afd6888e64873d1ba25ab6b3e5edd6bc384c0c68e83cb7f6e0854df769d",
+        "installedPackages": [
+          "@pulse-compute/cli",
+          "@pulse-compute/crypto",
+          "@pulse-compute/jwt",
+          "@pulse-compute/provider-fastly",
+          "@pulse-compute/provider-node",
+          "@pulse-compute/pulse",
+          "@pulse-compute/runtime",
+          "@pulse-compute/s3",
+          "@pulse-compute/wasm-build-support",
+          "@pulse-compute/wasm-compiler",
+          "@pulse-compute/wasm-contracts",
+          "@pulse-compute/wasm-guest-link",
+          "@pulse-compute/wasm-host-runtime",
+          "@pulse-compute/wasm-library-kit",
+          "@pulse-compute/wasm-runtime-core-as",
+          "@pulse-compute/wasm-schema-json"
+        ]
+      },
+      {
+        "task": "str02-installed",
+        "feature": "Node JavaScript request-body forwarding",
+        "classification": "required-feature",
+        "status": "passed",
+        "reportSha256": "b6dbb7313e76fd8f1e93fc2b80a3733f4bad5a2e917efe4d9b6768ddb6d92de4",
+        "installedPackages": [
+          "@pulse-compute/cli",
+          "@pulse-compute/crypto",
+          "@pulse-compute/jwt",
+          "@pulse-compute/provider-fastly",
+          "@pulse-compute/provider-node",
+          "@pulse-compute/pulse",
+          "@pulse-compute/runtime",
+          "@pulse-compute/s3",
+          "@pulse-compute/wasm-build-support",
+          "@pulse-compute/wasm-compiler",
+          "@pulse-compute/wasm-contracts",
+          "@pulse-compute/wasm-guest-link",
+          "@pulse-compute/wasm-host-runtime",
+          "@pulse-compute/wasm-library-kit",
+          "@pulse-compute/wasm-runtime-core-as",
+          "@pulse-compute/wasm-schema-json"
+        ]
+      },
+      {
+        "task": "str03b-installed",
+        "feature": "Experimental Node generated output; no support promotion",
+        "classification": "required-feature",
+        "status": "passed",
+        "reportSha256": "c9f0a4a12634f17d8dbad6b47059b75146a07d040d4dc43d10303ffc42a03757",
+        "installedPackages": [
+          "@pulse-compute/cli",
+          "@pulse-compute/crypto",
+          "@pulse-compute/jwt",
+          "@pulse-compute/provider-fastly",
+          "@pulse-compute/provider-node",
+          "@pulse-compute/pulse",
+          "@pulse-compute/runtime",
+          "@pulse-compute/s3",
+          "@pulse-compute/wasm-build-support",
+          "@pulse-compute/wasm-compiler",
+          "@pulse-compute/wasm-contracts",
+          "@pulse-compute/wasm-guest-link",
+          "@pulse-compute/wasm-host-runtime",
+          "@pulse-compute/wasm-library-kit",
+          "@pulse-compute/wasm-runtime-core-as",
+          "@pulse-compute/wasm-schema-json"
+        ]
+      },
+      {
+        "task": "ast01-installed",
+        "feature": "Assets signing facade",
+        "classification": "required-feature",
+        "status": "passed",
+        "reportSha256": "c98b31e90d032ad450333dbda1c373c42df6ba66eeb7d37b5c783a3f0c455e4b",
+        "installedPackages": [
+          "@pulse-compute/runtime",
+          "@pulse-compute/assets",
+          "@pulse-compute/s3",
+          "@pulse-compute/wasm-contracts"
+        ]
+      },
+      {
+        "task": "ast02b-installed",
+        "feature": "JavaScript embedded Assets bytes",
+        "classification": "required-feature",
+        "status": "passed",
+        "reportSha256": "9189e826aaa6b48f45925e6f0ab283bcc2fbec126fb584e18373f164c2d33443",
+        "installedPackages": [
+          "@pulse-compute/runtime",
+          "@pulse-compute/assets",
+          "@pulse-compute/s3",
+          "@pulse-compute/wasm-contracts"
+        ]
+      },
+      {
+        "task": "ast02d-installed",
+        "feature": "Native embedded Assets bytes",
+        "classification": "required-feature",
+        "status": "passed",
+        "reportSha256": "b6e13212623be39fcc2a4042120987cda32626b5d8aa64c94aa3c8a723e023b0",
+        "installedPackages": [
+          "@pulse-compute/assets",
+          "@pulse-compute/cli",
+          "@pulse-compute/crypto",
+          "@pulse-compute/jwt",
+          "@pulse-compute/provider-fastly",
+          "@pulse-compute/provider-node",
+          "@pulse-compute/pulse",
+          "@pulse-compute/runtime",
+          "@pulse-compute/s3",
+          "@pulse-compute/wasm-build-support",
+          "@pulse-compute/wasm-compiler",
+          "@pulse-compute/wasm-contracts",
+          "@pulse-compute/wasm-guest-link",
+          "@pulse-compute/wasm-host-runtime",
+          "@pulse-compute/wasm-library-kit",
+          "@pulse-compute/wasm-runtime-core-as",
+          "@pulse-compute/wasm-schema-json"
+        ]
+      },
+      {
+        "task": "mcp-installed",
+        "feature": "Public MCP host extension over installed governed HTTP",
+        "classification": "required-feature",
+        "status": "passed",
+        "reportSha256": "93f34f0fdaae62ce629e6145e26ccfa1812d505b38d4aef73f3eafcfe76fed56",
+        "installedPackages": [
+          "@pulse-compute/cli",
+          "@pulse-compute/crypto",
+          "@pulse-compute/entities",
+          "@pulse-compute/jwt",
+          "@pulse-compute/mcp",
+          "@pulse-compute/provider-fastly",
+          "@pulse-compute/provider-node",
+          "@pulse-compute/pulse",
+          "@pulse-compute/runtime",
+          "@pulse-compute/s3",
+          "@pulse-compute/wasm-build-support",
+          "@pulse-compute/wasm-compiler",
+          "@pulse-compute/wasm-contracts",
+          "@pulse-compute/wasm-guest-link",
+          "@pulse-compute/wasm-host-runtime",
+          "@pulse-compute/wasm-library-kit",
+          "@pulse-compute/wasm-runtime-core-as",
+          "@pulse-compute/wasm-schema-json"
+        ]
+      },
+      {
+        "task": "s3-body-installed",
+        "feature": "S3 opaque binary bodies on advertised target cells",
+        "classification": "required-feature",
+        "status": "passed",
+        "reportSha256": "1a6d96b49929271a10c2113c73bfc799e6b69bc3e654177249e11a376e1b4b22",
+        "installedPackages": [
+          "@pulse-compute/cli",
+          "@pulse-compute/crypto",
+          "@pulse-compute/jwt",
+          "@pulse-compute/provider-fastly",
+          "@pulse-compute/provider-node",
+          "@pulse-compute/pulse",
+          "@pulse-compute/runtime",
+          "@pulse-compute/s3",
+          "@pulse-compute/wasm-build-support",
+          "@pulse-compute/wasm-compiler",
+          "@pulse-compute/wasm-contracts",
+          "@pulse-compute/wasm-guest-link",
+          "@pulse-compute/wasm-host-runtime",
+          "@pulse-compute/wasm-library-kit",
+          "@pulse-compute/wasm-runtime-core-as",
+          "@pulse-compute/wasm-schema-json"
+        ]
+      }
+    ]
+  },
+  "cleanConsumerCorpora": {
+    "status": "passed",
+    "reportSha256": "90919aabd927f70ce4bf403234a5571a50c6aef01a3d6474ce9485328ecbaea6",
+    "oracleSha256": "d12a53c02b41ea3a62b516bbf29900d1d0a125971663be958f3b3af0d37bdabb",
+    "results": [
+      {
+        "id": "s3",
+        "status": "passed",
+        "durationMs": 29359,
+        "oracleSha256": "11615b57bf3b04564962b6dfd24c15016bf9ec4771027f2bfbddbcc1e12cbe5c"
+      },
+      {
+        "id": "request-deadline",
+        "status": "passed",
+        "durationMs": 12783,
+        "oracleSha256": "8859ebc36e5b848b91265747dce8f25e5e18d981d4ca8ac349c16a7691d504e2"
+      },
+      {
+        "id": "multifile",
+        "status": "passed",
+        "durationMs": 51497,
+        "oracleSha256": "8a2f4c5b0f45440f40e29402f618ca584f1438ac5fa0b243277557f2160ff9ea"
+      },
+      {
+        "id": "http-input",
+        "status": "passed",
+        "durationMs": 15573,
+        "oracleSha256": "fea1dda1ecd687d81b520b0fdc9a47fed30d46930a24bfb302912c9cc77a41fc"
+      },
+      {
+        "id": "read-loop",
+        "status": "passed",
+        "durationMs": 14117,
+        "oracleSha256": "316e10d66e26ca5cd8f24fdd3834b2866fc6035b57a71b26460ce225355bd1c5"
+      },
+      {
+        "id": "read-loop-adoption",
+        "status": "passed",
+        "durationMs": 20207,
+        "oracleSha256": "f09df2b75ca890bd4b6742615da2afd4d35433642bbde3c18dd627ec73947b11"
+      },
+      {
+        "id": "kv",
+        "status": "passed",
+        "durationMs": 7823,
+        "oracleSha256": "940891eeacad11bd20d533c5e7db52eca19acf098a990dfae426d4d57fe43f5d"
+      }
+    ]
+  },
+  "fetchMethods": {
+    "schemaVersion": "pulse.rc-h03-installed-fetch.v1",
+    "sourceRevision": "b716082b9fdb414d47df36961020a1e43dbf0f67",
+    "status": "passed",
+    "transport": "real-local-http",
+    "cells": 6,
+    "deniedBeforeDispatch": 3,
+    "requests": 6,
+    "loadedRuntimeModules": 26,
+    "installedPackageCount": 20,
+    "installedBytesUnchanged": true,
+    "oracleSha256": "96087bd112a747625f58d867fe65c71b25875e8e873f36055cf0e1b69c63f451"
+  },
+  "preparation": [
+    {
+      "step": "build",
+      "status": "passed",
+      "logSha256": "c1c52487f86614646f70ab63bff53d3235bf5f0ed59c652309c95088d9d946b3"
+    },
+    {
+      "step": "pack",
+      "status": "passed",
+      "logSha256": "89be36947e8b3dc9f02715aa9dd0bea484db7423285179bb4cd10b185fcb63f3"
+    },
+    {
+      "step": "maintainer",
+      "status": "passed",
+      "logSha256": "c54c51d26a325157a95c1bb6065aba7f66a47c5b83ba4d07191e11326a0825bd"
+    },
+    {
+      "step": "publication",
+      "status": "passed",
+      "logSha256": "cd7af960f39f91fd6b16968d2ea0348e086304d6c52f0513c9d2aac07d7d72ab"
+    },
+    {
+      "step": "preflight",
+      "status": "passed",
+      "logSha256": "b9b3e0a84a648f28d9b3699bd06131b2fa29ffa9fa800fd8c43f5e0a92429767"
+    },
+    {
+      "step": "docs",
+      "status": "passed",
+      "logSha256": "d53da184732ade12f17a3a1295dc5acf3c336ae9ee35bccd50c974c412583e7b"
+    },
+    {
+      "step": "doc-release",
+      "status": "passed",
+      "logSha256": "b74a8a1a921308eb379b8dcb5e748705f10ce7cae9f0aa9b28c23d51d85926cd"
+    }
+  ],
+  "priorAttempts": [
+    {
+      "status": "failed",
+      "phase": "core launch",
+      "reason": "Relative report path created untracked wasm/wasm reports; clean-source assertion rejected before installed acceptance. Reports moved out of checkout; absolute report path used on retry.",
+      "reportSha256": "9847aed8b0c1c4714f369ea3fb5a2cb82668f74164a37ed8a4cd5f46afef2c15",
+      "logSha256": "b377b8fd5f5776896bb4c72d0c7bceeb86d1ff734bcec1ca5c5feb249996a627"
+    },
+    {
+      "status": "failed",
+      "phase": "feature launch",
+      "reason": "Same misplaced core-report files violated candidateIdentity before feature execution. No feature gate ran.",
+      "logSha256": "b53479ca94bb055697038e74472399e7fff66e57fd74ab5e1f0ed2b510ae7e9f"
+    }
+  ],
+  "providerRealityValidated": false,
+  "deploymentPerformed": false,
+  "publicationPerformed": false,
+  "remaining": [
+    "RC-H04 candidate-specific local/deployed provider evidence and K4 requirements or explicit dispositions.",
+    "RC-H05 final version selection, clean freeze and complete aggregate/installed replay.",
+    "Reports bind the named snapshot. The final documentation/evidence commit is not substituted for its source or tarball identities."
+  ],
+  "postQualificationDocumentation": {
+    "sourceIdentityRebound": false,
+    "files": [
+      {
+        "path": "docs/maintainers/testing.md",
+        "sha256": "db7121c57f9ecfb3ffc5cd4aad854252b21b5fa131ed25dddd78b6e66b958236"
+      },
+      {
+        "path": "wasm/packages/cli/docs/maintainers/testing.md",
+        "sha256": "db7121c57f9ecfb3ffc5cd4aad854252b21b5fa131ed25dddd78b6e66b958236"
+      }
+    ],
+    "validation": [
+      {
+        "step": "maintainer",
+        "status": "passed",
+        "logSha256": "c54c51d26a325157a95c1bb6065aba7f66a47c5b83ba4d07191e11326a0825bd"
+      },
+      {
+        "step": "docs",
+        "status": "passed",
+        "logSha256": "0335b9a7a2cd0ac5423c1675f65474aa1a9c82ee79052dba86227999e44b942d"
+      },
+      {
+        "step": "doc-release",
+        "status": "passed",
+        "logSha256": "140271eed2d73a95bda1b3cabb2d131d9871959ea56e86c228544bb0f68432fe"
+      }
+    ]
+  }
+}

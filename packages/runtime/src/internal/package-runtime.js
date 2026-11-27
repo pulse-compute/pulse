@@ -13,6 +13,8 @@ const DEFAULT_MAX_PAYLOAD_BYTES = 256 * 1024;
 // Fixed first-party text operations alone admit 2 MiB plus worst-case JSON
 // escaping and 64 KiB metadata. Other package operations retain their bounds.
 const TEXT_MAX_PAYLOAD_BYTES = 6 * 2097152 + 65536;
+// MAC text has its own 64 KiB bound, including worst-case escaping.
+const MAC_TEXT_MAX_PAYLOAD_BYTES = 6 * 65536 + 65536;
 const DEFAULT_MAX_PAYLOAD_DEPTH = 32;
 const DEFAULT_MAX_PAYLOAD_ENTRIES = 4096;
 
@@ -21,6 +23,7 @@ const PACKAGE_CONTEXTS = new WeakMap();
 const TRUSTED_PACKAGE_EFFECT_CATALOG = Object.freeze({
   '@pulse-compute/crypto': Object.freeze({
     contractId: 'pulse.crypto', providerKind: 'crypto', operations: Object.freeze({
+      verifyMacText: Object.freeze({ kind: 'crypto.verifyMacText', capability: 'crypto.verifyMacText', result: 'mac-text-verification' }),
       digestText: Object.freeze({ kind: 'crypto.digestText', capability: 'crypto.digestText', result: 'text-digest-result' })
     })
   }),
@@ -378,7 +381,7 @@ function assertPackageContextActive(data) {
   if (summary.closed) {
     throw contractError(
       'PULSE_RUNTIME_EFFECT_EXECUTION_CLOSED',
-      'Pulse package schema codecs are unavailable after their managed request has closed.'
+      'Pulse package operations are unavailable after their managed request has closed.'
     );
   }
 }
@@ -600,7 +603,9 @@ function createPackageRuntime(input) {
     contractId: definition.contractId,
     providerKind: definition.providerKind,
     context(context) {
-      return packageContextData(context).publicView;
+      const data = packageContextData(context);
+      assertPackageContextActive(data);
+      return data.publicView;
     },
     effect(context, operationInput, payload, projector) {
       const operation = String(operationInput || '');
@@ -628,7 +633,7 @@ function createPackageRuntime(input) {
           // The sign payload adds one envelope level around its 32-level claims.
           maxDepth: declared.kind === 'jwt.sign' ? DEFAULT_MAX_PAYLOAD_DEPTH + 1 : DEFAULT_MAX_PAYLOAD_DEPTH,
           maxBytes: declared.kind === 'crypto.digestText' || declared.kind === 's3.putText'
-            ? TEXT_MAX_PAYLOAD_BYTES : DEFAULT_MAX_PAYLOAD_BYTES
+            ? TEXT_MAX_PAYLOAD_BYTES : declared.kind === 'crypto.verifyMacText' ? MAC_TEXT_MAX_PAYLOAD_BYTES : DEFAULT_MAX_PAYLOAD_BYTES
         })
       }, projector);
     }

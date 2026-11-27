@@ -1,0 +1,17 @@
+FastlyComputeRealityError: Fastly Compute serve requires fastly.toml at the generated package root.
+    at Object.startFastlyComputeServe (/tmp/rc-h04-live/consumer/node_modules/@pulse-compute/provider-fastly/src/testing/fastly-cli.js:426:11)
+    at /tmp/rc-h04-live/k4-local.cjs:5:22
+    at Object.<anonymous> (/tmp/rc-h04-live/k4-local.cjs:9:43)
+    at Module._compile (node:internal/modules/cjs/loader:1871:14)
+    at Object..js (node:internal/modules/cjs/loader:2002:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  code: 'PULSE_FASTLY_MANIFEST_LOCATION_INVALID',
+  detail: {
+    packageRoot: '/tmp/rc-h04-live/k4-build',
+    manifestFile: '/tmp/rc-h04-live/k4-build/local.toml'
+  }
+}

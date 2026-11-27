@@ -38,7 +38,7 @@ function __s3_result(status: string, reason: string = '', http: i32 = 0): i32 {
 }
 function __s3_failure(index: i32, reason: string, http: i32 = 0): i32 {
   if (__pulse_fastly_effect_kind(index) == 21) return __s3_body_failure(reason);
-  if (__pulse_fastly_effect_kind(index) == 26) return __s3_result(__s3_dispatched[index] ? 'unknown' : 'not-deleted', reason, http);
+  if (__pulse_fastly_effect_kind(index) == 27) return __s3_result(__s3_dispatched[index] ? 'unknown' : 'not-deleted', reason, http);
   return __s3_result(__pulse_fastly_effect_kind(index) == 14 ? (__s3_dispatched[index] ? 'unknown' : 'not-stored') : 'failed', reason, http);
 }
 function __s3_fail(index: i32, reason: string): void { __pulse_fastly_ready_effect(index, __s3_failure(index, reason)) }
@@ -62,7 +62,7 @@ function __s3_header(request: i32, name: string, value: string): bool {
 function __pulse_fastly_s3_begin(index: i32, outer: __PulseFastlyValue): void {
   __pulse_transport_slots[index] = null;
   __s3_dispatched[index] = false; __s3_sent_bytes[index] = 0; __s3_digests[index] = ''; __s3_list_options[index] = null;
-  const put = __pulse_fastly_effect_kind(index) == 14, list = __pulse_fastly_effect_kind(index) == 25, del = __pulse_fastly_effect_kind(index) == 26;
+  const put = __pulse_fastly_effect_kind(index) == 14, list = __pulse_fastly_effect_kind(index) == 26, del = __pulse_fastly_effect_kind(index) == 27;
   const payload = __pulse_fastly_value(__pulse_fastly_payload_field(outer, 'invocation'));
   let encoded = '', query = '';
   if (list) {
@@ -152,7 +152,7 @@ function __s3_list(buffer: Uint8Array, size: i32): Array<string> | null {
 }
 function __s3_read_response(index: i32, response: i32, body: i32, status: i32): i32 {
   if (__pulse_fastly_effect_kind(index) == 21) return __s3_body_response(index, response, body, status);
-  const put = __pulse_fastly_effect_kind(index) == 14, list = __pulse_fastly_effect_kind(index) == 25, del = __pulse_fastly_effect_kind(index) == 26, mutation = put || del;
+  const put = __pulse_fastly_effect_kind(index) == 14, list = __pulse_fastly_effect_kind(index) == 26, del = __pulse_fastly_effect_kind(index) == 27, mutation = put || del;
   const rejected = mutation && status >= 400 && status <= 499 && status != 408;
   if (!mutation && !list && status == 404) return __s3_result('not-found');
   if (list && status == 404) return __s3_failure(index, 'unavailable', status);

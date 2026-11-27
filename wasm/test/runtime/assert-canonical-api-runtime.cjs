@@ -18,6 +18,7 @@ const internalProgram = (name) => internalFixture(name).program;
 const body = (result) => JSON.parse(result.response.body);
 
 async function main() {
+  await require('./assert-fetch-admission.cjs')();
   const nativeSecret = 'native-accessor-secret';
   let accessorInvoked = false;
   const hostileDetail = {};

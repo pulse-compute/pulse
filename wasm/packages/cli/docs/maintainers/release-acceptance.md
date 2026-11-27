@@ -20,6 +20,7 @@ synchronized at version `1.0.0-beta.11`. The product-facing packages are:
 @pulse-compute/crypto
 @pulse-compute/jwt
 @pulse-compute/entities
+@pulse-compute/mcp
 @pulse-compute/s3
 ```
 
@@ -27,11 +28,14 @@ The CLI and providers depend on additional `@pulse-compute/wasm-*`
 implementation packages. Those packages are installable transitive
 dependencies, not the handler authoring surface. The generated
 [package support policy](../packages/README.md) defines the tier, audience,
-direct-install guidance, and supported entry points for all 19 artifacts.
+direct-install guidance, and supported entry points for all 20 artifacts.
+The Node provider remains an implementation-tier package with explicitly
+supported `/server` and `/toolchain` entry points; that exception does not
+promote its other exports to application APIs.
 
 ## S3 candidate acceptance
 
-The S3 package root supports bounded `head`, `getText` and `putText` on Node
+The S3 package root supports bounded `head`, `getText`, `getBody` and `putText` on Node
 Native, Node JavaScript and Fastly Native. The clean-consumer gate owns the
 release read and write failure corpus using installed package exports, packaged
 lowering and provider builds. It type-checks the public declarations and
@@ -40,6 +44,8 @@ before and after execution. Full workspace replays remain directly selectable
 for development. No workspace links or installed dependency edits
 are permitted. The report `s3-packed-acceptance.json` includes all tarball
 SHA-256 identities and target execution counts in the acceptance task directory.
+The separate `s3-body-installed` feature gate covers `getBody` and its bounded
+opaque binary response contract.
 The retained `clean-machine-*/corpora.json` report also records every internal
 corpus result and duration. See [testing](./testing.md) for the complete shared
 corpus ownership map and the workspace-only multifile assertion owner.
@@ -61,7 +67,7 @@ node scripts/release-feature-acceptance.cjs
 ```
 
 Run from a clean, committed candidate after restoring lockfile-pinned dependencies
-and building the workspace. The command selects all eleven gates through the registered
+and building the workspace. The command selects all twelve gates through the registered
 runner with fresh report paths. Within a recovery-aware seal, verified
 same-candidate checkpoints may supply completed gates; every result records
 whether it executed or was reused. It requires complete terminal passing coverage,
@@ -74,6 +80,7 @@ change requires another replay on the new candidate.
 
 | Gate | Required installed acceptance |
 | --- | --- |
+| `terminal-installed` | Versioned package host-extension contract and both GRIP terminal ABIs; live transport qualification remains separate |
 | `node01-installed` | Finite production Node HTTP, artifact/ABI/version failures, overload, draining and secret-safe diagnostics |
 | `arc01-installed` | Package-owned Entities execution and provider loading without workspace product modules |
 | `jwt-installed-workflow` | Signing/verification, rotation, cleanup and explicit composition rejection |

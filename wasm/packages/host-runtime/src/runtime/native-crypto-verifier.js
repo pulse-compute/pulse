@@ -242,6 +242,8 @@ function createNativeGuestSourceCryptoVerifier(input = {}) {
     && memory instanceof WebAssembly.Memory
     && typeof verifyHs256 === 'function'
   );
+  let macText;
+  if (hs256Available) { try { macText = require('@pulse-compute/crypto/pulsewasm-native').bindNativeMacTextVerifier(moduleExports); } catch {} }
   const es256Available = Boolean(
     selectedSignature
     && memory instanceof WebAssembly.Memory
@@ -284,6 +286,7 @@ function createNativeGuestSourceCryptoVerifier(input = {}) {
   const signer = es256Available && typeof moduleExports.pulse_crypto_es256_sign === 'function'
     ? require('@pulse-compute/crypto/pulsewasm-native').bindNativeEs256Signer(moduleExports) : undefined;
   const verifier = Object.freeze({
+    macText,
     ...(digestMac || signer || rsa ? { bytes: Object.freeze({
       ...(signer ? { es256Sign: signer } : {}),
       ...(rsa ? { rs256Sign: rsa.sign } : {}),

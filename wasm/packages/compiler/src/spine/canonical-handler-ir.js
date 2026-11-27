@@ -1,6 +1,7 @@
 'use strict';
 
 const crypto = require('node:crypto');
+const { CANONICAL_PROVIDER_CAPABILITIES } = require('@pulse-compute/wasm-contracts/provider/canonical-provider');
 const { HANDLER_IR_VERSION } = require('./handler-ir.js');
 
 const CANONICAL_HANDLER_IR_VERSION = HANDLER_IR_VERSION;
@@ -174,7 +175,11 @@ function createCanonicalHandlerIr(input) {
   const annotated = annotateSites(operationIr.effectSites, operationIr.continuationSites, metadataExtensions.router);
   const capabilities = Object.freeze([...new Set([
     ...operationIr.analysis.capabilities,
-    ...annotated.effectSites.map((site) => site.capability)
+    ...annotated.effectSites.map((site) => site.capability),
+    // Preserve package-declared host authority. Algorithm requirements continue
+    // through the separate exact Crypto realization planner.
+    ...annotated.effectSites.flatMap(site => site.providerRequirements || [])
+      .filter(capability => CANONICAL_PROVIDER_CAPABILITIES.includes(capability))
   ])].sort());
   const providerOperations = providerOperationsForSites(annotated.effectSites, annotated.continuationSites);
   const warnings = Object.freeze([...(frontend.warnings || []), ...(metadataExtensions.warnings || [])]);

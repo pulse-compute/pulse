@@ -1,0 +1,50 @@
+{
+  "status": "completed-with-errors",
+  "records": 69,
+  "polls": 57,
+  "errors": [
+    {
+      "at": "2026-11-25T21:29:47.050Z",
+      "error": "metrics-timeout"
+    },
+    {
+      "at": "2026-11-25T21:30:25.338Z",
+      "error": "metrics-timeout"
+    },
+    {
+      "at": "2026-11-25T21:31:04.195Z",
+      "error": "metrics-timeout"
+    },
+    {
+      "at": "2026-11-25T21:31:42.243Z",
+      "error": "metrics-timeout"
+    },
+    {
+      "at": "2026-11-25T21:32:20.197Z",
+      "error": "metrics-timeout"
+    },
+    {
+      "at": "2026-11-25T21:32:58.483Z",
+      "error": "metrics-timeout"
+    },
+    {
+      "at": "2026-11-25T21:33:37.084Z",
+      "error": "metrics-timeout"
+    },
+    {
+      "at": "2026-11-25T21:34:15.764Z",
+      "error": "metrics-timeout"
+    },
+    {
+      "at": "2026-11-25T21:34:54.003Z",
+      "error": "metrics-timeout"
+    }
+  ],
+  "lastDataAt": "2026-11-25T21:28:43.000Z",
+  "requests": 99,
+  "ramAccountingBytes": 441188352,
+  "ramAccountingBytesPerRequest": 4456448,
+  "backendErrors": 2,
+  "reportedNonzeroResourceErrors": {},
+  "limitation": "99 observed service requests account for all 98 intended test invocations plus one routing health GET; initial no-app smoke did not execute this service. Poll timeouts occurred after traffic finished. No continuous idle cleanup/memory trace is claimed."
+}

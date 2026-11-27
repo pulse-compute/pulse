@@ -1,0 +1,32 @@
+{
+  "status": "passed",
+  "service": "L47lcfUqEbbK5tXC9BTI00",
+  "version": 1,
+  "active": true,
+  "domain": "pulse-upload-live-ed259ae1cb.edgecompute.app",
+  "wasmSha256": "db71bb34ba95344e587e41b2ef4858df09b4510a079d2d704ab04d3e820043af",
+  "packageSha256": "789f659f217dc677f8b74b456b7915e58ae3d7530b41f26915df7325f6cf74bf",
+  "packageSha512": "23934e9aac38a098532dd9fff87a56341cac0a6e064692da7d5c364ea0a7e754fb42bccf5785cc25999322400d2a610e03f7205d37a8feb660b7373bb7097ab6",
+  "remotePackage": {
+    "name": "pulse-upload-live-probe",
+    "description": "Bounded upload QA qualification",
+    "authors": null,
+    "language": "other",
+    "size": 25290,
+    "hashsum": "23934e9aac38a098532dd9fff87a56341cac0a6e064692da7d5c364ea0a7e754fb42bccf5785cc25999322400d2a610e03f7205d37a8feb660b7373bb7097ab6",
+    "files_hash": "ed351e5883b29adcc1ec960266058192141e152400807f7594cf062b3807fbc3b2cd7eda1f0517bdcd201704c0dbaa2c3422b7fb0f14e20d45bebe5d153c3e6d",
+    "wasm_metadata": {
+      "processed-by": {
+        "copa": "1.0.30"
+      }
+    }
+  },
+  "backend": [
+    {
+      "name": "object_origin",
+      "address": "us-central-1.object.fastlystorage.app",
+      "use_ssl": true,
+      "ssl_check_cert": true
+    }
+  ]
+}

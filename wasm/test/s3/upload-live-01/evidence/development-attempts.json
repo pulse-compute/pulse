@@ -1,0 +1,48 @@
+{
+  "schema": "pulse.upload-live.development-attempts.v1",
+  "attempts": [
+    {
+      "stage": "local launcher",
+      "outcome": "failed",
+      "reason": "Local manifest was named local.toml; launcher requires fastly.toml in its package root.",
+      "repair": "Use a separate local package directory."
+    },
+    {
+      "stage": "local verifier",
+      "outcome": "failed",
+      "reason": "Incorrect verifier argument shape.",
+      "repair": "Use method, URI, headers and target, and assert returned boolean."
+    },
+    {
+      "stage": "telemetry local assertion",
+      "outcome": "failed",
+      "reason": "Success settled outside S3 ready helper; readBytes absent.",
+      "repair": "Decorate the S3 completion return as well as immediate failure outcomes; emitted artifact changed before deployment."
+    },
+    {
+      "stage": "package upload",
+      "attempts": 2,
+      "outcome": "failed-before-activation",
+      "httpStatus": 400,
+      "reason": "Failed to extract metadata from package",
+      "repair": "Package paths require an enclosing directory; match Fastly CLI pack layout.",
+      "primarySource": "https://github.com/fastly/cli/blob/d438503bb9fa60efea5774977d8af528740de747/pkg/commands/compute/pack.go"
+    },
+    {
+      "stage": "first hosted smoke",
+      "outcome": "failed",
+      "receipt": "smoke-propagation-failure.json",
+      "reason": "Fastly routing had not propagated; no Compute app response. Later GET reached application 404; full control rerun passed on unchanged artifact."
+    },
+    {
+      "stage": "cleanup precondition",
+      "outcome": "refused-before-network",
+      "reason": "Initial invocation at 41.3 seconds after deactivation failed the 45-second quiescence guard.",
+      "repair": "Retried after the same guard elapsed; gate unchanged."
+    }
+  ],
+  "runnerVersions": {
+    "initialSha256": "435e8fb88aaf5bfb1bd44a8d212a6acb223642ffe8250368d6f52555713f5e0b",
+    "finalChange": "Added repeat-max selection only after first capacity sweep; faults already running on initial runner. Artifact unchanged."
+  }
+}

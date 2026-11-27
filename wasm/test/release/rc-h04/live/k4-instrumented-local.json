@@ -1,0 +1,71 @@
+{
+  "status": "same-known-viceroy-discrepancy",
+  "artifact": {
+    "candidate": {
+      "sourceRevision": "d012f547f804af6e272cb1a6aeafe970c22e0b77",
+      "sourceTree": "ae28b53c6a31c77354e06d1e2d8816139b329eb2",
+      "workingTree": ""
+    },
+    "kind": "installed Pulse K2 consumer with QA auth guard and response-only WASI identity instrumentation",
+    "originalConsumerSha256": "a594200ffe357a4e8c738775ad5567aab09dbf8195e0d088b2d411e0c57447f6",
+    "wasmSha256": "53304c64a5744242c4f73e8fc7f00a807a01e33cebd6b090c5e0fdb43e575381",
+    "uninstrumentedSha256": "8f56f0bc27a498dfb882268ff834d54d9c953f5625dd54c30d4224eafe9a5520",
+    "instrumentedSourceSha256": "1baafb9a056880903c6ec79065ce6a44c68228e2726f903171d8e6fc61b5dbff",
+    "sourceSha256": "fae88224b1a624c8916285bbb4defa10c50e6283258d2d76452e7c8840f1f7a0",
+    "argv": [
+      "/tmp/rc-h04-live/consumer/node_modules/assemblyscript/bin/asc.js",
+      "fastly-native-platform-capabilities.as.ts",
+      "--outFile",
+      "/tmp/rc-h04-live/k4-build/main.wasm",
+      "--runtime",
+      "stub",
+      "--noAssert",
+      "--optimize",
+      "--use",
+      "abort=fastly-native-platform-capabilities.as/__pulse_fastly_abort"
+    ],
+    "guestUnits": 0
+  },
+  "result": {
+    "status": "failed",
+    "requests": 171,
+    "groups": [
+      {
+        "width": 2,
+        "revisions": 3,
+        "createWinners": 1,
+        "casWinnersPerRevision": 1,
+        "retainedTombstone": true
+      },
+      {
+        "width": 8,
+        "revisions": 3,
+        "createWinners": 1,
+        "casWinnersPerRevision": 1,
+        "retainedTombstone": true
+      },
+      {
+        "width": 16,
+        "revisions": 3,
+        "createWinners": 1,
+        "casWinnersPerRevision": 1,
+        "retainedTombstone": true
+      }
+    ],
+    "keyedParallel": true,
+    "boundaryValues": 4,
+    "failures": [
+      {
+        "check": "missing-key-cas",
+        "expected": {
+          "acknowledgement": "conflict",
+          "subsequentRead": "not-found"
+        },
+        "actual": {
+          "acknowledgement": "stored",
+          "subsequentRead": "found"
+        }
+      }
+    ]
+  }
+}

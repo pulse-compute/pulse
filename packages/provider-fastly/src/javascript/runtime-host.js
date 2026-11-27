@@ -48,7 +48,13 @@ function createFastlyJavascriptCapabilities(options = {}) {
       withFastlyBindingCapabilities({ time: () => runtimeHost.readWallTime(options.wallClock === undefined ? () => Date.now() : options.wallClock), ...options.capabilities }, { ...options, bindingCapabilities }),
       { ...options, fetchImplementation: options.fetchImplementation }
     ),
-    { assetsLookup, gripBroadcast, jwtVerify, digestSubtle: options.digestSubtle }
+    {
+      secretLookup: typeof options.apis?.SecretStore === 'function'
+        && typeof options.bindings?.secretStore === 'string' && options.bindings.secretStore.trim()
+        ? bindingCapabilities.secret : undefined,
+      assetsLookup, gripBroadcast, jwtVerify,
+      macSubtle: options.macSubtle, digestSubtle: options.digestSubtle
+    }
   );
 }
 

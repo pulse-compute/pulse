@@ -1,0 +1,69 @@
+{
+  "status": "failed",
+  "kind": "local-Viceroy",
+  "livePlatform": false,
+  "engine": {
+    "version": "0.21.1",
+    "sha256": "881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9"
+  },
+  "wasmSha256": "9666980b967acc3e39b7596f6030e8bbda2e88ac4ddeb4d30878f9dd295a19ab",
+  "cases": [
+    {
+      "name": "prefix",
+      "status": "failed",
+      "error": "wire watchdog",
+      "elapsedMs": 1205.936558
+    },
+    {
+      "name": "cancel",
+      "status": "passed",
+      "elapsedMs": 52.07667199999992,
+      "openOriginResponsesAfterGrace": 0,
+      "settlementGraceMs": 0.013537000000042099,
+      "result": {
+        "key": "wire-1",
+        "sent": 16384,
+        "cancelled": true,
+        "prefixBeforeEOF": false,
+        "elapsedMs": 52.04317500000002
+      }
+    },
+    {
+      "name": "stall-ack",
+      "status": "failed",
+      "elapsedMs": 12020.640790000001,
+      "openOriginResponsesAfterGrace": 1,
+      "settlementGraceMs": 2002.8891909999984,
+      "result": {
+        "key": "wire-2",
+        "sent": 65536,
+        "prefixBeforeEOF": false,
+        "status": 200,
+        "body": "unknown:timeout",
+        "elapsedMs": 10017.616686
+      }
+    },
+    {
+      "name": "recovery",
+      "status": "passed",
+      "elapsedMs": 7.574118999998973,
+      "openOriginResponsesAfterGrace": 0,
+      "settlementGraceMs": 0.007793999999194057,
+      "result": {
+        "key": "wire-3",
+        "sent": 65536,
+        "prefixBeforeEOF": false,
+        "status": 200,
+        "body": "stored:65536",
+        "elapsedMs": 7.524602999999843
+      }
+    },
+    {
+      "name": "cap-plus-one",
+      "status": "failed",
+      "error": "wire watchdog",
+      "elapsedMs": 17001.458776
+    }
+  ],
+  "memoryScope": "sampled Viceroy process RSS, separate from producer/origin; retained allocator/JIT memory included; local only"
+}

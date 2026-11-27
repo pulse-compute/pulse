@@ -18,6 +18,7 @@ function classifyFastlyJavascriptCapability(id, restrictions = {}) {
   const capability = String(id);
   if (capability === 'request.body.transform') return decision(capability, 'blocked', 'fastly-body-transform-unavailable', 'provider-fastly');
   if (capability === 'request.body.forward' || capability === 'req.body') return decision(capability, 'blocked', 'fastly-incoming-body-forwarding-unavailable', 'provider-fastly');
+  if (capability === 'crypto.verifyMacText') return decision(capability, 'eligible', 'fastly-javascript-crypto-hs256-runtime-builtin', 'provider-fastly');
   if (capability === 'crypto.digestText') return decision(capability, 'eligible', 'fastly-javascript-crypto-sha256-runtime-builtin', 'provider-fastly');
   if (['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'kv.list', 'kv.delete'].includes(capability)) return decision(capability, 'blocked', 'fastly-conditional-kv-incomplete', 'provider-fastly');
   if (['s3.head', 's3.getText', 's3.putText', 's3.getBody', 's3.list', 's3.delete'].includes(capability)) return decision(capability, 'blocked', 'fastly-javascript-s3-raw-headers-unavailable', 'provider-fastly');
@@ -107,6 +108,7 @@ function classifyFastlyJavascriptCapability(id, restrictions = {}) {
 
 function classifyFastlyJavascriptProviderRequirement(id, restrictions = {}) {
   const requirement = String(id);
+  if (requirement === 'crypto.verifyMacText') return decision(requirement, 'eligible', 'fastly-javascript-crypto-hs256-runtime-builtin', 'provider-fastly');
   if (requirement === 'crypto.digestText') return decision(requirement, 'eligible', 'fastly-javascript-crypto-sha256-runtime-builtin', 'provider-fastly');
   if (['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'kv.list', 'kv.delete'].includes(requirement)) return decision(requirement, 'blocked', 'fastly-conditional-kv-incomplete', 'provider-fastly');
   if (['s3.head', 's3.getText', 's3.putText', 's3.getBody', 's3.list', 's3.delete'].includes(requirement)) return decision(requirement, 'blocked', 'fastly-javascript-s3-raw-headers-unavailable', 'provider-fastly');
@@ -191,7 +193,7 @@ function fastlyJavascriptProjectRestrictions(compiled, project) {
   const assetSites = sites.filter((entry) => entry.contractId === 'pulse.assets' && entry.operation === 'lookup');
   const gripSites = sites.filter((entry) => entry.contractId === 'pulse.grip' && entry.operation === 'broadcast');
   const configSites = sites.filter((entry) => entry.kind === 'config.get');
-  const secretSites = sites.filter((entry) => entry.kind === 'secret.get');
+  const secretSites = sites.filter((entry) => entry.kind === 'secret.get' || entry.kind === 'crypto.verifyMacText');
   const jwtSites = sites.filter((entry) => (
     entry.contractId === 'pulse.jwt'
     && (['verify', 'sign'].includes(entry.operation) || ['jwt.verify', 'jwt.sign'].includes(entry.kind))

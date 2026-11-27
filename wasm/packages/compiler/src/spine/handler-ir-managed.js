@@ -1,4 +1,5 @@
 'use strict';
+const { CANONICAL_PROVIDER_CAPABILITIES } = require('@pulse-compute/wasm-contracts/provider/canonical-provider');
 
 const path = require('node:path');
 const ts = require('typescript');
@@ -1359,6 +1360,8 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
 
   const capabilities = sortedUnique([
     ...rawOperationIr.effectSites.map((entry) => entry.capability),
+    ...rawOperationIr.effectSites.flatMap(entry => entry.providerRequirements || [])
+      .filter(capability => CANONICAL_PROVIDER_CAPABILITIES.includes(capability)),
     ...schemaReferences.map((entry) => entry.capability),
     ...(state.loggingSites.length > 0 ? ['logging'] : [])
   ]);

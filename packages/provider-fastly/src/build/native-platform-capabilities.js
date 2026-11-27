@@ -188,13 +188,14 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KIND = Object.freeze({
   's3.getText': 13,
   's3.putText': 14,
   's3.getBody': 21,
-  's3.list': 25, 's3.delete': 26,
+  's3.list': 26, 's3.delete': 27,
   'kv.delete': 22,
   'kv.list': 23,
   'kv.getVersioned': 15,
   'kv.insertIfAbsent': 16,
   'kv.compareAndSwap': 17,
   'time.now': 18,
+  'crypto.verifyMacText': 25,
   'crypto.digestText': 19,
   'host.extension': 24
 });
@@ -207,6 +208,7 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITIES_ALLOWED_IMPORTS = new Set([
 const FASTLY_NATIVE_PLATFORM_EFFECT_KINDS = Object.freeze([
   'host.extension',
   'time.now',
+  'crypto.verifyMacText',
   'crypto.digestText',
   'fetch',
   'config.get',
@@ -230,6 +232,7 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KINDS = Object.freeze([
 const FASTLY_NATIVE_PLATFORM_CAPABILITY_KINDS = new Set([
   'host.extension',
   'time.now',
+  'crypto.verifyMacText',
   'crypto.digestText',
   'config.get',
   'secret.get',
@@ -720,7 +723,7 @@ function validatePlanBoundary(plan, options = {}) {
     const s3 = effect.package === '@pulse-compute/s3' && effect.contractId === 'pulse.s3'
       && ['head', 'getText', 'putText', 'getBody', 'list', 'delete'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
     const digest = effect.package === '@pulse-compute/crypto' && effect.contractId === 'pulse.crypto'
-      && effect.operation === 'digestText' && effect.kind === 'crypto.digestText' && effect.capability === effect.kind;
+      && ['digestText', 'verifyMacText'].includes(effect.operation) && effect.kind === `crypto.${effect.operation}` && effect.capability === effect.kind;
     const extension = effect.kind === 'host.extension' && selectedExtensions.some(item => hostExtensions.matches(effect, item.artifact));
     return !grip && !assets && !jwt && !s3 && !digest && !extension;
   });
@@ -744,12 +747,19 @@ function validatePlanBoundary(plan, options = {}) {
     const s3 = effect.package === '@pulse-compute/s3' && effect.contractId === 'pulse.s3'
       && ['head', 'getText', 'putText', 'getBody', 'list', 'delete'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
     const digest = effect.package === '@pulse-compute/crypto' && effect.contractId === 'pulse.crypto'
-      && effect.operation === 'digestText' && effect.kind === 'crypto.digestText' && effect.capability === effect.kind;
+      && ['digestText', 'verifyMacText'].includes(effect.operation) && effect.kind === `crypto.${effect.operation}` && effect.capability === effect.kind;
     const extension = effect.kind === 'host.extension' && selectedExtensions.some(item => hostExtensions.matches(effect, item.artifact));
     return !grip && !assets && !jwt && !s3 && !digest && !extension;
   });
   if (unsupportedDeclarations.length > 0) {
-    fail('Fastly native package realization is restricted to the Assets, GRIP, JWT, S3, and Crypto digest contracts.', 'PULSE_FASTLY_NATIVE_PLATFORM_PACKAGE_UNSUPPORTED', { effects: unsupportedDeclarations });
+    fail('Fastly native package realization is restricted to the Assets, GRIP, JWT, S3, and Crypto text contracts.', 'PULSE_FASTLY_NATIVE_PLATFORM_PACKAGE_UNSUPPORTED', { effects: unsupportedDeclarations });
+  }
+  for (const effect of effects.filter(entry => entry.kind === 'crypto.verifyMacText')) {
+    const resource = effect.resource;
+    if (!resource || Object.keys(resource).length !== 2 || resource.keyType !== 'secret'
+      || !require('@pulse-compute/crypto/provider').normalizeMacTextOptions({ algorithm: 'HS256', key: { type: 'secret', binding: resource.secretBinding } })) {
+      fail('Fastly Native MAC requires one exact named-secret descriptor.', 'PULSE_FASTLY_NATIVE_MAC_KEY_DESCRIPTOR_INVALID', { effectId: effect.id, automaticFallback: false });
+    }
   }
   for (const effect of effects.filter((entry) => ['jwt.verify', 'jwt.sign'].includes(entry.kind))) {
     const resource = effect.resource;
@@ -832,7 +842,7 @@ function resolveCapabilityBindings(plan, options = {}) {
   const effects = plan.effects || [];
   const hasConfig = effects.some((effect) => effect.kind === 'config.get');
   const hasSecret = effects.some((effect) => (
-    effect.kind === 'secret.get' || ['s3.head', 's3.getText', 's3.putText', 's3.getBody', 's3.list', 's3.delete'].includes(effect.kind)
+    effect.kind === 'secret.get' || effect.kind === 'crypto.verifyMacText' || ['s3.head', 's3.getText', 's3.putText', 's3.getBody', 's3.list', 's3.delete'].includes(effect.kind)
     || (['jwt.verify', 'jwt.sign'].includes(effect.kind) && effect.resource && effect.resource.keyType === 'secret')
   ));
   const hasGripHold = effects.some((effect) => effect.kind === 'grip.hold');
@@ -1030,7 +1040,7 @@ function requiredImportsForPlan(plan, bindings) {
     && effect.resource
     && effect.resource.keyType === 'secret'
   ));
-  if (kinds.has('secret.get') || jwtSecretRequired || gripAuthenticationRequired) {
+  if (kinds.has('secret.get') || kinds.has('crypto.verifyMacText') || jwtSecretRequired || gripAuthenticationRequired) {
     for (const key of ['fastly_secret_store:open', 'fastly_secret_store:get', 'fastly_secret_store:plaintext']) keys.add(key);
   }
   for (const kind of conditionalKv.KV_CONDITIONAL_KINDS) if (kinds.has(kind)) for (const key of conditionalKv.kvImports(kind)) keys.add(key);
@@ -1237,7 +1247,7 @@ function effectResultSource(plan, bindings) {
   lines.push(`function __pulse_fastly_secret_store(effectIndex: i32): string { return ${quote(bindings.secretStore)} }`, '');
   lines.push('function __pulse_fastly_jwt_secret_binding(effectIndex: i32): string {', '  switch (effectIndex) {');
   for (const [index, effect] of (plan.effects || []).entries()) {
-    if (['jwt.verify', 'jwt.sign'].includes(effect.kind) && effect.resource.keyType === 'secret') {
+    if (['jwt.verify', 'jwt.sign', 'crypto.verifyMacText'].includes(effect.kind) && effect.resource.keyType === 'secret') {
       lines.push(`    case ${index}: return ${quote(effect.resource.secretBinding)}`);
     }
   }
@@ -1313,6 +1323,7 @@ function effectResultSource(plan, bindings) {
 function effectDispatchSource(plan) {
   const handlerByKind = Object.freeze({
     'time.now': '__pulse_fastly_time_begin',
+    'crypto.verifyMacText': '__pulse_fastly_mac_begin',
     'crypto.digestText': '__pulse_fastly_digest_begin',
     fetch: '__pulse_fastly_fetch_begin',
     'config.get': '__pulse_fastly_config_begin',
@@ -2061,7 +2072,7 @@ ${lifecycle?.site('result-claim') ? lifecycle.site('result-claim') + '\n' : ''} 
 function capabilityImports(effect) {
   if (effect.kind === 'time.now') return ['wasi_snapshot_preview1.clock_time_get'];
   if (effect.kind === 'config.get') return ['fastly_config_store.open', 'fastly_config_store.get'];
-  if (effect.kind === 'secret.get') return ['fastly_secret_store.open', 'fastly_secret_store.get', 'fastly_secret_store.plaintext'];
+  if (effect.kind === 'secret.get' || effect.kind === 'crypto.verifyMacText') return ['fastly_secret_store.open', 'fastly_secret_store.get', 'fastly_secret_store.plaintext'];
   if (['jwt.verify', 'jwt.sign'].includes(effect.kind)) {
     return [
       ...(effect.resource && effect.resource.keyType === 'secret'
@@ -2161,6 +2172,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     plan.effects.some(e => e.kind === 'assets.lookup') ? require('@pulse-compute/wasm-contracts/assets/contracts').embeddedNativeSource() + fs.readFileSync(path.join(__dirname, 'embedded-assets.as.ts'), 'utf8') : '',
     require('./time-native.js').timeNativeSource(plan),
     require('./digest-native.js').digestNativeSource(plan),
+    require('./mac-text-native.js').macTextNativeSource(plan),
     conditionalKv.kvNativeSource(plan),
     require('./native-request-body.js').runtimeSource(),
     require('./native-request-headers.js').runtimeSource(),
@@ -2432,7 +2444,7 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
     ];
     if (emitWat) args.push('--textFile', assemblyScriptWatFile);
     const optimization = appendAssemblyScriptOptimizationArgs(args, nativeOptimization, { guestLinked });
-    if (!guestLinked && (plan.callables?.length || nativeValueBudget.hasBoundedReadLoop(plan) || plan.effects.some(effect => effect.kind === 'crypto.digestText' || effect.kind.startsWith('s3.')))) {
+    if (!guestLinked && (plan.callables?.length || nativeValueBudget.hasBoundedReadLoop(plan) || plan.effects.some(effect => ['crypto.digestText', 'crypto.verifyMacText'].includes(effect.kind) || effect.kind.startsWith('s3.')))) {
       args.push('--maximumMemory', String(nativeValueBudget.policy.maximumMemoryPages));
     }
     if (generated.guestUnits.length > 0) {

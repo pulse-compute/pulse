@@ -5,6 +5,9 @@ const protocol = require('../../../packages/s3/src/provider.js');
 const { buildS3LoweringPlan } = require('../../../packages/s3/pulsewasm.compiler.cjs');
 const lower = call => buildS3LoweringPlan({ sourceText: `import { s3 } from '@pulse-compute/s3'; app.post('/', async (ctx) => { ${call} });`, typescript: ts });
 function main() {
+  const effectKinds = require('../../../packages/provider-fastly/src/build/native-platform-capabilities.js').FASTLY_NATIVE_PLATFORM_EFFECT_KIND;
+  assert.equal(new Set(Object.values(effectKinds)).size, Object.keys(effectKinds).length,
+    'Fastly dispatch IDs must be unique across S3, MAC and all other effects');
   for (const suffix of ['', ', {}', ', options', ", { prefix: prefix, maxKeys: count, continuationToken: cursor }"]) {
     const plan = lower(`const result = await s3.list(ctx, 'objects'${suffix})`);
     assert.equal(plan.hasErrors, false);

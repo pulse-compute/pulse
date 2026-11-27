@@ -23,7 +23,8 @@ targets.
 - Request method, URL, path, headers, text, and JSON access.
 - Bounded, memoized structured body decoding.
 - Explicit TypeScript JSON schema declarations and literal schema IDs.
-- GET, HEAD, and POST fetch effects.
+- Outbound fetch effects with the methods and body rules in the
+  [canonical `ctx.fetch` contract](./API.md#ctxfetch).
 - Independent Native effect grouping, dependent continuation chains, and
   explicit cross-target `ctx.parallel({ ... })` keyed groups and bounded
   `ctx.effects({ max })` collections.

@@ -251,6 +251,16 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'crypto profile replacement, reachable requirements, and deterministic target realization planning'
   }),
+  'crypto-mac-text-installed': nodeTask('test/crypto/mac03/installed.cjs', {timeoutMs:600000,evidence:'external',scheduling:{compiler:true},description:'MAC-03 exact tarball consumers and independent proof headers across four targets; no hosted claim'}),
+  'crypto-mac-text-proof-contract': nodeTask('test/crypto/mac03/assert-proof.cjs', {evidence:'unit',description:'MAC-03 evidence binding, bounded redaction and unchanged Bearer proof controls'}),
+  'crypto-mac-text-provider': nodeTask('test/crypto/assert-mac-text-provider.cjs', {timeoutMs:180000,evidence:'unit',description:'MAC provider precedence, secret snapshots, cleanup and cancellation'}),
+  'crypto-mac-text-conformance': nodeTask('test/crypto/assert-mac-text-conformance.cjs', {timeoutMs:180000,evidence:'conformance',description:'Exact-text MAC corpus across Node/Fastly Native/JavaScript dispatch'}),
+  'crypto-mac-text-contract': nodeTask('test/crypto/assert-mac-text-contract.cjs', {
+    description: 'MAC authoring, trusted dispatch bounds, status projection and explicit target admission'
+  }),
+  'crypto-mac-text-corpus': nodeTask('test/crypto/assert-mac-text-corpus.cjs', {
+    description: 'MAC-00 reference-only HMAC text known answers, classification and bounded envelope evidence'
+  }),
   'crypto-digest-text-contract': nodeTask('test/crypto/assert-digest-text-contract.cjs', {
     description: 'Exact-text digest admission, bounded failures, unavailable providers and cancellation'
   }),
@@ -1545,6 +1555,10 @@ const profiles = Object.freeze({
     'crypto-es256-signing',
     'crypto-rs256',
     'crypto-digest-text-contract',
+    'crypto-mac-text-corpus',
+    'crypto-mac-text-contract',
+    'crypto-mac-text-provider',
+    'crypto-mac-text-proof-contract',
     'reachable-graph',
     'project-modules',
     'package-reachability',
@@ -1671,6 +1685,7 @@ const profiles = Object.freeze({
     's3-write-conformance',
     's3-list-delete-conformance',
     'crypto-cross-target-conformance',
+    'crypto-mac-text-conformance',
     'crypto-digest-text-conformance',
     'crypto-digest-storage-conformance',
     'multifile-source-identity',
@@ -1758,6 +1773,7 @@ const profiles = Object.freeze({
     'fastly-request-headers'
   ]),
   release: Object.freeze([
+    'crypto-mac-text-installed',
     '@unit',
     '@native',
     '@javascript',

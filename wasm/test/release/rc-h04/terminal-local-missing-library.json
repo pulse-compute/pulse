@@ -1,0 +1,17 @@
+{
+  "version": "pulse.terminal-transport.v1",
+  "lane": "local",
+  "status": "failed",
+  "bundleSha256": "cf8fd3f4b389d56ca79ddf141952ddf96e2df82634f2826907bd0fff405bc64c",
+  "engines": [
+    {
+      "version": "viceroy 0.18.0",
+      "sha256": "e2173c8799f73850e657e3722ce5000d3338ccdf6246790688a6b8ae8e53b896"
+    }
+  ],
+  "startup": [],
+  "cases": [],
+  "logs": {},
+  "error": "Error: Command failed: /tmp/rc-h04-terminal-engines/pushpin/usr/bin/pushpin --version\n/tmp/rc-h04-terminal-engines/pushpin/usr/bin/pushpin: error while loading shared libraries: libicui18n.so.74: cannot open shared object file: No such file or directory\n\n    at genericNodeError (node:internal/errors:985:15)\n    at wrappedFn (node:internal/errors:539:14)\n    at checkExecSyncError (node:child_process:925:11)\n    at execFileSync (node:child_process:961:15)\n    at run (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/qualification/terminal/local.cjs:72:21)\n    at Object.<anonymous> (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/qualification/terminal/local.cjs:124:156)\n    at Module._compile (node:internal/modules/cjs/loader:1871:14)\n    at Object..js (node:internal/modules/cjs/loader:2002:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)",
+  "cleanup": true
+}

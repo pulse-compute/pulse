@@ -1,0 +1,10 @@
+{
+  "version": "pulse.terminal-transport.v1",
+  "lane": "hosted",
+  "status": "failed",
+  "bundleSha256": "9df4b0c7e407ca5d8fad267efa216e88ec78b874879307330b7824210a84d697",
+  "cases": [],
+  "deployments": [],
+  "cleanup": true,
+  "reason": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n    'fanout',\n    'fanout-router',\n-   'independent',\n    'websocket',\n    'websocket-router'\n  ]\n"
+}

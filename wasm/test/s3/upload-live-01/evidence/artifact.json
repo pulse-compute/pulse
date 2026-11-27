@@ -1,0 +1,16 @@
+{
+  "kind": "research-scaffold",
+  "target": {
+    "endpoint": "https://us-central-1.object.fastlystorage.app",
+    "region": "us-central-1",
+    "bucket": "catalog-live-20261101-2da36f-objects",
+    "prefix": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/"
+  },
+  "capBytes": 33554432,
+  "operationMs": 10000,
+  "requestMs": 15000,
+  "wasmBytes": 52728,
+  "wasmSha256": "db71bb34ba95344e587e41b2ef4858df09b4510a079d2d704ab04d3e820043af",
+  "publicAdmission": false,
+  "telemetry": "Guest linear memory and successful close calls; not host RSS or pending-request reclamation"
+}

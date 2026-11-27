@@ -749,8 +749,33 @@ function createCanonicalContext(options, trace) {
   return Object.freeze({ ctx, request, requestBody: requestSurface.body, kvStores, requestState });
 }
 
+function isFetchRecord(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+}
+
+function normalizeFetchHeaders(input) {
+  if (input === undefined) return [];
+  if (!Array.isArray(input) && !isFetchRecord(input)) {
+    throw new CanonicalRuntimeError('FetchRequestError', 'PULSE_FETCH_HEADERS_INVALID', 'Fetch headers must be a string record or [name, value] pairs.');
+  }
+  const pairs = Array.isArray(input) ? input : Object.entries(input);
+  return Array.from(pairs, pair => {
+    if (!Array.isArray(pair) || pair.length !== 2 || typeof pair[0] !== 'string' || typeof pair[1] !== 'string') {
+      throw new CanonicalRuntimeError('FetchRequestError', 'PULSE_FETCH_HEADERS_INVALID', 'Fetch headers must contain pairs of strings.');
+    }
+    try { new Headers().append(pair[0], pair[1]); }
+    catch (_) {
+      throw new CanonicalRuntimeError('FetchRequestError', 'PULSE_FETCH_HEADERS_INVALID', 'Fetch header name or value is invalid.');
+    }
+    // Validate with Web Headers without coalescing duplicates or changing values.
+    return [...pair];
+  });
+}
+
 function normalizedInit(init = {}, schemaCodecs, options = {}) {
-  if (init !== undefined && (!init || typeof init !== 'object' || Array.isArray(init))) {
+  if (init !== undefined && !isFetchRecord(init)) {
     throw new CanonicalRuntimeError('FetchRequestError', 'PULSE_FETCH_INIT_INVALID', 'Canonical fetch init must be an object.');
   }
   const value = init || {};
@@ -767,16 +792,16 @@ function normalizedInit(init = {}, schemaCodecs, options = {}) {
       );
     }
   }
-  const method = String(value.method || 'GET').toUpperCase();
-  if (!['GET', 'HEAD', 'POST', 'PUT', 'PATCH'].includes(method)) {
+  const method = value.method === undefined ? 'GET' : String(value.method).toUpperCase();
+  if (!['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'].includes(method)) {
     throw new CanonicalRuntimeError(
       'FetchRequestError',
       'PULSE_FETCH_METHOD_UNSUPPORTED',
-      `Canonical fetch method ${method} is outside the portable GET, HEAD, POST, PUT, and PATCH contract.`,
+      `Canonical fetch method ${method} is outside the portable GET, HEAD, POST, PUT, PATCH, DELETE, and OPTIONS contract.`,
       { method }
     );
   }
-  const headers = normalizeHeaders(value.headers);
+  const headers = normalizeFetchHeaders(value.headers);
   const hasBody = Object.prototype.hasOwnProperty.call(value, 'body');
   const hasJson = Object.prototype.hasOwnProperty.call(value, 'json');
   const hasSchema = Object.prototype.hasOwnProperty.call(value, 'schema');
@@ -799,7 +824,7 @@ function normalizedInit(init = {}, schemaCodecs, options = {}) {
     body = value.body;
     bodyMode = incoming ? 'incoming-request-v1' : 'text';
   } else if (hasJson) {
-    if (!headerValue(headers, 'content-type')) headers.push(['content-type', 'application/json; charset=utf-8']);
+    if (!headers.some(([name]) => name.toLowerCase() === 'content-type')) headers.push(['content-type', 'application/json; charset=utf-8']);
     if (hasSchema) {
       const event = {
         boundary: 'fetch-request',
@@ -807,7 +832,7 @@ function normalizedInit(init = {}, schemaCodecs, options = {}) {
         responseCaseId: null,
         operationId: `fetch-request:${options.effectId || schemaId}`,
         status: null,
-        contentType: headerValue(headers, 'content-type') || 'application/json; charset=utf-8',
+        contentType: headerValue(headers, 'content-type'),
         headers,
         bodyOwnership: 'application-owned',
         target: options.target || null,
