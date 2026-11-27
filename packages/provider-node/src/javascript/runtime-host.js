@@ -75,7 +75,7 @@ function nodeJavascriptProviderCapabilities(options) {
       assetsLookup: configuredAssetsLookup,
       gripBroadcast: configuredGripBroadcast,
       jwtVerify: configuredJwtVerify,
-      digestSubtle: options.digestSubtle,
+      macSubtle: options.macSubtle, digestSubtle: options.digestSubtle,
       s3: createNodeJavascriptS3(options, bindingCapabilities.secret),
       assets: options.assets,
       grip: options.grip

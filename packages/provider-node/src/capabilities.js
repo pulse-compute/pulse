@@ -14,6 +14,7 @@ const NODE_CANONICAL_PROVIDER_CAPABILITIES = Object.freeze([
   'response.custom',
   'fetch',
   'time.wall-clock',
+  'crypto.verifyMacText',
   'crypto.digestText',
   'config.get',
   'secret.get',
@@ -40,6 +41,7 @@ const NODE_CANONICAL_PROVIDER_LOWERING = Object.freeze({
   'response.output': 'node.http.generated-output-v1',
   fetch: 'node.fetch.dispatch',
   'time.wall-clock': 'node.runtime.time.now',
+  'crypto.verifyMacText': 'node.crypto.verify-mac-text',
   'crypto.digestText': 'node.crypto.digest-text',
   'config.get': 'node.runtime.config.get',
   'secret.get': 'node.runtime.secret.get',
@@ -75,6 +77,7 @@ const NODE_NATIVE_TARGET_CAPABILITIES = Object.freeze([
   'event.ingress',
   'event.emit',
   'time.wall-clock',
+  'crypto.verifyMacText',
   'crypto.digestText'
 ]);
 

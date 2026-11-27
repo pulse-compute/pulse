@@ -71,6 +71,9 @@ function selectedRuntimeBuiltin(): Hs256SubtleCrypto | Es256SubtleCrypto | undef
 export async function verifyHs256WithSubtle(
   request: NormalizedMacVerifyRequest,
   subtle: Hs256SubtleCrypto | undefined,
+  // Request-owned MAC framing has already validated the key; an import
+  // exception is then a realization failure. Keep ordinary raw-byte semantics.
+  importFailureStatus: 'invalid-key' | 'realization-failure' = 'invalid-key',
 ): Promise<CryptoVerificationResult> {
   if (!subtle) {
     request.key.bytes.fill(0);
@@ -92,7 +95,7 @@ export async function verifyHs256WithSubtle(
     );
   } catch {
     request.key.bytes.fill(0);
-    return verificationResult('invalid-key');
+    return verificationResult(importFailureStatus);
   }
 
   // Keep the normalized key storage live until the selected runtime has

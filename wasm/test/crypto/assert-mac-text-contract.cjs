@@ -103,14 +103,14 @@ async function main() {
     for(const name of ['pulse','crypto'])fs.symlinkSync(path.resolve(__dirname,'../../../packages',name),path.join(cwd,'node_modules/@pulse-compute',name),'dir');
     fs.writeFileSync(path.join(cwd,'src/index.ts'),`import {Pulse} from '@pulse-compute/pulse';import {crypto} from '@pulse-compute/crypto';const app=new Pulse({auto:true});app.get('/',async ctx=>{const r=await crypto.verifyMacText(ctx,ctx.req.header('x-message')||'',ctx.req.header('x-proof')||'',${literal});return ctx.text(r.status)});export default app;`);
     for(const host of ['node','fastly'])for(const target of ['native','javascript'])for(const algorithms of [['HS256'],[]]) {
-      fs.writeFileSync(path.join(cwd,'.pulse/config.ts'),`import {defineConfig} from '@pulse-compute/pulse';export default defineConfig((_scope)=>(${JSON.stringify({pulse:{entry:'src/index.ts',crypto:algorithms,strict:false},test:{host,target}})}));`);
+      fs.writeFileSync(path.join(cwd,'.pulse/config.ts'),`import {defineConfig} from '@pulse-compute/pulse';export default defineConfig((_scope)=>(${JSON.stringify({pulse:{entry:'src/index.ts',crypto:algorithms,strict:false},test:{host,target,...(host==='fastly'?{fastly:{bindings:{secretStore:'app_secrets'}}}:{})}})}));`);
       const project=resolveProject({cwd,profile:'test'});
       let inspection; try { inspection=inspectProject(project); } catch(error) { inspection={code:error.code,diagnostics:error.diagnostics,detail:error.detail}; }
       const serialized=JSON.stringify(inspection);
       assert.ok(/crypto.verifyMacText|CRYPTO.*REQUIRED|CRYPTO.*DECLAR/.test(serialized), serialized);
       if (algorithms.length) {
-        assert.equal(inspection.code, 'PULSE_PROVIDER_CAPABILITY_UNSUPPORTED');
-        assert.ok(inspection.detail.missing.includes('crypto.verifyMacText'));
+        assert.equal(inspection.code, undefined, serialized);
+        if (target === 'javascript') assert.equal(inspection.provider.targetSupport.project.status, 'eligible');
         const compiled = compileProject(project);
         const metadata = compiled.metadata;
         assert.ok(metadata.capabilities.includes('secret.get'));
@@ -121,11 +121,9 @@ async function main() {
         assert.ok(inspection.diagnostics.some(row=>row.code==='PULSE_CRYPTO_CONFIG_REQUIRED'));
         assert.ok(inspection.diagnostics.some(row=>row.detail.automaticFallback===false));
       }
-      assert.throws(()=>buildProject(project), error => algorithms.length
-        ? error.code === 'PULSE_PROVIDER_CAPABILITY_UNSUPPORTED'
-        : JSON.stringify(error.diagnostics).includes('PULSE_CRYPTO_CONFIG_REQUIRED'));
+      if (!algorithms.length) assert.throws(()=>buildProject(project), error => JSON.stringify(error.diagnostics).includes('PULSE_CRYPTO_CONFIG_REQUIRED'));
     }
   } finally {fs.rmSync(cwd,{recursive:true,force:true});}
-  console.log('ok - MAC-01 static admission, status projection, bounded trusted dispatch, redaction and unsupported target gates');
+  console.log('ok - MAC-01 static admission, status projection, bounded trusted dispatch, redaction and explicit target and missing authority gates');
 }
 main().catch(error=>{console.error(error);process.exitCode=1});

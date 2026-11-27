@@ -2629,15 +2629,22 @@ an imported facade named `crypto` only for an exactly recognized package call;
 ambient crypto calls and authority in its arguments remain rejected. HMAC/JWT
 limits, fallback policy, and S3/Catalog capacity are separate contracts.
 
-MAC-01 adds the package-owned `crypto.verifyMacText` authoring and trusted
+MAC-01/02 provide the package-owned `crypto.verifyMacText` authoring and trusted
 runtime registration seam with direct-await placement, literal HS256/secret
 options, runtime message/tag inputs, and a closed `mac-text-verification`
 result. Static metadata demands both the operation and `secret.get`; no secret
 bytes enter compiler artifacts. The JavaScript facade bounds message/tag code
 units before the fixed operation-only 458,752-byte envelope is cloned. Existing
-providers do not advertise this operation and managed builds reject it without
-fallback. Provider validation, Native framing, secret realization and lifecycle
-qualification remain MAC-02 work; see [Crypto](../packages/crypto.md#exact-text-mac-authoring-implementation-in-progress).
+providers advertise the implemented operation for Node/Fastly Native and
+JavaScript with explicit HS256 and secret authority. Native borrows the
+existing bounded Crypto frame; JavaScript uses Web Crypto verify. Validation
+precedes lookup, errors project closed statuses, and request cancellation or
+deadlines outrank projection. Owned staging is wiped on returned paths and
+the Node bridge clears its frame after caught traps; terminal Fastly guest
+traps abandon the instance without an in-guest erasure guarantee. Local
+provider/fixture parity is established. MAC-03 adds exact-tarball consumer
+qualification and a separate hosted runner; deployed qualification remains
+pending its exact-artifact receipt. See [Crypto](../packages/crypto.md#exact-text-mac-authoring-implementation-in-progress).
 
 S3 operations require exact `SHA-256` and `HMAC-SHA256` selection. Native
 composes the same Crypto-owned source once; Node JavaScript explicitly selects
