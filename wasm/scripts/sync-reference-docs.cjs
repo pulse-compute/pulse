@@ -894,6 +894,9 @@ function filesUnder(root, predicate = () => true, out = []) {
 
 function transformCliCopy(sourceRelative, content) {
   let out = content;
+  if (sourceRelative === 'docs/guides/project-lifecycle.md') {
+    out = out.replaceAll('../../README.md#start-here', '../../README.md#install-and-create-a-project');
+  }
   if (sourceRelative === 'docs/README.md') {
     out = out.replaceAll(
       '[PulseWasm package boundaries](../wasm/docs/PACKAGE-BOUNDARIES.md)',
@@ -941,6 +944,7 @@ function transformApiCopy(sourceRelative, content) {
   }
   if (sourceRelative === 'docs/preview-scope.md') {
     return stable(content
+      .replaceAll('../API.md', './API.md')
       .replaceAll('concepts/compilation-and-lowering.md', publicCliDoc('docs/concepts/compilation-and-lowering.md'))
       .replaceAll('concepts/bodies.md', publicCliDoc('docs/concepts/bodies.md'))
       .replaceAll('./reference/handler-authoring.md', publicCliDoc('docs/reference/handler-authoring.md'))

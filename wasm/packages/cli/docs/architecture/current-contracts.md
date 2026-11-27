@@ -2582,7 +2582,7 @@ without moving package semantics into the compiler or widening the trust model.
 
 ## JWT verification
 
-The synchronized `1.0.0-beta.10` JWT/crypto packages compose
+The synchronized `1.0.0-beta.11` JWT/crypto packages compose
 `@pulse-compute/jwt` over the lower-level, provider-neutral verification
 contract owned by `@pulse-compute/crypto`. The executable algorithm set is
 HS256 and ES256. Crypto verifies a MAC or signature over caller-supplied bytes
@@ -2628,6 +2628,27 @@ Node/Fastly JavaScript use selected runtime-builtin SHA-256. The compiler admits
 an imported facade named `crypto` only for an exactly recognized package call;
 ambient crypto calls and authority in its arguments remain rejected. HMAC/JWT
 limits, fallback policy, and S3/Catalog capacity are separate contracts.
+
+MAC-01/02 provide the package-owned `crypto.verifyMacText` authoring and trusted
+runtime registration seam with direct-await placement, literal HS256/secret
+options, runtime message/tag inputs, and a closed `mac-text-verification`
+result. Static metadata demands both the operation and `secret.get`; no secret
+bytes enter compiler artifacts. The JavaScript facade bounds message/tag code
+units before the fixed operation-only 458,752-byte envelope is cloned. Existing
+providers advertise the implemented operation for Node/Fastly Native and
+JavaScript with explicit HS256 and secret authority. Native borrows the
+existing bounded Crypto frame; JavaScript uses Web Crypto verify. Validation
+precedes lookup, errors project closed statuses, and request cancellation or
+deadlines outrank projection. Owned staging is wiped on returned paths and
+the Node bridge clears its frame after caught traps; terminal Fastly guest
+traps abandon the instance without an in-guest erasure guarantee. Local
+provider/fixture parity is established. MAC-03 adds exact-tarball consumer
+qualification. Its retained Fastly Native Wasm passed all 18 hosted proof
+checks on 2026-11-27 with real secret bindings, unchanged Bearer headers and
+package identity verified before and after traffic. Temporary resources were
+removed; the receipt qualifies that development artifact, not a published
+beta.11 package or an aggregate release seal. See
+[Crypto](../packages/crypto.md#exact-text-mac-authoring-qualified-development-source).
 
 S3 operations require exact `SHA-256` and `HMAC-SHA256` selection. Native
 composes the same Crypto-owned source once; Node JavaScript explicitly selects
@@ -2707,7 +2728,7 @@ publish, promote, deploy, or activate the release.
 
 ## Support, release, and authority
 
-Pulse `1.0.0-beta.10` is a Beta intended for the `beta` channel.
+Pulse `1.0.0-beta.11` is a Beta intended for the `beta` channel.
 Documented, evidence-backed behavior is intentional, but public surfaces may
 change deliberately before a compatibility-bearing release. Unsupported
 behavior fails explicitly, historical and implementation subpaths gain no

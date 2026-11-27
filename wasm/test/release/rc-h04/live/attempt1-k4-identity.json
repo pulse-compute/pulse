@@ -1,0 +1,25 @@
+{
+  "status": "passed",
+  "before": {
+    "identity": {
+      "serviceId": "uOY74euocRuSsuVDcaEtre",
+      "serviceVersion": "1",
+      "storeId": "2j6hwxfe83boksh299d6zf",
+      "moduleSha256": "53304c64a5744242c4f73e8fc7f00a807a01e33cebd6b090c5e0fdb43e575381"
+    },
+    "filesHash": "66040b052aef569d77bd5539c52f32f50d818ded1f8c59e330aa072255470002b5386634d3349c0108f99c8d9fcac507f5d13d231f33274f05d65c53e9709ec6",
+    "active": true
+  },
+  "after": {
+    "identity": {
+      "serviceId": "uOY74euocRuSsuVDcaEtre",
+      "serviceVersion": "1",
+      "storeId": "2j6hwxfe83boksh299d6zf",
+      "moduleSha256": "53304c64a5744242c4f73e8fc7f00a807a01e33cebd6b090c5e0fdb43e575381"
+    },
+    "filesHash": "66040b052aef569d77bd5539c52f32f50d818ded1f8c59e330aa072255470002b5386634d3349c0108f99c8d9fcac507f5d13d231f33274f05d65c53e9709ec6",
+    "active": true
+  },
+  "metadataSource": "FASTLY_POP/SERVICE_ID/SERVICE_VERSION/TRACE_ID read through WASI in response-only instrumentation; module/store bound by inspected package and resource link",
+  "mutationRetries": 0
+}

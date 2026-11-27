@@ -1,0 +1,9 @@
+
+[pulsewasm:unit] crypto-mac-text-proof-contract
+[pulsewasm] MAC-03 evidence binding, bounded redaction and unchanged Bearer proof controls (timeout 30.00s)
+{"status":"passed","hostedCases":18,"evidenceMutationsRejected":7,"hostedExecution":false}
+[pulsewasm] crypto-mac-text-proof-contract: passed in 928ms
+
+[pulsewasm] test summary
+  passed         928ms  crypto-mac-text-proof-contract
+  total        944ms

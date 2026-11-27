@@ -1,0 +1,769 @@
+{
+  "schema": "pulse.upload02.evidence.v1",
+  "status": "passed",
+  "startedAt": "2026-11-25T17:35:24.971Z",
+  "node": "v24.22.3",
+  "baseCommit": "0630d9f991a336af0804506188078a2fcce7cb96",
+  "baseTree": "15044718482b9b58cdd99cb30311a84dd36d995e",
+  "workingTree": "?? wasm/test/s3/upload-02/",
+  "sourceSha256": {
+    "native-overlay.cjs": "9f1caf9a6a50abb2e01a2d0c581ccb258eb49e05fa0ad5c4be212045a2457449",
+    "native-proof.cjs": "55c576f19356411caef104b97070659ae30bdeac58bbfb14dcbd274b6e95e235",
+    "native-pump.as.ts": "fe469e3ceef08cac46890625a3fc9bb8381a95ebcdb1765ea2717a53aeb42a82",
+    "node-native-proof.cjs": "e2fa9f39b78f675bcf4316accac03d5fd5e25303ae0b202dbe728278df7b737f",
+    "node-proof.cjs": "3c55e5489126287430726c2eb503774c845d337199c86c1c53e9408bf3de21a1",
+    "node-transport.cjs": "805735556559822c93ea1953d0d8564b5d9ee7030ef6c842b793c9b75a9ce3ca",
+    "run.cjs": "2cc034fa3142c4fba9e6307890e2f91a3fbcb4084f90e9917a7d1bebc1ebbb28",
+    "runtime-overlay.cjs": "0392b5915624f588ae3920d231945cc42aca6b4e7bcdb4786e8e7d02dbecf8d2",
+    "scaffold.cjs": "b96553857af2997ca0de20d263d49d267b957bbe8be60f96fbb8b7570b1592e8"
+  },
+  "productSupportClaim": false,
+  "compilerAdmissionClaim": false,
+  "liveProviderClaim": false,
+  "targets": [
+    {
+      "name": "node-proof",
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "evidence": {
+        "status": "passed",
+        "cases": [
+          {
+            "name": "binary-0",
+            "status": "passed",
+            "responseStatus": 200,
+            "result": {
+              "status": "stored",
+              "byteLength": 0,
+              "etag": "\"opaque\""
+            },
+            "sourceReads": 1,
+            "cancelled": 0,
+            "continued": true,
+            "prefixSeen": false,
+            "effects": [
+              "secret.get",
+              "s3.upload02"
+            ],
+            "metrics": {
+              "reads": 1,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            },
+            "requests": 1,
+            "parallelRejected": true
+          },
+          {
+            "name": "binary-1",
+            "status": "passed",
+            "responseStatus": 200,
+            "result": {
+              "status": "stored",
+              "byteLength": 1,
+              "etag": "\"opaque\""
+            },
+            "sourceReads": 2,
+            "cancelled": 0,
+            "continued": true,
+            "prefixSeen": true,
+            "effects": [
+              "secret.get",
+              "s3.upload02"
+            ],
+            "metrics": {
+              "reads": 2,
+              "writes": 1,
+              "bytes": 1,
+              "dispatches": 1,
+              "maxChunkBytes": 1,
+              "maxSourceChunkBytes": 1,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            },
+            "requests": 1,
+            "parallelRejected": true
+          },
+          {
+            "name": "binary-16385",
+            "status": "passed",
+            "responseStatus": 200,
+            "result": {
+              "status": "stored",
+              "byteLength": 16385,
+              "etag": "\"opaque\""
+            },
+            "sourceReads": 2,
+            "cancelled": 0,
+            "continued": true,
+            "prefixSeen": true,
+            "effects": [
+              "secret.get",
+              "s3.upload02"
+            ],
+            "metrics": {
+              "reads": 3,
+              "writes": 2,
+              "bytes": 16385,
+              "dispatches": 1,
+              "maxChunkBytes": 16384,
+              "maxSourceChunkBytes": 16385,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            },
+            "requests": 1,
+            "parallelRejected": true
+          },
+          {
+            "name": "binary-1048576",
+            "status": "passed",
+            "responseStatus": 200,
+            "result": {
+              "status": "stored",
+              "byteLength": 1048576,
+              "etag": "\"opaque\""
+            },
+            "sourceReads": 17,
+            "cancelled": 0,
+            "continued": true,
+            "prefixSeen": true,
+            "effects": [
+              "secret.get",
+              "s3.upload02"
+            ],
+            "metrics": {
+              "reads": 65,
+              "writes": 64,
+              "bytes": 1048576,
+              "dispatches": 1,
+              "maxChunkBytes": 16384,
+              "maxSourceChunkBytes": 65536,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            },
+            "requests": 1,
+            "parallelRejected": true
+          },
+          {
+            "name": "authorization-denied",
+            "status": "passed",
+            "responseStatus": 403,
+            "sourceReads": 0,
+            "cancelled": 1,
+            "continued": false,
+            "prefixSeen": false,
+            "effects": [
+              "secret.get"
+            ],
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 0,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            },
+            "requests": 0,
+            "parallelRejected": true
+          },
+          {
+            "name": "duplicate",
+            "status": "passed",
+            "applicationFailure": "PULSE_REQUEST_BODY_OWNERSHIP",
+            "responseStatus": 500,
+            "sourceReads": 0,
+            "cancelled": 1,
+            "continued": false,
+            "prefixSeen": false,
+            "effects": [
+              "secret.get"
+            ],
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 0,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            },
+            "requests": 0,
+            "parallelRejected": true
+          },
+          {
+            "name": "foreign",
+            "status": "passed",
+            "applicationFailure": "PULSE_REQUEST_BODY_OWNERSHIP",
+            "responseStatus": 500,
+            "sourceReads": 0,
+            "cancelled": 1,
+            "continued": false,
+            "prefixSeen": false,
+            "effects": [
+              "secret.get"
+            ],
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 0,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            },
+            "requests": 0,
+            "parallelRejected": true
+          },
+          {
+            "name": "structured-first",
+            "status": "passed",
+            "applicationFailure": "PULSE_REQUEST_BODY_OWNERSHIP",
+            "responseStatus": 500,
+            "sourceReads": 2,
+            "cancelled": 0,
+            "continued": false,
+            "prefixSeen": false,
+            "effects": [
+              "secret.get"
+            ],
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 0,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            },
+            "requests": 0,
+            "parallelRejected": true
+          },
+          {
+            "name": "structured-after",
+            "status": "passed",
+            "applicationFailure": "PULSE_REQUEST_BODY_OWNERSHIP",
+            "responseStatus": 500,
+            "sourceReads": 0,
+            "cancelled": 1,
+            "continued": false,
+            "prefixSeen": false,
+            "effects": [
+              "secret.get"
+            ],
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 0,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            },
+            "requests": 0,
+            "parallelRejected": true
+          },
+          {
+            "name": "parallel",
+            "status": "passed",
+            "applicationFailure": "PULSE_RUNTIME_PARALLEL_EFFECT_REQUIRED",
+            "responseStatus": 500,
+            "sourceReads": 0,
+            "cancelled": 1,
+            "continued": false,
+            "prefixSeen": false,
+            "effects": [
+              "secret.get",
+              "s3.upload02"
+            ],
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 0,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            },
+            "requests": 0,
+            "parallelRejected": true
+          },
+          {
+            "name": "collection",
+            "status": "passed",
+            "applicationFailure": "PULSE_EFFECT_COLLECTION_MEMBER",
+            "responseStatus": 500,
+            "sourceReads": 0,
+            "cancelled": 1,
+            "continued": false,
+            "prefixSeen": false,
+            "effects": [
+              "secret.get"
+            ],
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 0,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            },
+            "requests": 0,
+            "parallelRejected": true
+          },
+          {
+            "name": "invalid-key",
+            "status": "passed",
+            "applicationFailure": "UPLOAD02_AUTHORITY",
+            "responseStatus": 500,
+            "sourceReads": 0,
+            "cancelled": 1,
+            "continued": false,
+            "prefixSeen": false,
+            "effects": [
+              "secret.get"
+            ],
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 0,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            },
+            "requests": 0,
+            "parallelRejected": true
+          },
+          {
+            "name": "missing-length",
+            "status": "passed",
+            "applicationFailure": "UPLOAD02_LENGTH",
+            "responseStatus": 500,
+            "sourceReads": 0,
+            "cancelled": 1,
+            "continued": false,
+            "prefixSeen": false,
+            "effects": [
+              "secret.get"
+            ],
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 0,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            },
+            "requests": 0,
+            "parallelRejected": true
+          },
+          {
+            "name": "duplicate-length",
+            "status": "passed",
+            "applicationFailure": "UPLOAD02_LENGTH",
+            "responseStatus": 500,
+            "sourceReads": 0,
+            "cancelled": 1,
+            "continued": false,
+            "prefixSeen": false,
+            "effects": [
+              "secret.get"
+            ],
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 0,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            },
+            "requests": 0,
+            "parallelRejected": true
+          },
+          {
+            "name": "conflicting-framing",
+            "status": "passed",
+            "applicationFailure": "UPLOAD02_LENGTH",
+            "responseStatus": 500,
+            "sourceReads": 0,
+            "cancelled": 1,
+            "continued": false,
+            "prefixSeen": false,
+            "effects": [
+              "secret.get"
+            ],
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 0,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            },
+            "requests": 0,
+            "parallelRejected": true
+          },
+          {
+            "name": "cap-plus-one",
+            "status": "passed",
+            "applicationFailure": "UPLOAD02_LIMIT",
+            "responseStatus": 500,
+            "sourceReads": 0,
+            "cancelled": 1,
+            "continued": false,
+            "prefixSeen": false,
+            "effects": [
+              "secret.get"
+            ],
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 0,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            },
+            "requests": 0,
+            "parallelRejected": true
+          },
+          {
+            "name": "credential-deadline",
+            "status": "passed",
+            "responseStatus": 200,
+            "result": {
+              "status": "not-stored",
+              "reason": "timeout"
+            },
+            "sourceReads": 0,
+            "cancelled": 1,
+            "continued": true,
+            "prefixSeen": false,
+            "effects": [
+              "secret.get",
+              "s3.upload02"
+            ],
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 0,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            },
+            "requests": 0,
+            "parallelRejected": true
+          }
+        ],
+        "runtimeOverlaySha256": "7890a3f4bdfb853a32fd95c18cc681bc8a43df126608dfebedaabcab811ef5f7",
+        "limitations": [
+          "research-only package bridge extension",
+          "loopback HTTP origin; no TLS or live provider claim",
+          "origin oracle buffers at most 1 MiB",
+          "no total RSS claim"
+        ]
+      }
+    },
+    {
+      "name": "node-native-proof",
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "evidence": {
+        "status": "passed",
+        "cases": [
+          {
+            "name": "binary-0",
+            "status": "passed",
+            "result": "stored:0",
+            "effects": [
+              "secret.get",
+              "s3.putText"
+            ],
+            "sourceReads": 1,
+            "metrics": {
+              "reads": 1,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 1,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "binary-1",
+            "status": "passed",
+            "result": "stored:1",
+            "effects": [
+              "secret.get",
+              "s3.putText"
+            ],
+            "sourceReads": 2,
+            "metrics": {
+              "reads": 2,
+              "writes": 1,
+              "bytes": 1,
+              "dispatches": 1,
+              "maxChunkBytes": 1,
+              "maxSourceChunkBytes": 1,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "binary-16385",
+            "status": "passed",
+            "result": "stored:16385",
+            "effects": [
+              "secret.get",
+              "s3.putText"
+            ],
+            "sourceReads": 2,
+            "metrics": {
+              "reads": 3,
+              "writes": 2,
+              "bytes": 16385,
+              "dispatches": 1,
+              "maxChunkBytes": 16384,
+              "maxSourceChunkBytes": 16385,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "binary-1048576",
+            "status": "passed",
+            "result": "stored:1048576",
+            "effects": [
+              "secret.get",
+              "s3.putText"
+            ],
+            "sourceReads": 17,
+            "metrics": {
+              "reads": 65,
+              "writes": 64,
+              "bytes": 1048576,
+              "dispatches": 1,
+              "maxChunkBytes": 16384,
+              "maxSourceChunkBytes": 65536,
+              "uploadFinished": true,
+              "inputEOF": true,
+              "closed": true
+            }
+          },
+          {
+            "name": "authorization-denied",
+            "status": "passed",
+            "result": "denied",
+            "effects": [
+              "secret.get"
+            ],
+            "sourceReads": 0,
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 0,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          },
+          {
+            "name": "missing-length",
+            "status": "passed",
+            "result": "not-stored",
+            "effects": [
+              "secret.get",
+              "s3.putText"
+            ],
+            "sourceReads": 0,
+            "metrics": {
+              "reads": 0,
+              "writes": 0,
+              "bytes": 0,
+              "dispatches": 0,
+              "maxChunkBytes": 0,
+              "maxSourceChunkBytes": 0,
+              "uploadFinished": false,
+              "inputEOF": false,
+              "closed": true
+            }
+          }
+        ],
+        "wasm": {
+          "bytes": 6456,
+          "sha256": "b1253f052559fd10852cb394af2c6eb6ea1f9cb06f564e93d30993377395d63e"
+        },
+        "limitations": [
+          "putText plan is a compiler scaffold; research adapter supplies the upload operation",
+          "generic Native continuation proven; public upload lowering and admission not implemented",
+          "loopback HTTP; no TLS or installed-package claim"
+        ]
+      }
+    },
+    {
+      "name": "native-proof",
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "evidence": {
+        "status": "passed",
+        "cases": [
+          {
+            "name": "binary-0",
+            "status": "passed",
+            "requestBytes": 0,
+            "originExact": true,
+            "signatureValid": true,
+            "guestMemoryBytes": 4456448,
+            "sourceReads": 1,
+            "writeCalls": 1
+          },
+          {
+            "name": "binary-1",
+            "status": "passed",
+            "requestBytes": 1,
+            "originExact": true,
+            "signatureValid": true,
+            "guestMemoryBytes": 4456448,
+            "sourceReads": 2,
+            "writeCalls": 2
+          },
+          {
+            "name": "binary-16385",
+            "status": "passed",
+            "requestBytes": 16385,
+            "originExact": true,
+            "signatureValid": true,
+            "guestMemoryBytes": 4456448,
+            "sourceReads": 3,
+            "writeCalls": 19
+          },
+          {
+            "name": "binary-1048576",
+            "status": "passed",
+            "requestBytes": 1048576,
+            "originExact": true,
+            "signatureValid": true,
+            "guestMemoryBytes": 4456448,
+            "sourceReads": 65,
+            "writeCalls": 1089
+          },
+          {
+            "name": "authorization-denied",
+            "status": "passed",
+            "sourceReads": 0,
+            "dispatches": 0
+          },
+          {
+            "name": "missing-length",
+            "status": "passed",
+            "sourceReads": 0,
+            "dispatches": 0
+          },
+          {
+            "name": "duplicate-length",
+            "status": "passed",
+            "sourceReads": 0,
+            "dispatches": 0
+          },
+          {
+            "name": "cap-plus-one",
+            "status": "passed",
+            "sourceReads": 0,
+            "dispatches": 0
+          },
+          {
+            "name": "early-403",
+            "status": "passed",
+            "sourceReads": 0,
+            "result": "not-stored"
+          },
+          {
+            "name": "early-200",
+            "status": "passed",
+            "sourceReads": 0,
+            "result": "unknown"
+          },
+          {
+            "name": "writer-backpressure-before-source-read",
+            "status": "passed",
+            "sourceReads": 0,
+            "result": "unknown"
+          }
+        ],
+        "originalContributionSha256": "67af91f7104210c09d610d1bac9d6a46a1f18cafaf3a27318c7f23fa7554f345",
+        "experimentalContributionSha256": "5e05ee6f7740da855deccf1ea75c66436211b77fcd78dc867fcd624dfd307519",
+        "wasm": {
+          "bytes": 51616,
+          "sha256": "2e3ab4a5b64681e75bf8884ffe8316032f4eadfea3941a2c049004c6f70865d0"
+        },
+        "emittedSourceSha256": "f5273d671784976c6cdb187286371e6ed1940fc9799df38aaa03b57c6be713b9",
+        "sharedResolverAndDriverUnchanged": true,
+        "sharedFunctions": {
+          "__pulse_fastly_resolve_effect": "4d093e69dc88a4b9e74d7d5aa5146688be8f67740970ec16174d66754d14cb67",
+          "__pulse_fastly_run_invocation": "5a61647ee184c46556d53b1be6f761c5dd5f5e5425e600f08f621213be425e19"
+        },
+        "scaffoldSource": "import {Pulse} from '@pulse-compute/pulse'; import {s3} from '@pulse-compute/s3';\nconst app=new Pulse({auto:true}); app.post('/',async ctx=>{\n  const permission=await ctx.secret.get('AUTHORIZE');\n  if(permission!=='allowed') return ctx.text('denied',{status:403});\n  const key=ctx.req.header('x-object-key');\n  const result=await s3.putText(ctx,'objects',key,'',{contentType:'application/octet-stream'});\n  if(result.status==='stored') return ctx.text('stored:'+result.byteLength);\n  return ctx.text(result.status);\n}); export default app;",
+        "guestMemoryBytes": 4456448,
+        "payloadScratchBytes": 16384,
+        "limitations": [
+          "emitted S3 contribution experiment; putText is only a compiler scaffold",
+          "not public upload lowering or installed-package qualification",
+          "injected Fastly ABI; no Viceroy or deployed Compute",
+          "host queues and RSS unmeasured"
+        ]
+      }
+    }
+  ],
+  "finishedAt": "2026-11-25T17:35:32.562Z"
+}

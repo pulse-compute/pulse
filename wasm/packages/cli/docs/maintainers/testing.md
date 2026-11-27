@@ -181,7 +181,7 @@ node scripts/release-feature-acceptance.cjs
 
 The release seal invokes this after its complete aggregate profile. See
 [installed feature acceptance](./release-acceptance.md#installed-feature-acceptance)
-for the eleven gates, source/tarball identity requirements and separate
+for the required gates, source/tarball identity requirements and separate
 experimental and external coverage. Installed MCP acceptance belongs to this
 release replay and remains outside both fast PR and aggregate release profiles. Focused runs remain development evidence and do
 not replace the complete installed replay or the final release seal.

@@ -1,0 +1,23 @@
+{
+  "version": "pulse.terminal-transport.v1",
+  "lane": "local",
+  "status": "failed",
+  "bundleSha256": "cf8fd3f4b389d56ca79ddf141952ddf96e2df82634f2826907bd0fff405bc64c",
+  "engines": [
+    {
+      "version": "viceroy 0.18.0",
+      "sha256": "e2173c8799f73850e657e3722ce5000d3338ccdf6246790688a6b8ae8e53b896"
+    },
+    {
+      "version": "pushpin 1.42.0",
+      "sha256": "eec3637be3432c80137fdba9154be274feaf6ee60c730d6d379a67ef65c754f5"
+    }
+  ],
+  "startup": [],
+  "cases": [],
+  "logs": {
+    "fanout-pushpin": "[INFO] 2026-11-26 12:14:32.378 [proxy] routes loaded with 1 entries\nthread 'zhttpsocket' panicked at /home/clintjedwards/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmq-0.9.2/src/lib.rs:295:17:\nunknown error [1]: Operation not permitted\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread 'proxy-worker-0' panicked at /home/clintjedwards/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmq-0.9.2/src/lib.rs:295:17:\nunknown error [1]: Operation not permitted\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n[ERR] 2026-11-26 12:14:32.383 proxy: Exited unexpectedly\nOperation not permitted (src/ip_resolver.cpp:542)\n[ERR] 2026-11-26 12:14:32.383 connmgr: Exited uncleanly\n[ERR] 2026-11-26 12:14:32.384 handler: Exited uncleanly\n"
+  },
+  "error": "Error: [INFO] 2026-11-26 12:14:32.378 [proxy] routes loaded with 1 entries\nthread 'zhttpsocket' panicked at /home/clintjedwards/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmq-0.9.2/src/lib.rs:295:17:\nunknown error [1]: Operation not permitted\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread 'proxy-worker-0' panicked at /home/clintjedwards/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmq-0.9.2/src/lib.rs:295:17:\nunknown error [1]: Operation not permitted\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n[ERR] 2026-11-26 12:14:32.383 proxy: Exited unexpectedly\nOperation not permitted (src/ip_resolver.cpp:542)\n[ERR] 2026-11-26 12:14:32.383 connmgr: Exited uncleanly\n[ERR] 2026-11-26 12:14:32.384 handler: Exited uncleanly\n\n    at ready (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/qualification/terminal/local.cjs:13:93)\n    at async run (/workspace/scratch/ef4956ac6b89/pulse/wasm/test/qualification/terminal/local.cjs:89:5)",
+  "cleanup": true
+}

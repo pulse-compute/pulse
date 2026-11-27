@@ -1,0 +1,2 @@
+{"proof":"R07 production Native generator, runtime multi-origin HTTP, reverse completion and fresh requests","status":"passed","launcher":"fastly-cli","wasm":{"bytes":40389,"sha256":"34482d63f5c21bd74730158aec46df72449de9d698c7fc588a98e4541e80f42f","magic":"0061736d01000000"},"hosted":"not-run"}
+ok - the native Pulse Fastly module executed through fastly-cli 16.1.0 with config, secret, KV persistence, named backend fetch, schemas, opaque bytes, repeated headers, and GRIP hold/publish

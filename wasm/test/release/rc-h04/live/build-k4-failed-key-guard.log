@@ -1,0 +1,30 @@
+/tmp/rc-h04-live/consumer/node_modules/@pulse-compute/wasm-compiler/src/canonical-native-plan.js:1295
+    if (this.diagnostics.length > 0) throw new CanonicalNativePlanError(`Native-plan lowering failed for ${this.metadata.file}.`, this.diagnostics);
+                                     ^
+
+CanonicalNativePlanError: Native-plan lowering failed for src/index.ts.
+    at NativePlanBuilder.build (/tmp/rc-h04-live/consumer/node_modules/@pulse-compute/wasm-compiler/src/canonical-native-plan.js:1295:44)
+    at Object.buildCanonicalNativePlanLegacy [as buildNativePlan] (/tmp/rc-h04-live/consumer/node_modules/@pulse-compute/wasm-compiler/src/canonical-native-plan.js:2130:51)
+    at Object.run (/tmp/rc-h04-live/consumer/node_modules/@pulse-compute/wasm-compiler/src/spine/canonical-native-plan.js:28:25)
+    at Object.run (/tmp/rc-h04-live/consumer/node_modules/@pulse-compute/wasm-compiler/src/spine/pipeline.js:168:23)
+    at executeCanonicalNativePlanSpine (/tmp/rc-h04-live/consumer/node_modules/@pulse-compute/wasm-compiler/src/spine/canonical-native-plan.js:51:46)
+    at buildCanonicalNativePlan (/tmp/rc-h04-live/consumer/node_modules/@pulse-compute/wasm-compiler/src/canonical-native-plan.js:2134:10)
+    at Object.compileNativeProjectInMemory (/tmp/rc-h04-live/consumer/node_modules/@pulse-compute/cli/src/project-execution.js:349:16)
+    at Object.<anonymous> (/tmp/rc-h04-live/build-k4.cjs:13:83)
+    at Module._compile (node:internal/modules/cjs/loader:1871:14)
+    at Object..js (node:internal/modules/cjs/loader:2002:10) {
+  code: 'PULSE_CANONICAL_NATIVE_PLAN_FAILED',
+  diagnostics: [
+    {
+      code: 'PULSE_CANONICAL_NATIVE_EXPRESSION_UNSUPPORTED',
+      kind: 'CanonicalNativePlanDiagnostic',
+      severity: 'error',
+      message: 'Method call .startsWith() is outside the canonical native fetch-response contract.',
+      file: 'src/index.ts.canonical.generated.js',
+      position: { line: 183, column: 10, offset: 9349 },
+      detail: { method: 'startsWith', receiverKind: 'unknown' }
+    }
+  ]
+}
+
+Node.js v24.18.0

@@ -1,0 +1,37 @@
+/tmp/rc-h04-live/consumer/node_modules/@pulse-compute/cli/src/project-execution.js:344
+    if ((project.target || 'native') !== 'javascript' || !Array.isArray(error.diagnostics)) throw error;
+                                                                                            ^
+
+CanonicalProjectCompileError: Package-owned canonical lowering failed with 1 diagnostic(s).
+    at prepareProjectPackageOperations (/tmp/rc-h04-live/consumer/node_modules/@pulse-compute/wasm-compiler/src/canonical-project-compiler.js:368:11)
+    at prepareReachableProjectPackageOperations (/tmp/rc-h04-live/consumer/node_modules/@pulse-compute/wasm-compiler/src/canonical-project-compiler.js:392:23)
+    at Object.compileCanonicalProjectLegacy [as compileLegacy] (/tmp/rc-h04-live/consumer/node_modules/@pulse-compute/wasm-compiler/src/canonical-project-compiler.js:1046:39)
+    at Object.run (/tmp/rc-h04-live/consumer/node_modules/@pulse-compute/wasm-compiler/src/spine/canonical-project.js:55:24)
+    at Object.run (/tmp/rc-h04-live/consumer/node_modules/@pulse-compute/wasm-compiler/src/spine/pipeline.js:168:23)
+    at executeCanonicalProjectSpine (/tmp/rc-h04-live/consumer/node_modules/@pulse-compute/wasm-compiler/src/spine/canonical-project.js:63:42)
+    at compileCanonicalProject (/tmp/rc-h04-live/consumer/node_modules/@pulse-compute/wasm-compiler/src/canonical-project-compiler.js:1293:10)
+    at compileProject (/tmp/rc-h04-live/consumer/node_modules/@pulse-compute/cli/src/project-execution.js:301:10)
+    at Object.compileNativeProjectInMemory (/tmp/rc-h04-live/consumer/node_modules/@pulse-compute/cli/src/project-execution.js:340:9)
+    at Object.<anonymous> (/tmp/rc-h04-live/build-origin.cjs:19:83) {
+  code: 'PULSE_PACKAGE_LOWERING_FAILED',
+  diagnostics: [
+    {
+      code: 'PULSEWASM_S3_OPTIONS_UNSUPPORTED',
+      hint: 'Use a supported s3 call with literal binding/options and runtime key/text in an awaited handler position.',
+      loc: {
+        end: { column: 314, line: 7, offset: 1914 },
+        file: 'src/index.ts',
+        start: { column: 269, line: 7, offset: 1869 }
+      },
+      message: 'Body options require literal method, closed byte range and/or one If-None-Match validator.',
+      pass: 's3-lowering',
+      severity: 'error'
+    }
+  ],
+  detail: {
+    entryFile: '/tmp/rc-h04-live/consumer/src/index.ts',
+    contracts: [ 'pulse.s3' ]
+  }
+}
+
+Node.js v24.18.0

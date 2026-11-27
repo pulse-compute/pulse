@@ -1,0 +1,2924 @@
+{
+  "schema": "pulse.upload-live.v1",
+  "status": "passed-with-limitations",
+  "selection": "capacity",
+  "startedAt": "2026-11-25T21:22:52.423Z",
+  "service": "L47lcfUqEbbK5tXC9BTI00",
+  "version": 1,
+  "domain": "pulse-upload-live-ed259ae1cb.edgecompute.app",
+  "artifact": {
+    "kind": "research-scaffold",
+    "target": {
+      "endpoint": "https://us-central-1.object.fastlystorage.app",
+      "region": "us-central-1",
+      "bucket": "catalog-live-20261101-2da36f-objects",
+      "prefix": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/"
+    },
+    "capBytes": 33554432,
+    "operationMs": 10000,
+    "requestMs": 15000,
+    "wasmBytes": 52728,
+    "wasmSha256": "db71bb34ba95344e587e41b2ef4858df09b4510a079d2d704ab04d3e820043af",
+    "publicAdmission": false,
+    "telemetry": "Guest linear memory and successful close calls; not host RSS or pending-request reclamation"
+  },
+  "networkRoute": "environment-proxy",
+  "cases": [
+    {
+      "size": 8388608,
+      "concurrency": 1,
+      "status": "passed",
+      "startedAt": "2026-11-25T21:22:52.425Z",
+      "uploadWallMs": 8637.206172,
+      "keys": [
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/b08e488d-2e1a-4e56-88b7-168cb684204b"
+      ],
+      "errors": [],
+      "p50Ms": 4731.281849999999,
+      "p95Ms": 4731.281849999999,
+      "finishedAt": "2026-11-25T21:23:07.589Z"
+    },
+    {
+      "size": 8388608,
+      "concurrency": 8,
+      "status": "passed",
+      "startedAt": "2026-11-25T21:23:07.589Z",
+      "uploadWallMs": 9464.247180999999,
+      "keys": [
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/746fdc02-2e4b-4a02-b3b6-d5cebf9ee66d",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/d7bb37f6-8b38-44ba-af17-0698aa2b15a5",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/2fb9774f-5910-4256-8e4c-58d916f26022",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/1c78d9aa-6ca6-4514-9d69-b5c489a66c26",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/014c9715-cc60-4557-860b-45036cd3acc7",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/a0d1d1fa-583d-42be-9666-51245266a8fe",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/15b5acca-aa7a-497a-b21a-a574156a2fd2",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/77373626-527d-4d47-a241-ed942237b06e"
+      ],
+      "errors": [],
+      "p50Ms": 5317.776164000003,
+      "p95Ms": 5482.921458000001,
+      "finishedAt": "2026-11-25T21:23:21.964Z"
+    },
+    {
+      "size": 8388608,
+      "concurrency": 16,
+      "status": "passed",
+      "startedAt": "2026-11-25T21:23:21.964Z",
+      "uploadWallMs": 9581.548468,
+      "keys": [
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/b73239ed-9158-4b93-a9c8-ae242cd0422d",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/677814cc-ce03-4fc1-9b24-83af55f10b10",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/c932ac14-72d8-4cc1-a7e8-f5b55ce8d7a2",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/5e7e6b16-4816-4a7a-9fc2-0f6a291bce0f",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/ccd5c459-8b2c-49fe-b9b2-e82a25c67bc2",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/0a676c65-d161-4c9d-9cde-849df0e99cea",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/607c312e-ed45-49b1-a701-94294aad0f36",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/aa086894-17c7-4ae9-a3b5-54ca83d5d7c2",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/24a4f9db-a090-444b-aefe-e0e2feb736ae",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/1cdda221-5510-44d6-b54c-fecffde1f086",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/36a44cb3-ee09-4ba4-bb39-36ec3d9ef171",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/633acd2e-8799-407c-877e-97f36266b7b6",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/27c5e4b9-60bb-4706-ab39-bd931b4d8def",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/ca9cc480-af38-49be-962c-0a71080f9b72",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/d225da8c-d840-451a-9a1b-0589fa65e2ec",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/add91c1c-c32b-475a-a62f-5b9d628384d6"
+      ],
+      "errors": [],
+      "p50Ms": 5855.656165999993,
+      "p95Ms": 6366.270713000005,
+      "finishedAt": "2026-11-25T21:23:36.662Z"
+    },
+    {
+      "size": 16777216,
+      "concurrency": 1,
+      "status": "passed",
+      "startedAt": "2026-11-25T21:23:36.662Z",
+      "uploadWallMs": 8910.675784,
+      "keys": [
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/c443126e-3cdb-470d-90fe-23b7f022d3dd"
+      ],
+      "errors": [],
+      "p50Ms": 4623.881561000002,
+      "p95Ms": 4623.881561000002,
+      "finishedAt": "2026-11-25T21:23:49.161Z"
+    },
+    {
+      "size": 16777216,
+      "concurrency": 8,
+      "status": "passed",
+      "startedAt": "2026-11-25T21:23:49.162Z",
+      "uploadWallMs": 9570.879968999994,
+      "keys": [
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/d1aa86f2-f2ce-436b-83e2-6eb1eed99840",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/7ae883ef-d672-4352-9467-986528d2f1af",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/0efc7be3-220f-4553-a8ef-44464948f955",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/a088d1b0-5da8-4fde-aecc-b98c8bb1acf9",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/d79074a3-42c7-44ee-9461-6301564e4138",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/783b960e-b034-4576-9706-59bd0866ce97",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/8c00cf96-d99c-474a-b6ed-c3c8c4952155",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/4166cdcd-9195-4214-a5c3-1506260a8e82"
+      ],
+      "errors": [],
+      "p50Ms": 5857.935697999994,
+      "p95Ms": 6273.559478999996,
+      "finishedAt": "2026-11-25T21:24:05.369Z"
+    },
+    {
+      "size": 16777216,
+      "concurrency": 16,
+      "status": "passed",
+      "startedAt": "2026-11-25T21:24:05.370Z",
+      "uploadWallMs": 14398.918846,
+      "keys": [
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/9672c3ae-4d2f-4a53-89ed-6b444df32a65",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/893a08ca-e412-42c3-8694-3a850b9cc0e6",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/12d4cd16-6348-4948-83a0-68c4ec3d9124",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/622a023d-4898-4624-81b2-c956734c18a9",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/ddc57a2e-e229-4eb1-9add-350ae7ccc243",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/2c4e6a30-068c-4d76-8114-6d1d31b56b48",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/6807ca94-ab6a-4dc2-a427-3a8f16ee5d07",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/05646fd1-fe4b-40e3-bf6b-8ce49611c000",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/ae01d013-bc80-4218-8ea9-b0b90c6682e5",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/9e58f8f7-9bbc-4a82-becf-3b497fd44887",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/c7efbdbf-e6a5-49ee-861e-770bc6e5938f",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/7557374d-4779-4e8d-9fcf-b168da9025ca",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/db588d33-a1da-4692-811d-d7355b541a6d",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/3cac5460-1633-4598-9ab3-5a64dabc31b5",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/e8536241-516b-4a91-9197-b0fcfbb3716a",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/821d30c6-904a-40ba-ae58-f56d95de6b82"
+      ],
+      "errors": [],
+      "p50Ms": 9212.904654999991,
+      "p95Ms": 9849.558239999998,
+      "finishedAt": "2026-11-25T21:24:26.826Z"
+    },
+    {
+      "size": 33554432,
+      "concurrency": 1,
+      "status": "passed",
+      "startedAt": "2026-11-25T21:24:26.827Z",
+      "uploadWallMs": 11027.074103000006,
+      "keys": [
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/d8494542-56ee-4afe-a198-3e8ccf5c4ebc"
+      ],
+      "errors": [],
+      "p50Ms": 4409.501700000008,
+      "p95Ms": 4409.501700000008,
+      "finishedAt": "2026-11-25T21:24:42.328Z"
+    },
+    {
+      "size": 33554432,
+      "concurrency": 8,
+      "status": "passed",
+      "startedAt": "2026-11-25T21:24:42.329Z",
+      "uploadWallMs": 10205.170079999996,
+      "keys": [
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/9e423f6b-8bf6-45b8-ab20-ce1c1ad1e211",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/32b05166-7740-4881-abf3-5afc22a8519f",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/152f9736-b75b-4678-b635-443ceb31a1b0",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/dce1d97e-bbbb-44f1-ad35-1804b5fa63d5",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/c541ea3a-222a-41ec-92e7-d611625a287c",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/3e934245-f54c-4e39-ba56-749636c444e3",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/3d86aba8-4811-4a23-90e6-bbc0f86bd86f",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/0908e13e-3801-42e5-863c-25acd8a9b049"
+      ],
+      "errors": [],
+      "p50Ms": 7249.069604000004,
+      "p95Ms": 7431.136465000003,
+      "finishedAt": "2026-11-25T21:24:59.221Z"
+    },
+    {
+      "size": 33554432,
+      "concurrency": 16,
+      "status": "passed",
+      "startedAt": "2026-11-25T21:24:59.222Z",
+      "uploadWallMs": 16616.57736099999,
+      "keys": [
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/6bb5419c-4167-4be6-8845-f09731ccd378",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/0a9727b4-c77d-42b5-953b-73f3854e073b",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/c04b464f-a3ed-45e0-a320-7a63d6e71d28",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/d054515d-640f-4c2b-9a6c-1232950e42a4",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/f344f313-8db6-49c6-b49e-2c27a92b69f7",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/ebdf9371-e80a-4e22-b1d9-647e9fc06267",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/3627f8c4-934d-4f28-b7ec-34a5428c17d7",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/3b6b2240-e05e-4eb5-9f55-ceb57bafa78b",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/da560f4e-d257-44e3-9a2e-19d11e823571",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/045519a2-9114-4bc9-a095-f9ca90d9a1c3",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/7e982cc0-1384-4754-957a-e0351d47d389",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/5386d97f-90f3-4611-b1b5-0ab81c49eb6f",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/ae86373d-9149-41b8-9964-c85fb48e2cba",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/fd3c37f4-3c02-4798-891b-5f0af8ad0b5f",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/e5e50306-7746-4250-a2b6-6f8fdd4a26e2",
+        "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/0dccfcd1-c00f-40d3-b553-75122779f672"
+      ],
+      "errors": [],
+      "p50Ms": 11308.664632,
+      "p95Ms": 12743.16055500001,
+      "finishedAt": "2026-11-25T21:25:27.745Z"
+    }
+  ],
+  "keys": [
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/b08e488d-2e1a-4e56-88b7-168cb684204b",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:22:56.329Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4082.429921,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 4730.549709999999,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 701.991775,
+          "firstReadMs": 8.487641,
+          "firstWriteMs": 8.499771,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 4731.281849999999,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/a0d1d1fa-583d-42be-9666-51245266a8fe",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:11.570Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4731.175910999998,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5482.777951,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 1479.376576,
+          "firstReadMs": 2.150973,
+          "firstWriteMs": 2.170274,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 5482.921458000001,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/2fb9774f-5910-4256-8e4c-58d916f26022",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:11.626Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4674.368523999998,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5283.620171999999,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 1342.326221,
+          "firstReadMs": 1.726665,
+          "firstWriteMs": 1.744035,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 5283.858808999998,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/1c78d9aa-6ca6-4514-9d69-b5c489a66c26",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:11.628Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4672.9254489999985,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5322.690436000001,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 1302.466498,
+          "firstReadMs": 2.102941,
+          "firstWriteMs": 2.116871,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100093-CHI",
+        "elapsedMs": 5322.802484,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/746fdc02-2e4b-4a02-b3b6-d5cebf9ee66d",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:11.634Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4667.470301000001,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5291.769211999999,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 1141.053267,
+          "firstReadMs": 10.238805,
+          "firstWriteMs": 10.252645,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100133-CHI",
+        "elapsedMs": 5291.893921999999,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/77373626-527d-4d47-a241-ed942237b06e",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:11.635Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4666.022990000001,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5317.680732000001,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 1382.650181,
+          "firstReadMs": 2.044601,
+          "firstWriteMs": 2.059382,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 5317.776164000003,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/15b5acca-aa7a-497a-b21a-a574156a2fd2",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:11.661Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4639.9649580000005,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5338.358572000001,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 1433.401192,
+          "firstReadMs": 2.4964,
+          "firstWriteMs": 2.533941,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 5338.479207,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/d7bb37f6-8b38-44ba-af17-0698aa2b15a5",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:11.672Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4628.370077000003,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5319.201707,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 1224.05703,
+          "firstReadMs": 3.477792,
+          "firstWriteMs": 3.496762,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100149-CHI",
+        "elapsedMs": 5319.3024890000015,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/014c9715-cc60-4557-860b-45036cd3acc7",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:11.675Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4626.529095000002,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5279.528103000001,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 1328.443013,
+          "firstReadMs": 2.319008,
+          "firstWriteMs": 2.339248,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100058-CHI",
+        "elapsedMs": 5279.624829,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/5e7e6b16-4816-4a7a-9fc2-0f6a291bce0f",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:25.102Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4759.073508000001,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 6314.418267000001,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 581.311789,
+          "firstReadMs": 1.537313,
+          "firstWriteMs": 1.554135,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100034-CHI",
+        "elapsedMs": 6314.533972999998,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/36a44cb3-ee09-4ba4-bb39-36ec3d9ef171",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:25.106Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4755.4761,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5811.709409999996,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 2032.761024,
+          "firstReadMs": 1.642294,
+          "firstWriteMs": 1.657644,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100142-CHI",
+        "elapsedMs": 5811.789632,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/633acd2e-8799-407c-877e-97f36266b7b6",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:25.114Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4747.3573629999955,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5855.512057999993,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 2006.549546,
+          "firstReadMs": 104.204005,
+          "firstWriteMs": 104.226645,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100118-CHI",
+        "elapsedMs": 5855.656165999993,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/add91c1c-c32b-475a-a62f-5b9d628384d6",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:25.115Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4746.623764999997,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5793.4196449999945,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 2106.784586,
+          "firstReadMs": 1.441338,
+          "firstWriteMs": 1.455079,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100082-CHI",
+        "elapsedMs": 5793.501106999996,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/b73239ed-9158-4b93-a9c8-ae242cd0422d",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:25.119Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4742.978037000001,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 6315.789686999997,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 596.804033,
+          "firstReadMs": 1.253433,
+          "firstWriteMs": 1.272673,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100149-CHI",
+        "elapsedMs": 6315.864083,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/c932ac14-72d8-4cc1-a7e8-f5b55ce8d7a2",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:25.120Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4741.257832000003,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5832.916193000005,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 2190.523265,
+          "firstReadMs": 38.696348,
+          "firstWriteMs": 38.718728,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 5833.037793000003,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/0a676c65-d161-4c9d-9cde-849df0e99cea",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:25.122Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4739.678356000004,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 6366.178942999999,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 1298.216213,
+          "firstReadMs": 1.883578,
+          "firstWriteMs": 1.907218,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 6366.270713000005,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/677814cc-ce03-4fc1-9b24-83af55f10b10",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:25.122Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4738.865431999999,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5935.040965,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 875.082815,
+          "firstReadMs": 6.224615,
+          "firstWriteMs": 6.241395,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 5935.114373999997,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/ccd5c459-8b2c-49fe-b9b2-e82a25c67bc2",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:25.156Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4705.268050999999,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5728.343096000004,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 1936.567176,
+          "firstReadMs": 1.043571,
+          "firstWriteMs": 1.062962,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100115-CHI",
+        "elapsedMs": 5728.461629999998,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/607c312e-ed45-49b1-a701-94294aad0f36",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:25.159Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4701.917148,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5043.638734,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 1368.881936,
+          "firstReadMs": 0.784165,
+          "firstWriteMs": 0.798983,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100036-CHI",
+        "elapsedMs": 5045.2436240000025,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/24a4f9db-a090-444b-aefe-e0e2feb736ae",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:25.162Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4699.640930000001,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5873.979635999996,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 2169.715867,
+          "firstReadMs": 1.271373,
+          "firstWriteMs": 1.287923,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100104-CHI",
+        "elapsedMs": 5874.054336000001,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/d225da8c-d840-451a-9a1b-0589fa65e2ec",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:25.165Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4696.268366999997,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5930.298226999999,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 2361.899311,
+          "firstReadMs": 4.48689,
+          "firstWriteMs": 4.50461,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 5930.369231999997,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/aa086894-17c7-4ae9-a3b5-54ca83d5d7c2",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:25.169Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4692.334952000005,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5873.940661000001,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 2291.28288,
+          "firstReadMs": 35.471713,
+          "firstWriteMs": 35.484923,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 5874.010159000005,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/27c5e4b9-60bb-4706-ab39-bd931b4d8def",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:25.175Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4685.911490000006,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5188.018130000004,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 1407.423056,
+          "firstReadMs": 5.487845,
+          "firstWriteMs": 5.499056,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100034-CHI",
+        "elapsedMs": 5188.164765000001,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/1cdda221-5510-44d6-b54c-fecffde1f086",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:25.182Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4679.164568,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 6363.012202000005,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 2697.585508,
+          "firstReadMs": 1.853736,
+          "firstWriteMs": 1.872571,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100031-CHI",
+        "elapsedMs": 6363.084479000005,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/ca9cc480-af38-49be-962c-0a71080f9b72",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:25.198Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4663.610886000002,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5635.221785000002,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 1948.558137,
+          "firstReadMs": 1.350645,
+          "firstWriteMs": 1.362798,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100020-CHI",
+        "elapsedMs": 5635.393830000001,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/c443126e-3cdb-470d-90fe-23b7f022d3dd",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:40.948Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 3979.9726539999974,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 4623.689885,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 680.567984,
+          "firstReadMs": 1.360127,
+          "firstWriteMs": 1.375368,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 4623.881561000002,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/a088d1b0-5da8-4fde-aecc-b98c8bb1acf9",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:52.451Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 5034.827802000007,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 6256.549322999999,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 2645.82851,
+          "firstReadMs": 1.070011,
+          "firstWriteMs": 1.080682,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 6256.644989000008,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/d79074a3-42c7-44ee-9461-6301564e4138",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:52.456Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 5028.999318000002,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5841.446445000001,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 1962.387515,
+          "firstReadMs": 126.516971,
+          "firstWriteMs": 126.535291,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100055-CHI",
+        "elapsedMs": 5841.555583000001,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/783b960e-b034-4576-9706-59bd0866ce97",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:52.458Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 5028.1918829999995,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 6273.488128999998,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 2668.646389,
+          "firstReadMs": 1.213284,
+          "firstWriteMs": 1.226865,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 6273.559478999996,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/7ae883ef-d672-4352-9467-986528d2f1af",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:52.463Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 5044.892304000001,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 6227.73498500001,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 2567.269842,
+          "firstReadMs": 3.025192,
+          "firstWriteMs": 3.042932,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100158-CHI",
+        "elapsedMs": 6227.808675,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/0efc7be3-220f-4553-a8ef-44464948f955",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:52.465Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 5020.253091999999,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 6186.950496000005,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 2586.63335,
+          "firstReadMs": 1.119323,
+          "firstWriteMs": 1.131063,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 6187.426852999997,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/d1aa86f2-f2ce-436b-83e2-6eb1eed99840",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:52.469Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 5016.636266000001,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5781.0939819999985,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 2159.707066,
+          "firstReadMs": 2.884664,
+          "firstWriteMs": 2.902047,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100031-CHI",
+        "elapsedMs": 5781.243659000007,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/8c00cf96-d99c-474a-b6ed-c3c8c4952155",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:52.470Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 5015.834456999997,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5857.841295999991,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 2264.811969,
+          "firstReadMs": 2.421679,
+          "firstWriteMs": 2.436199,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 5857.935697999994,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/4166cdcd-9195-4214-a5c3-1506260a8e82",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:23:52.473Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 5012.879908999996,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5856.675418999992,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 2083.305248,
+          "firstReadMs": 3.040884,
+          "firstWriteMs": 3.061845,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100048-CHI",
+        "elapsedMs": 5856.795394000001,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/6807ca94-ab6a-4dc2-a427-3a8f16ee5d07",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:09.908Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 6945.294594999999,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 9348.646966,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 4670.541511,
+          "firstReadMs": 5.930859,
+          "firstWriteMs": 5.953719,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 9348.720098999998,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/db588d33-a1da-4692-811d-d7355b541a6d",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:09.910Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 6942.937839999999,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 8687.551352999988,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 3850.706644,
+          "firstReadMs": 1.292531,
+          "firstWriteMs": 1.304751,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100155-CHI",
+        "elapsedMs": 8687.618862999996,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/ae01d013-bc80-4218-8ea9-b0b90c6682e5",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:09.911Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 7038.724388000002,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 9248.129442999998,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 4519.585937,
+          "firstReadMs": 3.521201,
+          "firstWriteMs": 3.540762,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 9248.193174,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/821d30c6-904a-40ba-ae58-f56d95de6b82",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:09.913Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 6940.923995000005,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 9716.957740000013,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 5051.93809,
+          "firstReadMs": 4.393018,
+          "firstWriteMs": 4.422919,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 9717.021355000004,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/7557374d-4779-4e8d-9fcf-b168da9025ca",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:09.914Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 6938.685347999999,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 9212.810109999991,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 1309.746567,
+          "firstReadMs": 1.250239,
+          "firstWriteMs": 1.267019,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100172-CHI",
+        "elapsedMs": 9212.904654999991,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/622a023d-4898-4624-81b2-c956734c18a9",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:09.915Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 6938.091944999993,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 9791.59126999999,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 1546.119848,
+          "firstReadMs": 1.49774,
+          "firstWriteMs": 1.514441,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 9791.660229000001,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/2c4e6a30-068c-4d76-8114-6d1d31b56b48",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:09.917Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 6980.93114700001,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 9480.14863000001,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 4817.303283,
+          "firstReadMs": 3.792927,
+          "firstWriteMs": 3.812557,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 9480.235505999997,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/12d4cd16-6348-4948-83a0-68c4ec3d9124",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:09.918Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 6935.230618000001,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 8644.234154000005,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 3898.133377,
+          "firstReadMs": 4.88649,
+          "firstWriteMs": 4.90046,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100108-CHI",
+        "elapsedMs": 8644.460254000005,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/3cac5460-1633-4598-9ab3-5a64dabc31b5",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:09.918Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 6935.27952299999,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 9849.493910999998,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 1605.449101,
+          "firstReadMs": 2.189204,
+          "firstWriteMs": 2.199884,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 9849.558239999998,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/ddc57a2e-e229-4eb1-9add-350ae7ccc243",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:09.919Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 6934.285218999998,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 8544.211070999998,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 3867.543875,
+          "firstReadMs": 3.102652,
+          "firstWriteMs": 3.113842,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 8544.294247999991,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/c7efbdbf-e6a5-49ee-861e-770bc6e5938f",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:09.921Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 6931.885229000007,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 9333.005841000006,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 1448.826901,
+          "firstReadMs": 2.295108,
+          "firstWriteMs": 2.311929,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100027-CHI",
+        "elapsedMs": 9333.067299999995,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/9e58f8f7-9bbc-4a82-becf-3b497fd44887",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:09.922Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 6931.260426000008,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 7813.368974000012,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 3138.485678,
+          "firstReadMs": 9.780611,
+          "firstWriteMs": 9.794812,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100118-CHI",
+        "elapsedMs": 7813.573864000005,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/05646fd1-fe4b-40e3-bf6b-8ce49611c000",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:09.924Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 6929.555449000007,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 8250.831531000003,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 3576.020844,
+          "firstReadMs": 5.263386,
+          "firstWriteMs": 5.276846,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 8252.266705000002,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/e8536241-516b-4a91-9197-b0fcfbb3716a",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:09.930Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 7122.515776,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 9308.691116000002,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 4599.019171,
+          "firstReadMs": 3.1016,
+          "firstWriteMs": 3.119231,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100041-CHI",
+        "elapsedMs": 9308.773503000004,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/893a08ca-e412-42c3-8694-3a850b9cc0e6",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:09.931Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 6921.4559759999975,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 9017.428910000002,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 4366.526689,
+          "firstReadMs": 4.495521,
+          "firstWriteMs": 4.519521,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 9017.494504999995,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/9672c3ae-4d2f-4a53-89ed-6b444df32a65",
+      "size": 16777216,
+      "declared": 16777216,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:09.934Z",
+      "sentBytes": 16777216,
+      "producerEofMs": 6918.694520999998,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 8335.595146000007,
+        "result": {
+          "status": "stored",
+          "etag": "\"9e4a3a01fad6cf9a0d84f86c5e8b50e8\"",
+          "byteLength": 16777216,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 16777216,
+          "writtenBytes": 16777216,
+          "operationMs": 3612.509367,
+          "firstReadMs": 1.127251,
+          "firstWriteMs": 1.145092,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100178-CHI",
+        "elapsedMs": 8335.700001999998,
+        "sentBytes": 16777216
+      },
+      "readback": {
+        "status": 200,
+        "length": 16777216,
+        "bytes": 16777216,
+        "sha256": "e7ececc8ad67fa8eadf503518985be85be38a8bab9ee4da37968af67f4da4975"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/d8494542-56ee-4afe-a198-3e8ccf5c4ebc",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:33.441Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 3792.5410189999966,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 4408.785285000005,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 925.154206,
+          "firstReadMs": 3.499684,
+          "firstWriteMs": 3.516655,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100108-CHI",
+        "elapsedMs": 4409.501700000008,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/3e934245-f54c-4e39-ba56-749636c444e3",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:45.096Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 5939.813955999998,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 7248.973861000006,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 4141.091586,
+          "firstReadMs": 2.846248,
+          "firstWriteMs": 2.864978,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 7249.069604000004,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/9e423f6b-8bf6-45b8-ab20-ce1c1ad1e211",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:45.101Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 5848.480834999995,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 7379.987219999995,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 4140.06604,
+          "firstReadMs": 1.196563,
+          "firstWriteMs": 1.225863,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100123-CHI",
+        "elapsedMs": 7380.056553000002,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/32b05166-7740-4881-abf3-5afc22a8519f",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:45.102Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 5484.52915100001,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 7431.051459000009,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 4266.603934,
+          "firstReadMs": 1.902996,
+          "firstWriteMs": 1.916587,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100160-CHI",
+        "elapsedMs": 7431.136465000003,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/dce1d97e-bbbb-44f1-ad35-1804b5fa63d5",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:45.106Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 6272.97984900001,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 7333.577534000011,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 4240.113627,
+          "firstReadMs": 11.646334,
+          "firstWriteMs": 11.659545,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 7333.937732999999,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/c541ea3a-222a-41ec-92e7-d611625a287c",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:45.107Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 5503.161286000002,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 7184.423817000003,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 4112.262173,
+          "firstReadMs": 2.916019,
+          "firstWriteMs": 2.929619,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100155-CHI",
+        "elapsedMs": 7184.49833100001,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/0908e13e-3801-42e5-863c-25acd8a9b049",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:45.111Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 5645.0429019999865,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 7128.148701999991,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 4033.41827,
+          "firstReadMs": 2.184664,
+          "firstWriteMs": 2.201584,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 7128.269429999986,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/3d86aba8-4811-4a23-90e6-bbc0f86bd86f",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:45.112Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 5421.475430000006,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 7059.0154410000105,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 3953.630516,
+          "firstReadMs": 2.274006,
+          "firstWriteMs": 2.292406,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 7060.738538999998,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/152f9736-b75b-4678-b635-443ceb31a1b0",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:24:45.113Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 5204.061050999997,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 7370.305665000007,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 4236.538551,
+          "firstReadMs": 8.044954,
+          "firstWriteMs": 8.060254,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100066-CHI",
+        "elapsedMs": 7370.363263000007,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/3627f8c4-934d-4f28-b7ec-34a5428c17d7",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:25:03.089Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 6434.902478999997,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 8291.184262999988,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 4543.644018,
+          "firstReadMs": 1.801882,
+          "firstWriteMs": 1.819012,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100048-CHI",
+        "elapsedMs": 8291.430124999999,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/da560f4e-d257-44e3-9a2e-19d11e823571",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:25:03.090Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 9663.89959300001,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 11721.969474000012,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 7914.695162,
+          "firstReadMs": 0.707047,
+          "firstWriteMs": 0.719841,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100029-CHI",
+        "elapsedMs": 11722.061937999999,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/6bb5419c-4167-4be6-8845-f09731ccd378",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:25:03.092Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 9093.996094999995,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 11013.23167600001,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 7251.183008,
+          "firstReadMs": 1.969385,
+          "firstWriteMs": 1.982058,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100036-CHI",
+        "elapsedMs": 11013.323210999995,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/3b6b2240-e05e-4eb5-9f55-ceb57bafa78b",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:25:03.093Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 11955.082307000004,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 12743.063379,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 1780.217366,
+          "firstReadMs": 0.951165,
+          "firstWriteMs": 0.96431,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100020-CHI",
+        "elapsedMs": 12743.16055500001,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/c04b464f-a3ed-45e0-a320-7a63d6e71d28",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:25:03.095Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 8858.808829000001,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 10859.610455000002,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 7128.007826,
+          "firstReadMs": 0.981091,
+          "firstWriteMs": 0.995668,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100032-CHI",
+        "elapsedMs": 10859.748099000004,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/045519a2-9114-4bc9-a095-f9ca90d9a1c3",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:25:03.096Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 11315.115206000002,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 12573.457088999989,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 8837.979497,
+          "firstReadMs": 2.023111,
+          "firstWriteMs": 2.061992,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 12574.585069000008,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/fd3c37f4-3c02-4798-891b-5f0af8ad0b5f",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:25:03.097Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 11061.875545000003,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 12014.20954299999,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 8228.056748,
+          "firstReadMs": 3.080295,
+          "firstWriteMs": 3.102885,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100066-CHI",
+        "elapsedMs": 12014.297680999982,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/f344f313-8db6-49c6-b49e-2c27a92b69f7",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:25:03.099Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 8384.11355000001,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 11308.591921999992,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 7557.105185,
+          "firstReadMs": 1.954916,
+          "firstWriteMs": 1.975184,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100027-CHI",
+        "elapsedMs": 11308.664632,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/0a9727b4-c77d-42b5-953b-73f3854e073b",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:25:03.100Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 10860.85857299999,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 11996.008033000006,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 2665.676278,
+          "firstReadMs": 2.25913,
+          "firstWriteMs": 2.271974,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100020-CHI",
+        "elapsedMs": 11996.126218999983,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/ebdf9371-e80a-4e22-b1d9-647e9fc06267",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:25:03.101Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 11274.561774999995,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 12645.885561000017,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 1796.874309,
+          "firstReadMs": 1.337662,
+          "firstWriteMs": 1.350642,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100093-CHI",
+        "elapsedMs": 12645.990845000008,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/e5e50306-7746-4250-a2b6-6f8fdd4a26e2",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:25:03.102Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 9887.850993,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 11370.905793000013,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 3021.358072,
+          "firstReadMs": 2.497197,
+          "firstWriteMs": 2.514407,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100125-CHI",
+        "elapsedMs": 11370.985285000002,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/5386d97f-90f3-4611-b1b5-0ab81c49eb6f",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:25:03.104Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 8572.578961000007,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 10357.89310999999,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 6363.237485,
+          "firstReadMs": 6.245642,
+          "firstWriteMs": 6.264042,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100099-CHI",
+        "elapsedMs": 10358.43277,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/d054515d-640f-4c2b-9a6c-1232950e42a4",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:25:03.109Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 8359.043727000011,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 9688.563983,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 5827.208031,
+          "firstReadMs": 1.20848,
+          "firstWriteMs": 1.225581,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100110-CHI",
+        "elapsedMs": 9688.768517999997,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/7e982cc0-1384-4754-957a-e0351d47d389",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:25:03.128Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 9611.315854999993,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 10977.69141,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 7001.592468,
+          "firstReadMs": 0.72295,
+          "firstWriteMs": 0.736205,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100024-CHI",
+        "elapsedMs": 10977.748171999992,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/ae86373d-9149-41b8-9964-c85fb48e2cba",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:25:03.147Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 6695.852817000006,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 9277.068736000016,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 5566.967477,
+          "firstReadMs": 1.311102,
+          "firstWriteMs": 1.324442,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100133-CHI",
+        "elapsedMs": 9277.212566000002,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/0dccfcd1-c00f-40d3-b553-75122779f672",
+      "size": 33554432,
+      "declared": 33554432,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:25:03.253Z",
+      "sentBytes": 33554432,
+      "producerEofMs": 9462.40664799999,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 11958.721865999993,
+        "result": {
+          "status": "stored",
+          "etag": "\"9d4eb4064268f5e8b1a4b6a2bf5b6d0e\"",
+          "byteLength": 33554432,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 33554432,
+          "writtenBytes": 33554432,
+          "operationMs": 8355.103648,
+          "firstReadMs": 1.426509,
+          "firstWriteMs": 1.444039,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 11958.976718999984,
+        "sentBytes": 33554432
+      },
+      "readback": {
+        "status": 200,
+        "length": 33554432,
+        "bytes": 33554432,
+        "sha256": "e28d0686de51ef7aeb4f4baf887d3d3e2f89fdfd2b7cd8e8032a7189f6249fe2"
+      }
+    }
+  ],
+  "publicAdmission": false,
+  "finishedAt": "2026-11-25T21:25:27.746Z"
+}

@@ -1,0 +1,137 @@
+{
+  "schemaVersion": "pulse.rc-h04-provider-checkpoint.v1",
+  "status": "blocked",
+  "sourceRevision": "a25052124cb670108eecce1710f93c2fb60fd84a",
+  "sourceTree": "edf7b89884e02160e5608891c831296a91d09011",
+  "testedWorkingTree": "",
+  "scope": "Focused current-candidate provider checkpoint; not an aggregate seal",
+  "toolchain": {
+    "node": "24.18.0",
+    "npm": "11.15.0",
+    "pnpm": "12.4.2"
+  },
+  "localK4": {
+    "semanticStatus": "failed",
+    "acceptance": {
+      "semanticStatus": "failed",
+      "deployedPulseCrossLocationStillRequired": true,
+      "status": "accepted-with-known-viceroy-discrepancy",
+      "releaseBlocking": false,
+      "knownIssues": [
+        {
+          "check": "missing-key-cas",
+          "engine": "Viceroy",
+          "version": "0.21.1",
+          "disposition": "non-blocking by explicit human release direction on 2026-10-04",
+          "evidence": "wasm/test/kv/k4/viceroy-0.21.1-beta6-evidence.json"
+        }
+      ]
+    }
+  },
+  "remaining": [
+    "Pinned terminal local transport (sandbox socket denial; PR CI separately qualifies its own candidate)",
+    "Current-candidate hosted terminal transport and deployment cleanup",
+    "Reviewed deployed Pulse K4 independent cross-location driver",
+    "Current-candidate intended-origin/S3 and hosted fetch outcomes/timing"
+  ],
+  "newOwnerDisposition": null,
+  "externalMutations": [],
+  "cleanup": {
+    "runnerTasks": "passed",
+    "terminalAttempts": true,
+    "fetchTemporaryProjectRemoved": true
+  },
+  "extraSystemLibrary": {
+    "name": "libicu74_74.2-1ubuntu3_amd64.deb",
+    "source": "https://archive.ubuntu.com/ubuntu/pool/main/i/icu/libicu74_74.2-1ubuntu3_amd64.deb",
+    "sha256": "d29c97a21a3e3254731cfac186e4d4e611e5e67d2c9a0430f6acfbd9acaefa2e",
+    "installation": "Extracted under temporary Pushpin root; no system services installed"
+  },
+  "files": [
+    {
+      "path": "build.log",
+      "bytes": 877,
+      "sha256": "c1c52487f86614646f70ab63bff53d3235bf5f0ed59c652309c95088d9d946b3"
+    },
+    {
+      "path": "compute-initial.json",
+      "bytes": 12746,
+      "sha256": "1055aa8bc1ef815f83e4ee1a4e1eea85d6917623b026a9b036be3f6caba561e3"
+    },
+    {
+      "path": "compute-pinned.json",
+      "bytes": 13384,
+      "sha256": "ac724c9ebf67c51ebb8f9a40455ff7d21c742c7976c260d9203c04a33c86542d"
+    },
+    {
+      "path": "fetch-deadlines.log",
+      "bytes": 779,
+      "sha256": "b64e78d8a87b2eb7a0c06eed6aaeb0273c6348b9717a32c8a08895d4acd33efd"
+    },
+    {
+      "path": "initial-kv-conditional-acceptance.log",
+      "bytes": 8662,
+      "sha256": "e0ac1585453d8d370f7527da91cb47c6e36ee9c2db6d6fa55a7a9ec894f047f9"
+    },
+    {
+      "path": "initial-provider-fastly-compute-reality.log",
+      "bytes": 489,
+      "sha256": "4506810077f02ea0b97b8e0128c733fae3d46df2525a1c92400d83fc084edb82"
+    },
+    {
+      "path": "k4-initial.json",
+      "bytes": 9465,
+      "sha256": "9512a77d9a6f6478730cd99969e58c95fecac7cee85e96765733acdc1cbf9447"
+    },
+    {
+      "path": "k4-pinned.json",
+      "bytes": 9901,
+      "sha256": "aef8a40862cca050a1800c355d2a5140b7d8a7024b429dceb318cdd7e758a5b9"
+    },
+    {
+      "path": "pinned-kv-conditional-acceptance.log",
+      "bytes": 8837,
+      "sha256": "b3d2dd163fab9ecff6b56735598242ac6dd4a9553c521515e18d43da1491fa21"
+    },
+    {
+      "path": "pinned-provider-fastly-compute-reality.log",
+      "bytes": 489,
+      "sha256": "4506810077f02ea0b97b8e0128c733fae3d46df2525a1c92400d83fc084edb82"
+    },
+    {
+      "path": "provider-initial.json",
+      "bytes": 2653,
+      "sha256": "21ce5bff84713c85a798d6680f95463c275ec19ab291058af8dc8cf73b0ad5cb"
+    },
+    {
+      "path": "provider-pinned.json",
+      "bytes": 2652,
+      "sha256": "fec5d128ebaebda06526ab84899b2847077443bff4960f11f9de7b6dfca5e656"
+    },
+    {
+      "path": "shared-pack.json",
+      "bytes": 3683,
+      "sha256": "27683116e12227f7f1a6cf90d094b91374072202bd20eab360b247b8cf974e85"
+    },
+    {
+      "path": "terminal-injected.json",
+      "bytes": 4211,
+      "sha256": "082fe23f8bfbc5a1c094b39f1564d69b8e35ea2438a5650b5e1ca38994f9261a"
+    },
+    {
+      "path": "terminal-installed.json",
+      "bytes": 10323,
+      "sha256": "cf8fd3f4b389d56ca79ddf141952ddf96e2df82634f2826907bd0fff405bc64c"
+    },
+    {
+      "path": "terminal-local-missing-library.json",
+      "bytes": 1342,
+      "sha256": "34d4fbf1e698fe568a171f72d9760f6402b2f6abc489b70d563cfcf9980673da"
+    },
+    {
+      "path": "terminal-local-socket-denied.json",
+      "bytes": 2405,
+      "sha256": "cf52327cc629a21a00136da3eebb11aaa9915dafc4269cdc55a5b7f58963036d"
+    }
+  ]
+}

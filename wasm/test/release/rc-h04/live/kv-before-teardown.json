@@ -1,0 +1,27 @@
+{
+  "status": "passed",
+  "storeId": "2j6hwxfe83boksh299d6zf",
+  "scope": "Administrative teardown observation after completed Pulse proof; not additional CAS evidence",
+  "keys": [
+    {
+      "key": "pulse-k4-edfa9ef6-0189-4f67-b29f-67ece57e9c65-0",
+      "retainedTombstoneBeforeTeardown": true,
+      "valueSha256": "c621f307896d01bf1ebb84c4df229260c356bad2ff9375b78342ede1376e54fa"
+    },
+    {
+      "key": "pulse-k4-edfa9ef6-0189-4f67-b29f-67ece57e9c65-1",
+      "retainedTombstoneBeforeTeardown": true,
+      "valueSha256": "c621f307896d01bf1ebb84c4df229260c356bad2ff9375b78342ede1376e54fa"
+    },
+    {
+      "key": "pulse-k4-edfa9ef6-0189-4f67-b29f-67ece57e9c65-2",
+      "retainedTombstoneBeforeTeardown": true,
+      "valueSha256": "c621f307896d01bf1ebb84c4df229260c356bad2ff9375b78342ede1376e54fa"
+    },
+    {
+      "key": "pulse-k4-edfa9ef6-0189-4f67-b29f-67ece57e9c65-lost",
+      "retainedTombstoneBeforeTeardown": true,
+      "valueSha256": "c621f307896d01bf1ebb84c4df229260c356bad2ff9375b78342ede1376e54fa"
+    }
+  ]
+}

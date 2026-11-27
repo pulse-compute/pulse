@@ -1,6 +1,6 @@
 # Beta scope
 
-Pulse `1.0.0-beta.10` is a Beta of one provider-neutral application contract
+Pulse `1.0.0-beta.11` is a Beta of one provider-neutral application contract
 with explicit Native and JavaScript execution targets. The intended 1.0
 surface is present, but deliberate corrections may still occur before the
 stable `1.0.0` release.
@@ -23,7 +23,8 @@ targets.
 - Request method, URL, path, headers, text, and JSON access.
 - Bounded, memoized structured body decoding.
 - Explicit TypeScript JSON schema declarations and literal schema IDs.
-- GET, HEAD, and POST fetch effects.
+- Outbound fetch effects with the methods and body rules in the
+  [canonical `ctx.fetch` contract](../API.md#ctxfetch).
 - Independent Native effect grouping, dependent continuation chains, and
   explicit cross-target `ctx.parallel({ ... })` keyed groups and bounded
   `ctx.effects({ max })` collections.

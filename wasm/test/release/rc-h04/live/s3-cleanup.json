@@ -1,0 +1,27 @@
+{
+  "status": "passed-observed-absence",
+  "service": "OPA72JHNLv3kKVVXL39w5v",
+  "prefix": "pulse-rc-h04/0c151b89-0bef-46fe-87c1-2a5f0e9845cd/",
+  "startedAt": "2026-11-26T20:11:13.649Z",
+  "deactivatedAt": "2026-11-26T20:10:24.175124+00:00",
+  "quiescenceMs": 49474,
+  "keys": [
+    {
+      "key": "pulse-rc-h04/0c151b89-0bef-46fe-87c1-2a5f0e9845cd/payload.txt",
+      "before": {
+        "status": 200,
+        "length": 4096
+      },
+      "delete": {
+        "status": 204,
+        "length": null
+      },
+      "after": {
+        "status": 404,
+        "length": null
+      },
+      "status": "passed"
+    }
+  ],
+  "finishedAt": "2026-11-26T20:11:26.046Z"
+}

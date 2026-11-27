@@ -1,0 +1,238 @@
+{
+  "kind": "historical-development; not current-source acceptance",
+  "wire": [
+    {
+      "attempt": "u4-viceroy-1.json",
+      "receipt": {
+        "status": "failed",
+        "kind": "local-Viceroy",
+        "livePlatform": false,
+        "engine": {
+          "version": "0.21.1",
+          "sha256": "881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9"
+        },
+        "wasmSha256": "fbc68d0a8ef080c02076176af9d3ab99b8651b2aab8eaceec776f19a20a22fd1",
+        "cases": [
+          {
+            "name": "65536-1-normal",
+            "status": "failed",
+            "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'unknown'\n- 'stored:65536'\n",
+            "baselineRss": 28143616,
+            "peakRss": 30916608
+          }
+        ],
+        "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'unknown'\n- 'stored:65536'\n",
+        "memoryScope": "sampled Viceroy process RSS, separate from producer/origin; retained allocator/JIT memory included; local only"
+      }
+    },
+    {
+      "attempt": "u4-viceroy-debug.json",
+      "receipt": {
+        "status": "failed",
+        "kind": "local-Viceroy",
+        "livePlatform": false,
+        "engine": {
+          "version": "0.21.1",
+          "sha256": "881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9"
+        },
+        "wasmSha256": "24d2cb658c16ed0053571df8f3ef20cf238828be78de53801ca83de195e6a3ec",
+        "cases": [
+          {
+            "name": "65536-1-normal",
+            "status": "failed",
+            "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'unknown:transport'\n- 'stored:65536'\n",
+            "baselineRss": 28667904,
+            "peakRss": 33931264
+          }
+        ],
+        "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'unknown:transport'\n- 'stored:65536'\n",
+        "originError": "wire SigV4",
+        "originRecords": [],
+        "runtimeLog": {
+          "stdout": "[pulse:error] {\"event\":\"pulse.transport\",\"provider\":\"fastly\",\"phase\":\"poll\",\"status\":1,\"tag\":null,\"mask\":null,\"kind\":\"unavailable\",\"dnsRcode\":null,\"dnsInfo\":null,\"tlsAlert\":null,\"h2Frame\":null,\"h2Code\":null}\n",
+          "stderr": "2026-11-25T19:18:51.539414Z ERROR Backend connection error for 'object_origin' (http://127.0.0.1:44321/): connection error: Connection reset by peer (os error 104)\n"
+        },
+        "memoryScope": "sampled Viceroy process RSS, separate from producer/origin; retained allocator/JIT memory included; local only"
+      }
+    },
+    {
+      "attempt": "u4-viceroy-framing.json",
+      "receipt": {
+        "status": "failed",
+        "kind": "local-Viceroy",
+        "livePlatform": false,
+        "engine": {
+          "version": "0.21.1",
+          "sha256": "881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9"
+        },
+        "wasmSha256": "24d2cb658c16ed0053571df8f3ef20cf238828be78de53801ca83de195e6a3ec",
+        "cases": [
+          {
+            "name": "65536-1-normal",
+            "status": "failed",
+            "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'unknown:transport'\n- 'stored:65536'\n",
+            "baselineRss": 27865088,
+            "peakRss": 30801920
+          }
+        ],
+        "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'unknown:transport'\n- 'stored:65536'\n",
+        "originError": "wire SigV4 {\"method\":\"PUT\",\"url\":\"/upload-fixture/wire-0\",\"host\":\"objects.example.invalid\",\"framing\":\"chunked\",\"type\":\"application/octet-stream\"}",
+        "originRecords": [],
+        "runtimeLog": {
+          "stdout": "[pulse:error] {\"event\":\"pulse.transport\",\"provider\":\"fastly\",\"phase\":\"poll\",\"status\":1,\"tag\":null,\"mask\":null,\"kind\":\"unavailable\",\"dnsRcode\":null,\"dnsInfo\":null,\"tlsAlert\":null,\"h2Frame\":null,\"h2Code\":null}\n",
+          "stderr": "2026-11-25T19:19:15.916204Z ERROR Backend connection error for 'object_origin' (http://127.0.0.1:43897/): connection error: Connection reset by peer (os error 104)\n"
+        },
+        "memoryScope": "sampled Viceroy process RSS, separate from producer/origin; retained allocator/JIT memory included; local only"
+      }
+    },
+    {
+      "attempt": "u4-viceroy-framing-fixed.json",
+      "receipt": {
+        "status": "failed",
+        "kind": "local-Viceroy",
+        "livePlatform": false,
+        "engine": {
+          "version": "0.21.1",
+          "sha256": "881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9"
+        },
+        "wasmSha256": "9666980b967acc3e39b7596f6030e8bbda2e88ac4ddeb4d30878f9dd295a19ab",
+        "cases": [
+          {
+            "name": "65536-1-normal",
+            "status": "failed",
+            "error": "wire SigV4 {\"method\":\"GET\",\"url\":\"/\",\"host\":\"127.0.0.1:40427\"}",
+            "baselineRss": 27922432,
+            "peakRss": 33587200
+          }
+        ],
+        "error": "wire SigV4 {\"method\":\"GET\",\"url\":\"/\",\"host\":\"127.0.0.1:40427\"}",
+        "originError": "wire SigV4 {\"method\":\"GET\",\"url\":\"/\",\"host\":\"127.0.0.1:40427\"}",
+        "originRecords": [],
+        "runtimeLog": {
+          "stdout": "",
+          "stderr": ""
+        },
+        "memoryScope": "sampled Viceroy process RSS, separate from producer/origin; retained allocator/JIT memory included; local only"
+      }
+    },
+    {
+      "attempt": "u4-viceroy-settlement.json",
+      "receipt": {
+        "status": "failed",
+        "kind": "local-Viceroy",
+        "livePlatform": false,
+        "engine": {
+          "version": "0.21.1",
+          "sha256": "881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9"
+        },
+        "wasmSha256": "9666980b967acc3e39b7596f6030e8bbda2e88ac4ddeb4d30878f9dd295a19ab",
+        "cases": [],
+        "error": "wire watchdog",
+        "originRecords": [],
+        "runtimeLog": {
+          "stdout": "",
+          "stderr": "\nthread 'tokio-rt-worker' (33) panicked at src/body_tee.rs:75:14:\nFailed to buffer known-size body: hyper::Error(Body, Custom { kind: UnexpectedEof, error: IncompleteBody })\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n"
+        },
+        "memoryScope": "sampled Viceroy process RSS, separate from producer/origin; retained allocator/JIT memory included; local only"
+      }
+    },
+    {
+      "attempt": "u4-viceroy-settlement-2.json",
+      "receipt": {
+        "status": "failed",
+        "kind": "local-Viceroy",
+        "livePlatform": false,
+        "engine": {
+          "version": "0.21.1",
+          "sha256": "881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9"
+        },
+        "wasmSha256": "9666980b967acc3e39b7596f6030e8bbda2e88ac4ddeb4d30878f9dd295a19ab",
+        "cases": [
+          {
+            "name": "prefix",
+            "status": "failed",
+            "error": "wire watchdog",
+            "elapsedMs": 1206.3644820000002
+          },
+          {
+            "name": "cancel",
+            "status": "passed",
+            "elapsedMs": 51.48312099999998,
+            "openOriginResponsesAfterGrace": 0,
+            "settlementGraceMs": 0.03188999999997577,
+            "result": {
+              "key": "wire-1",
+              "sent": 16384,
+              "cancelled": true,
+              "prefixBeforeEOF": false,
+              "elapsedMs": 51.45495499999993
+            }
+          },
+          {
+            "name": "stall-ack",
+            "status": "failed",
+            "elapsedMs": 12014.728561,
+            "openOriginResponsesAfterGrace": 1,
+            "settlementGraceMs": 2002.6428149999992,
+            "result": {
+              "key": "wire-2",
+              "sent": 65536,
+              "prefixBeforeEOF": false,
+              "status": 200,
+              "body": "unknown:timeout",
+              "elapsedMs": 10011.837180999999
+            }
+          },
+          {
+            "name": "recovery",
+            "status": "failed",
+            "elapsedMs": 2010.0705609999986,
+            "openOriginResponsesAfterGrace": 1,
+            "settlementGraceMs": 2004.360802000001,
+            "result": {
+              "key": "wire-3",
+              "sent": 65536,
+              "prefixBeforeEOF": false,
+              "status": 200,
+              "body": "stored:65536",
+              "elapsedMs": 5.679411000000982
+            }
+          },
+          {
+            "name": "cap-plus-one",
+            "status": "failed",
+            "error": "wire watchdog",
+            "elapsedMs": 17010.370050999998
+          }
+        ],
+        "memoryScope": "sampled Viceroy process RSS, separate from producer/origin; retained allocator/JIT memory included; local only"
+      }
+    }
+  ],
+  "pack": [
+    {
+      "attempt": "upload04-pack.log",
+      "log": "[pulse:pack] Checking documentation source\n[pulse:pack] Building workspace\n[pulse:pack] Package 1/20: @pulse-compute/runtime\n[pulse:pack] Verified @pulse-compute/runtime: 99888 bytes\n[pulse:pack] Package 2/20: @pulse-compute/pulse\n[pulse:pack] Verified @pulse-compute/pulse: 15536 bytes\n[pulse:pack] Package 3/20: @pulse-compute/cli\n[pulse:pack] Verified @pulse-compute/cli: 1478962 bytes\n[pulse:pack] Package 4/20: @pulse-compute/provider-fastly\n[pulse:pack] Verified @pulse-compute/provider-fastly: 284486 bytes\n[pulse:pack] Package 5/20: @pulse-compute/grip\n[pulse:pack] Verified @pulse-compute/grip: 27132 bytes\n[pulse:pack] Package 6/20: @pulse-compute/assets\n[pulse:pack] Verified @pulse-compute/assets: 50324 bytes\n[pulse:pack] Package 7/20: @pulse-compute/crypto\n[pulse:pack] Verified @pulse-compute/crypto: 233223 bytes\n[pulse:pack] Package 8/20: @pulse-compute/jwt\n[pulse:pack] Verified @pulse-compute/jwt: 65794 bytes\n[pulse:pack] Package 9/20: @pulse-compute/entities\n[pulse:pack] Verified @pulse-compute/entities: 51776 bytes\n[pulse:pack] Package 10/20: @pulse-compute/mcp\n[pulse:pack] Verified @pulse-compute/mcp: 40965 bytes\n[pulse:pack] Package 11/20: @pulse-compute/s3\n[pulse:pack] Verified @pulse-compute/s3: 23658 bytes\n[pulse:pack] Package 12/20: @pulse-compute/wasm-build-support\n[pulse:pack] Verified @pulse-compute/wasm-build-support: 21397 bytes\n[pulse:pack] Package 13/20: @pulse-compute/wasm-compiler\n[pulse:pack] Verified @pulse-compute/wasm-compiler: 338651 bytes\n[pulse:pack] Package 14/20: @pulse-compute/wasm-guest-link\n[pulse:pack] Verified @pulse-compute/wasm-guest-link: 40044 bytes\n[pulse:pack] Package 15/20: @pulse-compute/wasm-contracts\n[pulse:pack] Verified @pulse-compute/wasm-contracts: 182503 bytes\n[pulse:pack] Package 16/20: @pulse-compute/wasm-host-runtime\n[pulse:pack] Verified @pulse-compute/wasm-host-runtime: 98177 bytes\n[pulse:pack] Package 17/20: @pulse-compute/wasm-library-kit\n[pulse:pack] Verified @pulse-compute/wasm-library-kit: 25660 bytes\n[pulse:pack] Package 18/20: @pulse-compute/provider-node\n[pulse:pack] Verified @pulse-compute/provider-node: 115992 bytes\n[pulse:pack] Package 19/20: @pulse-compute/wasm-runtime-core-as\n[pulse:pack] Verified @pulse-compute/wasm-runtime-core-as: 126001 bytes\n[pulse:pack] Package 20/20: @pulse-compute/wasm-schema-json\n[pulse:pack] Verified @pulse-compute/wasm-schema-json: 61508 bytes\n[pulse:pack] Checking packed documentation links\nError: @pulse-compute/runtime:package/docs/preview-scope.md links missing packed path ../API.md#ctxfetch\n    at fail (/workspace/scratch/ef4956ac6b89/pulse/scripts/documentation-release.cjs:243:17)\n    at validatePackedDocumentationSet (/workspace/scratch/ef4956ac6b89/pulse/scripts/documentation-release.cjs:1124:61)\n    at packRelease (/workspace/scratch/ef4956ac6b89/pulse/scripts/pack-release.cjs:287:5)\n    at main (/workspace/scratch/ef4956ac6b89/pulse/scripts/pack-release.cjs:347:18)\n    at Object.<anonymous> (/workspace/scratch/ef4956ac6b89/pulse/scripts/pack-release.cjs:369:9)\n    at Module._compile (node:internal/modules/cjs/loader:1929:14)\n    at Object..js (node:internal/modules/cjs/loader:2060:10)\n    at Module.load (node:internal/modules/cjs/loader:1651:32)\n    at Module._load (node:internal/modules/cjs/loader:1443:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)\n"
+    },
+    {
+      "attempt": "upload04-pack-retry.log",
+      "log": "[pulse:pack] Checking documentation source\nAssertionError [ERR_ASSERTION]: Feature acceptance requires a clean candidate checkout\n+ actual - expected\n\n+ 'M packages/runtime/docs/preview-scope.md\\n' +\n+   ' M wasm/scripts/sync-reference-docs.cjs'\n- ''\n\n    at Object.candidateIdentity (/workspace/scratch/ef4956ac6b89/pulse/scripts/release-feature-acceptance.cjs:42:10)\n    at packRelease (/workspace/scratch/ef4956ac6b89/pulse/scripts/pack-release.cjs:246:67)\n    at main (/workspace/scratch/ef4956ac6b89/pulse/scripts/pack-release.cjs:347:18)\n    at Object.<anonymous> (/workspace/scratch/ef4956ac6b89/pulse/scripts/pack-release.cjs:369:9)\n    at Module._compile (node:internal/modules/cjs/loader:1929:14)\n    at Object..js (node:internal/modules/cjs/loader:2060:10)\n    at Module.load (node:internal/modules/cjs/loader:1651:32)\n    at Module._load (node:internal/modules/cjs/loader:1443:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\n"
+    },
+    {
+      "attempt": "upload04-pack-clean.log",
+      "log": "[pulse:pack] Checking documentation source\nAssertionError [ERR_ASSERTION]: Feature acceptance requires a clean candidate checkout\n+ actual - expected\n\n+ '?? wasm/test/s3/upload-04/build.cjs\\n' +\n+   '?? wasm/test/s3/upload-04/node-capacity.cjs\\n' +\n+   '?? wasm/test/s3/upload-04/project.cjs'\n- ''\n\n    at Object.candidateIdentity (/workspace/scratch/ef4956ac6b89/pulse/scripts/release-feature-acceptance.cjs:42:10)\n    at packRelease (/workspace/scratch/ef4956ac6b89/pulse/scripts/pack-release.cjs:246:67)\n    at main (/workspace/scratch/ef4956ac6b89/pulse/scripts/pack-release.cjs:347:18)\n    at Object.<anonymous> (/workspace/scratch/ef4956ac6b89/pulse/scripts/pack-release.cjs:369:9)\n    at Module._compile (node:internal/modules/cjs/loader:1929:14)\n    at Object..js (node:internal/modules/cjs/loader:2060:10)\n    at Module.load (node:internal/modules/cjs/loader:1651:32)\n    at Module._load (node:internal/modules/cjs/loader:1443:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\n"
+    },
+    {
+      "attempt": "upload04-pack-isolated.log",
+      "log": "[pulse:pack] Checking documentation source\n[pulse:pack] Building workspace\nError: Command failed: /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /tmp/upload04-pack-checkout/scripts/pnpm-toolchain.cjs --root /tmp/upload04-pack-checkout --version 12.4.2 -- run -s build\nScope: all 22 workspace projects\n✓ Lockfile passes supply-chain policies (verified 2h ago)\nLockfile is up to date, resolution step is skipped\nAlready up to date\nError: ERR_PNPM_IGNORED_BUILDS\n\n  × installing dependencies\n  ╰─▶ Ignored build scripts: esbuild@0.25.12, esbuild@0.28.1\n  help: Run \"pnpm approve-builds\" to pick which dependencies should be allowed\n        to run scripts.\n    at fail (/tmp/upload04-pack-checkout/scripts/pack-release.cjs:29:17)\n    at run (/tmp/upload04-pack-checkout/scripts/pack-release.cjs:106:5)\n    at packRelease (/tmp/upload04-pack-checkout/scripts/pack-release.cjs:264:34)\n    at main (/tmp/upload04-pack-checkout/scripts/pack-release.cjs:347:18)\n    at Object.<anonymous> (/tmp/upload04-pack-checkout/scripts/pack-release.cjs:369:9)\n    at Module._compile (node:internal/modules/cjs/loader:1929:14)\n    at Object..js (node:internal/modules/cjs/loader:2060:10)\n    at Module.load (node:internal/modules/cjs/loader:1651:32)\n    at Module._load (node:internal/modules/cjs/loader:1443:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)\n"
+    },
+    {
+      "attempt": "upload04-pack-built.log",
+      "log": "[pulse:pack] Checking documentation source\nAssertionError [ERR_ASSERTION]: Feature acceptance requires a clean candidate checkout\n+ actual - expected\n\n+ 'M pnpm-workspace.yaml'\n- ''\n\n    at Object.candidateIdentity (/tmp/upload04-pack-checkout/scripts/release-feature-acceptance.cjs:42:10)\n    at packRelease (/tmp/upload04-pack-checkout/scripts/pack-release.cjs:246:67)\n    at main (/tmp/upload04-pack-checkout/scripts/pack-release.cjs:347:18)\n    at Object.<anonymous> (/tmp/upload04-pack-checkout/scripts/pack-release.cjs:369:9)\n    at Module._compile (node:internal/modules/cjs/loader:1929:14)\n    at Object..js (node:internal/modules/cjs/loader:2060:10)\n    at Module.load (node:internal/modules/cjs/loader:1651:32)\n    at Module._load (node:internal/modules/cjs/loader:1443:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\n"
+    },
+    {
+      "attempt": "upload04-pack-built-clean.log",
+      "log": "[pulse:pack] Checking documentation source\n[pulse:pack] Package 1/20: @pulse-compute/runtime\n[pulse:pack] Verified @pulse-compute/runtime: 99889 bytes\n[pulse:pack] Package 2/20: @pulse-compute/pulse\n[pulse:pack] Verified @pulse-compute/pulse: 15536 bytes\n[pulse:pack] Package 3/20: @pulse-compute/cli\n[pulse:pack] Verified @pulse-compute/cli: 1478962 bytes\n[pulse:pack] Package 4/20: @pulse-compute/provider-fastly\n[pulse:pack] Verified @pulse-compute/provider-fastly: 284486 bytes\n[pulse:pack] Package 5/20: @pulse-compute/grip\n[pulse:pack] Verified @pulse-compute/grip: 27132 bytes\n[pulse:pack] Package 6/20: @pulse-compute/assets\n[pulse:pack] Verified @pulse-compute/assets: 50324 bytes\n[pulse:pack] Package 7/20: @pulse-compute/crypto\n[pulse:pack] Verified @pulse-compute/crypto: 233223 bytes\n[pulse:pack] Package 8/20: @pulse-compute/jwt\n[pulse:pack] Verified @pulse-compute/jwt: 65794 bytes\n[pulse:pack] Package 9/20: @pulse-compute/entities\n[pulse:pack] Verified @pulse-compute/entities: 51776 bytes\n[pulse:pack] Package 10/20: @pulse-compute/mcp\n[pulse:pack] Verified @pulse-compute/mcp: 40965 bytes\n[pulse:pack] Package 11/20: @pulse-compute/s3\n[pulse:pack] Verified @pulse-compute/s3: 23658 bytes\n[pulse:pack] Package 12/20: @pulse-compute/wasm-build-support\n[pulse:pack] Verified @pulse-compute/wasm-build-support: 21397 bytes\n[pulse:pack] Package 13/20: @pulse-compute/wasm-compiler\n[pulse:pack] Verified @pulse-compute/wasm-compiler: 338651 bytes\n[pulse:pack] Package 14/20: @pulse-compute/wasm-guest-link\n[pulse:pack] Verified @pulse-compute/wasm-guest-link: 40044 bytes\n[pulse:pack] Package 15/20: @pulse-compute/wasm-contracts\n[pulse:pack] Verified @pulse-compute/wasm-contracts: 182503 bytes\n[pulse:pack] Package 16/20: @pulse-compute/wasm-host-runtime\n[pulse:pack] Verified @pulse-compute/wasm-host-runtime: 98177 bytes\n[pulse:pack] Package 17/20: @pulse-compute/wasm-library-kit\n[pulse:pack] Verified @pulse-compute/wasm-library-kit: 25660 bytes\n[pulse:pack] Package 18/20: @pulse-compute/provider-node\n[pulse:pack] Verified @pulse-compute/provider-node: 115992 bytes\n[pulse:pack] Package 19/20: @pulse-compute/wasm-runtime-core-as\n[pulse:pack] Verified @pulse-compute/wasm-runtime-core-as: 126001 bytes\n[pulse:pack] Package 20/20: @pulse-compute/wasm-schema-json\n[pulse:pack] Verified @pulse-compute/wasm-schema-json: 61508 bytes\n[pulse:pack] Checking packed documentation links\nError: @pulse-compute/cli:package/docs/guides/project-lifecycle.md -> ../../README.md#start-here points to missing anchor #start-here\n    at fail (/tmp/upload04-pack-checkout/scripts/documentation-release.cjs:243:17)\n    at validateAnchor (/tmp/upload04-pack-checkout/scripts/documentation-release.cjs:332:47)\n    at validatePackedDocumentationSet (/tmp/upload04-pack-checkout/scripts/documentation-release.cjs:1127:23)\n    at packRelease (/tmp/upload04-pack-checkout/scripts/pack-release.cjs:287:5)\n    at main (/tmp/upload04-pack-checkout/scripts/pack-release.cjs:347:18)\n    at Object.<anonymous> (/tmp/upload04-pack-checkout/scripts/pack-release.cjs:369:9)\n    at Module._compile (node:internal/modules/cjs/loader:1929:14)\n    at Object..js (node:internal/modules/cjs/loader:2060:10)\n    at Module.load (node:internal/modules/cjs/loader:1651:32)\n    at Module._load (node:internal/modules/cjs/loader:1443:12)\n"
+    }
+  ]
+}

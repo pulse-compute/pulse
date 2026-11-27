@@ -1,0 +1,97 @@
+{
+  "schemaVersion": "pulse.release-shared-pack.v1",
+  "repoRoot": "/workspace/scratch/ef4956ac6b89/pulse",
+  "sourceRevision": "a25052124cb670108eecce1710f93c2fb60fd84a",
+  "sourceTree": "edf7b89884e02160e5608891c831296a91d09011",
+  "workingTree": "",
+  "files": [
+    {
+      "name": "pulse-compute-assets-1.0.0-beta.11.tgz",
+      "sha256": "4a587ce59c7832ed7be130a5e550eb8d0e61d3133ca979bb88ff771445b64e66"
+    },
+    {
+      "name": "pulse-compute-cli-1.0.0-beta.11.tgz",
+      "sha256": "0718e60199e60174b4a49529abec79a9d8c60191e33ca94a0de2c8023ad7cc95"
+    },
+    {
+      "name": "pulse-compute-crypto-1.0.0-beta.11.tgz",
+      "sha256": "83c7ac0cdaf65ebae2b0221bf5f6d7c629f1e4c1eca86da62e6f4e8c6f6d346a"
+    },
+    {
+      "name": "pulse-compute-entities-1.0.0-beta.11.tgz",
+      "sha256": "ce62a8a47618d8f78d54b63fc4aa5795ec98cd4b14e99d45e93006bcf1179142"
+    },
+    {
+      "name": "pulse-compute-grip-1.0.0-beta.11.tgz",
+      "sha256": "6f1c6d0a0e11c188c29587c64fa5b5b9cbf3c340adcc36981e44a7ec3b1e0476"
+    },
+    {
+      "name": "pulse-compute-jwt-1.0.0-beta.11.tgz",
+      "sha256": "4655cca2737e868f45acf889ef2be65aff902a9f31e7cfc521437efde70b30a3"
+    },
+    {
+      "name": "pulse-compute-mcp-1.0.0-beta.11.tgz",
+      "sha256": "e7d1b4e3b51dfd2cece242bdaba78e45b5d7181d21a27f988ba8005563fb48cf"
+    },
+    {
+      "name": "pulse-compute-provider-fastly-1.0.0-beta.11.tgz",
+      "sha256": "20ec7ac3201e93077b0473a3fb807459139819fcf00a12a396af490a02d4df3d"
+    },
+    {
+      "name": "pulse-compute-provider-node-1.0.0-beta.11.tgz",
+      "sha256": "e11a274f1b92ff3ad453ddc7c744f51bc2d31cb978c97af036c15afcbd875128"
+    },
+    {
+      "name": "pulse-compute-pulse-1.0.0-beta.11.tgz",
+      "sha256": "a2c57c648ca60ba4ea9e78de7066ec458f7395ee274c8a1e6a50ec63ce8e6739"
+    },
+    {
+      "name": "pulse-compute-runtime-1.0.0-beta.11.tgz",
+      "sha256": "8937e8fd4f0da54633400aaa20d7d61bd9ff1a1dbded762cdb063160a3df5ea8"
+    },
+    {
+      "name": "pulse-compute-s3-1.0.0-beta.11.tgz",
+      "sha256": "83427158e90852686e8e69ffe230c1eebc51bf485c8048cda528e8f066db355b"
+    },
+    {
+      "name": "pulse-compute-wasm-build-support-1.0.0-beta.11.tgz",
+      "sha256": "ab8a7e93a64a3de22d0f4f62770a42fe495773d9a5ba7c639f9dbab5b163e7b6"
+    },
+    {
+      "name": "pulse-compute-wasm-compiler-1.0.0-beta.11.tgz",
+      "sha256": "0d5517e208c9ad3bd40e5c3f839ad2d6d384f2fba26d7a6ecf44817f8dd02a3f"
+    },
+    {
+      "name": "pulse-compute-wasm-contracts-1.0.0-beta.11.tgz",
+      "sha256": "6c5afc7675f05f77699666fd6e492d6d4fa25ab22cc735d42f2a6fd4ad54c7f4"
+    },
+    {
+      "name": "pulse-compute-wasm-guest-link-1.0.0-beta.11.tgz",
+      "sha256": "4adce9e2a318f9eababb1f3d1af66aa6435ca5319c0139470513a4de6c89c14e"
+    },
+    {
+      "name": "pulse-compute-wasm-host-runtime-1.0.0-beta.11.tgz",
+      "sha256": "f1292c318ff8d92b89a2051937af93cdb14aec3f6103ea12036d522e313f282d"
+    },
+    {
+      "name": "pulse-compute-wasm-library-kit-1.0.0-beta.11.tgz",
+      "sha256": "cb6844ee23ced330e634fbe9d1bcf613f94c3ef1aae225b0d3000d8f7fbad7b4"
+    },
+    {
+      "name": "pulse-compute-wasm-runtime-core-as-1.0.0-beta.11.tgz",
+      "sha256": "b096c63c05453fb2877f169bdfe578f9fb2d70e34be62d1c27e81b323275711b"
+    },
+    {
+      "name": "pulse-compute-wasm-schema-json-1.0.0-beta.11.tgz",
+      "sha256": "685c24d8fb36807693b4ac9f173991f09ad3888029b5de15dbcd0c5afab0d0bf"
+    },
+    {
+      "name": "pulse-release-manifest.json",
+      "sha256": "69dcfcd34258d9846ef2fe5cf3fee09e2a050fdb09e386a21c03582833601971"
+    },
+    {
+      "name": "pulse-source-release-catalog.json",
+      "sha256": "9e9667698579888bc815c675507dbc566964619f8a8b1cf07854bea351e6cc61"
+    }
+  ]
+}

@@ -5,16 +5,18 @@
 const { execFileSync } = require('node:child_process');
 const { versionParts, checkReleasePr } = require('./release-pr-check.cjs');
 
-function git(root, args) {
+function gitText(root, args) {
   return execFileSync('git', args, { cwd: root, encoding: 'utf8', timeout: 30000,
-    env: { ...process.env, GIT_TERMINAL_PROMPT: '0' }, maxBuffer: 16 * 1024 * 1024 }).trim();
+    env: { ...process.env, GIT_TERMINAL_PROMPT: '0' }, maxBuffer: 16 * 1024 * 1024 });
 }
+const git = (root, args) => gitText(root, args).trim();
 function prepareTag({ root = process.cwd(), version, write = false }) {
   versionParts(version);
   root = git(root, ['rev-parse', '--show-toplevel']);
   if (git(root, ['status', '--porcelain', '--untracked-files=all'])) throw new Error('Release tagging requires a clean checkout.');
   const commit = git(root, ['rev-parse', 'HEAD^{commit}']);
-  const readHead = file => git(root, ['show', `${commit}:${file}`]);
+  // Retained manifests are digest-bound: whitespace is part of their identity.
+  const readHead = file => gitText(root, ['show', `${commit}:${file}`]);
   const manifest = JSON.parse(readHead('release/pulse-release-manifest.json'));
   if (manifest.releaseVersion !== version) throw new Error(`Requested ${version} does not match release manifest ${manifest.releaseVersion}.`);
   const versions = JSON.parse(readHead('release/documentation-versions.json'));

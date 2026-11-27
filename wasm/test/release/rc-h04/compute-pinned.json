@@ -1,0 +1,573 @@
+{
+  "version": "pulse.fastly-real-host-proof.v2",
+  "toolchain": {
+    "launcher": {
+      "kind": "fastly-cli",
+      "owner": "fastly-cli",
+      "binary": "fastly",
+      "version": "16.1.0",
+      "output": "Fastly CLI version v16.1.0 (4d64ad67)\nBuilt with go version go1.26.8 linux/amd64 (2026-11-26)\nViceroy version: viceroy 0.22.0\n\nA new version of the Fastly CLI is available.\nCurrent version: 16.1.0\nLatest version: 17.2.0\n\nNote: Please review the release notes for the major version(s) listed below before upgrading.\nVersion 17.0.0: https://github.com/fastly/cli/releases/tag/v17.0.0\nRun `fastly update` to get the latest version.",
+      "inspectionTermination": "clean-exit",
+      "sha256": "56bdd56d086d419ba335488fb3ed814050c75e2b16741c5676af2163bc40bbc1"
+    },
+    "fastlyCli": {
+      "binary": "fastly",
+      "version": "16.1.0",
+      "output": "Fastly CLI version v16.1.0 (4d64ad67)\nBuilt with go version go1.26.8 linux/amd64 (2026-11-26)\nViceroy version: viceroy 0.22.0\n\nA new version of the Fastly CLI is available.\nCurrent version: 16.1.0\nLatest version: 17.2.0\n\nNote: Please review the release notes for the major version(s) listed below before upgrading.\nVersion 17.0.0: https://github.com/fastly/cli/releases/tag/v17.0.0\nRun `fastly update` to get the latest version.",
+      "inspectionTermination": "clean-exit",
+      "sha256": "56bdd56d086d419ba335488fb3ed814050c75e2b16741c5676af2163bc40bbc1"
+    },
+    "localComputeEngine": {
+      "owner": "fastly-cli",
+      "selection": "fastly-cli",
+      "version": "0.21.1"
+    }
+  },
+  "module": {
+    "bytes": 105992,
+    "sha256": "08026d14a2262849907a9a64ad89ec57e8dec30a2eb5b16b7110bd34b748f65a",
+    "imports": [
+      {
+        "module": "fastly_http_body",
+        "name": "close",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_body",
+        "name": "new",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_resp",
+        "name": "status_get",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_resp",
+        "name": "send_downstream",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_req",
+        "name": "pending_req_poll_v2",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_resp",
+        "name": "close",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_req",
+        "name": "close",
+        "kind": "function"
+      },
+      {
+        "module": "wasi_snapshot_preview1",
+        "name": "clock_time_get",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_secret_store",
+        "name": "plaintext",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_secret_store",
+        "name": "open",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_secret_store",
+        "name": "get",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_kv_store",
+        "name": "open",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_kv_store",
+        "name": "lookup_wait_v2",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_kv_store",
+        "name": "lookup",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_kv_store",
+        "name": "insert_wait",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_kv_store",
+        "name": "insert",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_resp",
+        "name": "status_set",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_resp",
+        "name": "new",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_resp",
+        "name": "header_append",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_req",
+        "name": "uri_set",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_req",
+        "name": "uri_get",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_req",
+        "name": "send_async",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_req",
+        "name": "pending_req_wait_v2",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_req",
+        "name": "new",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_req",
+        "name": "method_set",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_req",
+        "name": "method_get",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_req",
+        "name": "header_append",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_req",
+        "name": "body_downstream_get",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_body",
+        "name": "write",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_body",
+        "name": "read",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_config_store",
+        "name": "open",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_config_store",
+        "name": "get",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_abi",
+        "name": "init",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_resp",
+        "name": "header_values_get",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_async_io",
+        "name": "select",
+        "kind": "function"
+      },
+      {
+        "module": "wasi_snapshot_preview1",
+        "name": "fd_write",
+        "kind": "function"
+      }
+    ],
+    "exports": [
+      {
+        "name": "pulse_fastly_fetch_retired",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_fastly_fetch_unreaped",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_crypto_sha256_digest",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_crypto_hs256_verify",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_crypto_digest_frame_v1",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_crypto_bytes_frame_v1",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_crypto_sha256_bytes_v1",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_crypto_hmac_sha256_bytes_v1",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_abi_version",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_plan_hash_ptr",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_plan_hash_length",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_start",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_resume",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_set_effect_result",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_result_handle",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_program_counter",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_continuation_state",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_last_error_code",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_pending_count",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_schema_string_id",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_schema_decode",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_schema_encode",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_fastly_last_error",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_fastly_error_stage",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_fastly_error_effect",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_fastly_jwt_error",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_fastly_jwt_secret_calls",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_fastly_jwt_crypto_calls",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_fastly_jwt_clock_calls",
+        "kind": "function"
+      },
+      {
+        "name": "pulse_fastly_jwt_schema_calls",
+        "kind": "function"
+      },
+      {
+        "name": "_start",
+        "kind": "function"
+      },
+      {
+        "name": "__new",
+        "kind": "function"
+      },
+      {
+        "name": "__pin",
+        "kind": "function"
+      },
+      {
+        "name": "__unpin",
+        "kind": "function"
+      },
+      {
+        "name": "__collect",
+        "kind": "function"
+      },
+      {
+        "name": "__rtti_base",
+        "kind": "global"
+      },
+      {
+        "name": "memory",
+        "kind": "memory"
+      },
+      {
+        "name": "__setArgumentsLength",
+        "kind": "function"
+      },
+      {
+        "name": "__pulse_fastly_abort",
+        "kind": "function"
+      }
+    ],
+    "manifestSha256": "bfc8fe6015c64db7abd4ad752a7c9c34f1ed473696453461d27f9168f5494533",
+    "language": "other"
+  },
+  "invocation": {
+    "owner": "fastly-cli",
+    "command": [
+      "compute",
+      "serve",
+      "--file",
+      "main.wasm"
+    ]
+  },
+  "scenarios": {
+    "structured": {
+      "status": 201,
+      "headers": [
+        [
+          "x-pulse-runtime",
+          "fastly-compute"
+        ],
+        [
+          "x-pulse-repeat",
+          "one"
+        ],
+        [
+          "x-pulse-repeat",
+          "two"
+        ],
+        [
+          "content-type",
+          "application/json; charset=utf-8"
+        ],
+        [
+          "content-length",
+          "66"
+        ],
+        [
+          "date",
+          "Thu, 26 Nov 2026 19:15:38 GMT"
+        ]
+      ],
+      "bytes": 66,
+      "sha256": "720f321a6378d4bfc08f4637fe1470bc4b742589d5f33bff451554c5f5ec0bed",
+      "json": {
+        "id": 7,
+        "name": "Ada",
+        "active": true,
+        "stored": "Ada",
+        "authSeen": true
+      }
+    },
+    "persistedKv": {
+      "status": 200,
+      "headers": [
+        [
+          "content-type",
+          "application/json; charset=utf-8"
+        ],
+        [
+          "content-length",
+          "16"
+        ],
+        [
+          "date",
+          "Thu, 26 Nov 2026 19:15:38 GMT"
+        ]
+      ],
+      "bytes": 16,
+      "sha256": "1768abdbebca7afa639e32a4bdba077e008d5afe2635b76bf14565045e1b43c2",
+      "json": {
+        "stored": "Ada"
+      }
+    },
+    "opaque": {
+      "status": 200,
+      "headers": [
+        [
+          "content-type",
+          "application/octet-stream"
+        ],
+        [
+          "x-binary-repeat",
+          "one"
+        ],
+        [
+          "x-binary-repeat",
+          "two"
+        ],
+        [
+          "date",
+          "Thu, 26 Nov 2026 19:15:38 GMT"
+        ],
+        [
+          "connection",
+          "keep-alive"
+        ],
+        [
+          "keep-alive",
+          "timeout=5"
+        ],
+        [
+          "content-length",
+          "5"
+        ]
+      ],
+      "bytes": 5,
+      "sha256": "4be72cf29a33b5f223067ab9d5dd9567e0c14978e6ed54e2d556ddc9e2cc6038"
+    },
+    "gripHold": {
+      "status": 200,
+      "headers": [
+        [
+          "content-type",
+          "application/octet-stream"
+        ],
+        [
+          "grip-hold",
+          "stream"
+        ],
+        [
+          "grip-channel",
+          "events:fastly-compute"
+        ],
+        [
+          "grip-channel",
+          "events:extra"
+        ],
+        [
+          "grip-timeout",
+          "30000"
+        ],
+        [
+          "content-length",
+          "0"
+        ],
+        [
+          "date",
+          "Thu, 26 Nov 2026 19:15:38 GMT"
+        ]
+      ],
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "gripPublish": {
+      "status": 202,
+      "headers": [
+        [
+          "content-type",
+          "application/json; charset=utf-8"
+        ],
+        [
+          "content-length",
+          "131"
+        ],
+        [
+          "date",
+          "Thu, 26 Nov 2026 19:15:38 GMT"
+        ]
+      ],
+      "bytes": 131,
+      "sha256": "9d3d75ed46822a895f6281b618e416bfc2d321a8ee62dd7746948de4250f5318",
+      "json": {
+        "published": true,
+        "channel": "events:fastly-compute",
+        "event": "pulse.message",
+        "id": "reality-1",
+        "message": "hello from compiled Pulse"
+      }
+    }
+  },
+  "observations": {
+    "originRequests": 4,
+    "publications": [
+      {
+        "channel": "events:fastly-compute",
+        "event": "pulse.message",
+        "id": "reality-1",
+        "message": "hello from compiled Pulse"
+      }
+    ]
+  },
+  "assertions": {
+    "realFastlyCli": true,
+    "directViceroy": false,
+    "realLocalComputeEngine": true,
+    "directFastlyImports": true,
+    "envAbortAbsent": true,
+    "zeroValuedOpaqueHandlesAccepted": true,
+    "schemas": true,
+    "configStore": true,
+    "secretStore": true,
+    "secretRedaction": true,
+    "stdoutArrivalAndOutcome": true,
+    "namedLoggingEndpointAbsent": true,
+    "kvPersistence": true,
+    "namedBackendFetch": true,
+    "opaqueBytes": true,
+    "repeatedHeaders": true,
+    "gripHoldPublish": true,
+    "cryptoGuestSource": true,
+    "cryptoGuestLinked": false,
+    "cryptoFallback": false,
+    "javascriptRuntime": false
+  }
+}

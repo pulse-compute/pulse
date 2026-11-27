@@ -1,0 +1,432 @@
+{
+  "schema": "pulse.upload-live.v1",
+  "status": "passed-with-limitations",
+  "selection": "faults",
+  "startedAt": "2026-11-25T21:25:45.666Z",
+  "service": "L47lcfUqEbbK5tXC9BTI00",
+  "version": 1,
+  "domain": "pulse-upload-live-ed259ae1cb.edgecompute.app",
+  "artifact": {
+    "kind": "research-scaffold",
+    "target": {
+      "endpoint": "https://us-central-1.object.fastlystorage.app",
+      "region": "us-central-1",
+      "bucket": "catalog-live-20261101-2da36f-objects",
+      "prefix": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/"
+    },
+    "capBytes": 33554432,
+    "operationMs": 10000,
+    "requestMs": 15000,
+    "wasmBytes": 52728,
+    "wasmSha256": "db71bb34ba95344e587e41b2ef4858df09b4510a079d2d704ab04d3e820043af",
+    "publicAdmission": false,
+    "telemetry": "Guest linear memory and successful close calls; not host RSS or pending-request reclamation"
+  },
+  "networkRoute": "environment-proxy",
+  "cases": [
+    {
+      "name": "slow-client",
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/c9168e18-9e49-4813-8bfc-ff2c4fbdc9f5",
+      "status": "passed",
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 10331.674658,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 6607.579569,
+          "firstReadMs": 1.132112,
+          "firstWriteMs": 1.149373,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100082-CHI",
+        "elapsedMs": 10332.571001,
+        "sentBytes": 8388608
+      }
+    },
+    {
+      "name": "stalled-input",
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/56c46363-6062-48ba-bd90-0d9419649882",
+      "status": "passed",
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 13157.919860000002,
+        "result": {
+          "status": "unknown",
+          "reason": "timeout",
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 65536,
+          "writtenBytes": 65536,
+          "operationMs": 10001.915985,
+          "firstReadMs": 1.777132,
+          "firstWriteMs": 1.796753,
+          "guestCloseCallsSucceeded": 2,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100099-CHI",
+        "elapsedMs": 13158.361214999997,
+        "sentBytes": 65536
+      },
+      "responseBeforeEof": true
+    },
+    {
+      "name": "disconnect",
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/ccc258af-996f-4d6e-87e0-3ef91b774833",
+      "status": "observed",
+      "response": {
+        "error": "intentional-disconnect",
+        "elapsedMs": 4241.648464999991,
+        "sentBytes": 65536
+      }
+    },
+    {
+      "name": "declared-over-cap",
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/1992859e-ede8-48bb-ae9a-e0c594fc6368",
+      "status": "passed",
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 3586.5403979999974,
+        "result": {
+          "status": "not-stored",
+          "reason": "length",
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 0,
+          "writtenBytes": 0,
+          "operationMs": 0.01244,
+          "firstReadMs": -1,
+          "firstWriteMs": -1,
+          "guestCloseCallsSucceeded": 0,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 3586.755311999994,
+        "sentBytes": 65536
+      }
+    },
+    {
+      "name": "recovery",
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/4ccf2666-4d81-4c89-8afc-9b7566b2cc91",
+      "status": "passed",
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5407.205975000004,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 651.605894,
+          "firstReadMs": 2.95188,
+          "firstWriteMs": 2.97164,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100114-CHI",
+        "elapsedMs": 5407.537635000001,
+        "sentBytes": 8388608
+      }
+    }
+  ],
+  "keys": [
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/c9168e18-9e49-4813-8bfc-ff2c4fbdc9f5",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:25:49.837Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 10016.674124000001,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 10331.674658,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 6607.579569,
+          "firstReadMs": 1.132112,
+          "firstWriteMs": 1.149373,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100082-CHI",
+        "elapsedMs": 10332.571001,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      },
+      "observations": [
+        {
+          "afterMs": 1.1655530000025465,
+          "head": {
+            "status": 200,
+            "length": 8388608,
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "afterMs": 3288.4268690000026,
+          "head": {
+            "status": 200,
+            "length": 8388608,
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "afterMs": 15005.687366999999,
+          "head": {
+            "status": 200,
+            "length": 8388608,
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ]
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/56c46363-6062-48ba-bd90-0d9419649882",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:26:26.416Z",
+      "sentBytes": 65536,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 13157.919860000002,
+        "result": {
+          "status": "unknown",
+          "reason": "timeout",
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 65536,
+          "writtenBytes": 65536,
+          "operationMs": 10001.915985,
+          "firstReadMs": 1.777132,
+          "firstWriteMs": 1.796753,
+          "guestCloseCallsSucceeded": 2,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100099-CHI",
+        "elapsedMs": 13158.361214999997,
+        "sentBytes": 65536
+      },
+      "observations": [
+        {
+          "afterMs": 1.507895999995526,
+          "head": {
+            "status": 404,
+            "length": null,
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "afterMs": 3012.1669509999992,
+          "head": {
+            "status": 404,
+            "length": null,
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "afterMs": 15000.476996999998,
+          "head": {
+            "status": 404,
+            "length": null,
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ]
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/ccc258af-996f-4d6e-87e0-3ef91b774833",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:27:01.376Z",
+      "sentBytes": 65536,
+      "cancelAtMs": 4240.274055000002,
+      "response": {
+        "error": "intentional-disconnect",
+        "elapsedMs": 4241.648464999991,
+        "sentBytes": 65536
+      },
+      "observations": [
+        {
+          "afterMs": 0.3750679999939166,
+          "head": {
+            "status": 404,
+            "length": null,
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "afterMs": 3148.6124199999904,
+          "head": {
+            "status": 404,
+            "length": null,
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "afterMs": 15004.07906399999,
+          "head": {
+            "status": 404,
+            "length": null,
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ]
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/1992859e-ede8-48bb-ae9a-e0c594fc6368",
+      "size": 8388608,
+      "declared": 33554433,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:27:26.816Z",
+      "sentBytes": 65536,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 3586.5403979999974,
+        "result": {
+          "status": "not-stored",
+          "reason": "length",
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 0,
+          "writtenBytes": 0,
+          "operationMs": 0.01244,
+          "firstReadMs": -1,
+          "firstWriteMs": -1,
+          "guestCloseCallsSucceeded": 0,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100075-CHI",
+        "elapsedMs": 3586.755311999994,
+        "sentBytes": 65536
+      },
+      "observations": [
+        {
+          "afterMs": 1.2480519999953685,
+          "head": {
+            "status": 404,
+            "length": null,
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "afterMs": 5896.062363000005,
+          "head": {
+            "status": 404,
+            "length": null,
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "afterMs": 15005.597420000006,
+          "head": {
+            "status": 404,
+            "length": null,
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ]
+    },
+    {
+      "key": "pulse-upload-live/6e9be434-24b9-4bec-8875-4874278cf22a/4ccf2666-4d81-4c89-8afc-9b7566b2cc91",
+      "size": 8388608,
+      "declared": 8388608,
+      "beforeStatus": 404,
+      "startedAt": "2026-11-25T21:27:53.362Z",
+      "sentBytes": 8388608,
+      "producerEofMs": 4584.319968000011,
+      "response": {
+        "httpStatus": 200,
+        "headersMs": 5407.205975000004,
+        "result": {
+          "status": "stored",
+          "etag": "\"2503d734abab8b52808b8aee690d85b4\"",
+          "byteLength": 8388608,
+          "guestInitialBytes": 4456448,
+          "guestFinalBytes": 4456448,
+          "readBytes": 8388608,
+          "writtenBytes": 8388608,
+          "operationMs": 651.605894,
+          "firstReadMs": 2.95188,
+          "firstWriteMs": 2.97164,
+          "guestCloseCallsSucceeded": 4,
+          "guestCloseErrors": 0
+        },
+        "pop": "cache-chi-klot8100114-CHI",
+        "elapsedMs": 5407.537635000001,
+        "sentBytes": 8388608
+      },
+      "readback": {
+        "status": 200,
+        "length": 8388608,
+        "bytes": 8388608,
+        "sha256": "60606d40d8865c0642feb0ef74d2d8793d27b52df9db9d1a60d3c7a1b3bdaa94"
+      },
+      "observations": [
+        {
+          "afterMs": 1.3914170000061858,
+          "head": {
+            "status": 200,
+            "length": 8388608,
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "afterMs": 3643.1228159999882,
+          "head": {
+            "status": 200,
+            "length": 8388608,
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "afterMs": 15007.152429999987,
+          "head": {
+            "status": 200,
+            "length": 8388608,
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ]
+    }
+  ],
+  "publicAdmission": false,
+  "finishedAt": "2026-11-25T21:28:21.221Z"
+}

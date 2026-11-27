@@ -1,0 +1,9 @@
+{
+  "version": "pulse.mac03-hosted.v1",
+  "lane": "hosted-fastly-native",
+  "status": "blocked",
+  "bundleSha256": "673a7431af53354e24d0fa6a60bcc8df34bbbf90f6f3c1b261e003d53145f38f",
+  "artifactSha256": "a5bf015c81f7706a0db19a5b863fb19120bab16bd0b60dd21794575e7a1b3764",
+  "cases": [],
+  "reason": "Scoped service configuration, FASTLY_API_TOKEN and MAC03_PROOF_KEY_BASE64 are required"
+}

@@ -1,0 +1,136 @@
+{
+  "status": "passed-diagnostic-capacity",
+  "cells": [
+    {
+      "selection": "capacity",
+      "MiB": 8,
+      "concurrency": 1,
+      "requests": 1,
+      "guestP50Ms": 701.991775,
+      "guestP95Ms": 701.991775,
+      "clientP95Ms": 4731.281849999999,
+      "guestMemoryBytes": [
+        4456448
+      ],
+      "guestCloseErrors": 0
+    },
+    {
+      "selection": "capacity",
+      "MiB": 8,
+      "concurrency": 8,
+      "requests": 8,
+      "guestP50Ms": 1328.443013,
+      "guestP95Ms": 1479.376576,
+      "clientP95Ms": 5482.921458000001,
+      "guestMemoryBytes": [
+        4456448
+      ],
+      "guestCloseErrors": 0
+    },
+    {
+      "selection": "capacity",
+      "MiB": 8,
+      "concurrency": 16,
+      "requests": 16,
+      "guestP50Ms": 1948.558137,
+      "guestP95Ms": 2697.585508,
+      "clientP95Ms": 6366.270713000005,
+      "guestMemoryBytes": [
+        4456448
+      ],
+      "guestCloseErrors": 0
+    },
+    {
+      "selection": "capacity",
+      "MiB": 16,
+      "concurrency": 1,
+      "requests": 1,
+      "guestP50Ms": 680.567984,
+      "guestP95Ms": 680.567984,
+      "clientP95Ms": 4623.881561000002,
+      "guestMemoryBytes": [
+        4456448
+      ],
+      "guestCloseErrors": 0
+    },
+    {
+      "selection": "capacity",
+      "MiB": 16,
+      "concurrency": 8,
+      "requests": 8,
+      "guestP50Ms": 2264.811969,
+      "guestP95Ms": 2668.646389,
+      "clientP95Ms": 6273.559478999996,
+      "guestMemoryBytes": [
+        4456448
+      ],
+      "guestCloseErrors": 0
+    },
+    {
+      "selection": "capacity",
+      "MiB": 16,
+      "concurrency": 16,
+      "requests": 16,
+      "guestP50Ms": 3850.706644,
+      "guestP95Ms": 5051.93809,
+      "clientP95Ms": 9849.558239999998,
+      "guestMemoryBytes": [
+        4456448
+      ],
+      "guestCloseErrors": 0
+    },
+    {
+      "selection": "capacity",
+      "MiB": 32,
+      "concurrency": 1,
+      "requests": 1,
+      "guestP50Ms": 925.154206,
+      "guestP95Ms": 925.154206,
+      "clientP95Ms": 4409.501700000008,
+      "guestMemoryBytes": [
+        4456448
+      ],
+      "guestCloseErrors": 0
+    },
+    {
+      "selection": "capacity",
+      "MiB": 32,
+      "concurrency": 8,
+      "requests": 8,
+      "guestP50Ms": 4140.06604,
+      "guestP95Ms": 4266.603934,
+      "clientP95Ms": 7431.136465000003,
+      "guestMemoryBytes": [
+        4456448
+      ],
+      "guestCloseErrors": 0
+    },
+    {
+      "selection": "capacity",
+      "MiB": 32,
+      "concurrency": 16,
+      "requests": 16,
+      "guestP50Ms": 6363.237485,
+      "guestP95Ms": 8837.979497,
+      "clientP95Ms": 12743.16055500001,
+      "guestMemoryBytes": [
+        4456448
+      ],
+      "guestCloseErrors": 0
+    },
+    {
+      "selection": "repeat-max",
+      "MiB": 32,
+      "concurrency": 16,
+      "requests": 16,
+      "guestP50Ms": 6465.205625,
+      "guestP95Ms": 8685.888354,
+      "clientP95Ms": 12000.902264999999,
+      "guestMemoryBytes": [
+        4456448
+      ],
+      "guestCloseErrors": 0
+    }
+  ],
+  "qualification": "deployed prototype only; public admission and unobserved host cleanup remain open"
+}

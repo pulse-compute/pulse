@@ -1,0 +1,167 @@
+{
+  "status": "passed",
+  "services": [
+    {
+      "label": "fanout",
+      "id": "609EPxSA66AR6cZHuGD6HI",
+      "version": 1,
+      "domain": "pulse-rch04-fanout-62a07b8b.edgecompute.app",
+      "deactivated": true,
+      "deleted": true,
+      "deletedAt": "2026-11-26T20:09:33Z",
+      "inactiveVersionsVerified": true,
+      "lookupStatus": 200,
+      "lookupDisposition": "retained-deletion-record"
+    },
+    {
+      "label": "websocket",
+      "id": "xSuDlkCkO4OHp20d2dx3Im",
+      "version": 1,
+      "domain": "pulse-rch04-websocket-3019debb.edgecompute.app",
+      "deactivated": true,
+      "deleted": true,
+      "deletedAt": "2026-11-26T20:09:40Z",
+      "inactiveVersionsVerified": true,
+      "lookupStatus": 200,
+      "lookupDisposition": "retained-deletion-record"
+    },
+    {
+      "label": "fanout-router",
+      "id": "1O9UezZV29fxZLE8K0rB5O",
+      "version": 1,
+      "domain": "pulse-rch04-fanout-router-b3df5e10.edgecompute.app",
+      "deactivated": true,
+      "deleted": true,
+      "deletedAt": "2026-11-26T20:09:47Z",
+      "inactiveVersionsVerified": true,
+      "lookupStatus": 200,
+      "lookupDisposition": "retained-deletion-record"
+    },
+    {
+      "label": "websocket-router",
+      "id": "OBhRlcClTDRHBu2Igf9x3t",
+      "version": 1,
+      "domain": "pulse-rch04-websocket-router-3dd82282.edgecompute.app",
+      "deactivated": true,
+      "deleted": true,
+      "deletedAt": "2026-11-26T20:09:55Z",
+      "inactiveVersionsVerified": true,
+      "lookupStatus": 200,
+      "lookupDisposition": "retained-deletion-record"
+    },
+    {
+      "label": "independent",
+      "id": "MeEWi8bbqSqUaf7t2Ab2mQ",
+      "version": 1,
+      "domain": "pulse-rch04-independent-af602f13.edgecompute.app",
+      "deactivated": true,
+      "deleted": true,
+      "deletedAt": "2026-11-26T20:10:03Z",
+      "inactiveVersionsVerified": true,
+      "lookupStatus": 200,
+      "lookupDisposition": "retained-deletion-record"
+    },
+    {
+      "label": "kv",
+      "id": "uOY74euocRuSsuVDcaEtre",
+      "version": 1,
+      "domain": "pulse-rch04-kv-ad6f49c3.edgecompute.app",
+      "deactivated": true,
+      "deleted": true,
+      "deletedAt": "2026-11-26T20:12:09Z",
+      "inactiveVersionsVerified": true,
+      "lookupStatus": 200,
+      "lookupDisposition": "retained-deletion-record"
+    },
+    {
+      "label": "probe-iad",
+      "id": "5GymZ6SqUl2vmNK5n7UYIo",
+      "version": 1,
+      "domain": "pulse-rch04-probe-iad-2ed07fca.global.ssl.fastly.net",
+      "deactivated": true,
+      "deleted": true,
+      "deletedAt": "2026-11-26T20:12:18Z",
+      "inactiveVersionsVerified": true,
+      "lookupStatus": 200,
+      "lookupDisposition": "retained-deletion-record"
+    },
+    {
+      "label": "probe-lhr",
+      "id": "U6aqElHcD1yapLzC8SrOzY",
+      "version": 1,
+      "domain": "pulse-rch04-probe-lhr-86eff3da.global.ssl.fastly.net",
+      "deactivated": true,
+      "deleted": true,
+      "deletedAt": "2026-11-26T20:12:30Z",
+      "inactiveVersionsVerified": true,
+      "lookupStatus": 200,
+      "lookupDisposition": "retained-deletion-record"
+    },
+    {
+      "label": "origins",
+      "id": "OPA72JHNLv3kKVVXL39w5v",
+      "version": 1,
+      "domain": "pulse-rch04-origins-bbc84901.edgecompute.app",
+      "deactivated": true,
+      "deleted": true,
+      "deletedAt": "2026-11-26T20:12:47Z",
+      "inactiveVersionsVerified": true,
+      "lookupStatus": 200,
+      "lookupDisposition": "retained-deletion-record"
+    }
+  ],
+  "kv": {
+    "storeId": "2j6hwxfe83boksh299d6zf",
+    "keys": [
+      {
+        "key": "pulse-k4-edfa9ef6-0189-4f67-b29f-67ece57e9c65-0",
+        "retainedTombstoneBeforeTeardown": true,
+        "valueSha256": "c621f307896d01bf1ebb84c4df229260c356bad2ff9375b78342ede1376e54fa",
+        "deleted": true
+      },
+      {
+        "key": "pulse-k4-edfa9ef6-0189-4f67-b29f-67ece57e9c65-1",
+        "retainedTombstoneBeforeTeardown": true,
+        "valueSha256": "c621f307896d01bf1ebb84c4df229260c356bad2ff9375b78342ede1376e54fa",
+        "deleted": true
+      },
+      {
+        "key": "pulse-k4-edfa9ef6-0189-4f67-b29f-67ece57e9c65-2",
+        "retainedTombstoneBeforeTeardown": true,
+        "valueSha256": "c621f307896d01bf1ebb84c4df229260c356bad2ff9375b78342ede1376e54fa",
+        "deleted": true
+      },
+      {
+        "key": "pulse-k4-edfa9ef6-0189-4f67-b29f-67ece57e9c65-lost",
+        "retainedTombstoneBeforeTeardown": true,
+        "valueSha256": "c621f307896d01bf1ebb84c4df229260c356bad2ff9375b78342ede1376e54fa",
+        "deleted": true
+      }
+    ],
+    "emptyStrongListObserved": true,
+    "deleted": true
+  },
+  "s3": {
+    "bucket": "catalog-live-20261101-2da36f-objects",
+    "prefix": "pulse-rc-h04/0c151b89-0bef-46fe-87c1-2a5f0e9845cd/",
+    "keys": 1,
+    "absenceObservedTwice": true,
+    "objectKeyRevoked": true
+  },
+  "secretStore": {
+    "id": "SdrKZvLTdJ8iToJyOenqEg",
+    "deleted": true
+  },
+  "storeAbsenceChecks": [
+    {
+      "path": "/resources/stores/kv/2j6hwxfe83boksh299d6zf",
+      "status": 404
+    },
+    {
+      "path": "/resources/stores/secret/SdrKZvLTdJ8iToJyOenqEg",
+      "status": 404
+    }
+  ],
+  "managementTokenRevoked": false,
+  "scope": "Only exact resources created in this run and one recorded object key; existing QA bucket and unrelated services unchanged"
+}

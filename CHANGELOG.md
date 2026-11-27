@@ -4,6 +4,28 @@ Pulse follows semantic versioning for public releases. The repository begins its
 
 ## Unreleased
 
+- Align canonical host fetch admission with the JavaScript runtime: reject invalid
+  methods and malformed headers before dispatch, and preserve an explicit empty
+  JSON content type. Add installed-runtime DELETE/OPTIONS HTTP regressions.
+- Preserve exact historical manifest bytes during release-tag validation and
+  direct issue reporters to documentation for their installed release.
+
+## 1.0.0-beta.11 — Beta (2026-11-01)
+
+- Add opt-in per-fetch collected outcomes and transport timing across supported
+  execution paths. Preserve existing deadline lifetimes and opaque-body behavior;
+  new provider phase timeout policies remain deferred.
+- Add the versioned package host-extension contract with bounded Fastly Native
+  terminal handoff. Qualify GRIP WebSocket passthrough and Fanout plus an
+  independently named package through the same admission and lifecycle path.
+- Add schema-bound event result payloads and successful sequential Native event
+  instance reuse, preserving disposal after failure, cancellation or traps.
+- Expose installed JSON/HTML report comparison and improve source/freshness
+  diagnostics, package attribution, MCP guidance and cold-start instructions.
+- Fix outbound tuple headers and method declarations, forwarding composition,
+  late cancellation and disposal rejection handling. Retain bounded fetch
+  measurements without claiming a general CPU overhead or allocation guarantee.
+
 ## 1.0.0-beta.10 — Beta (2026-10-21)
 
 - Add bounded dynamic effect collections and `ctx.call` for shared authored

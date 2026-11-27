@@ -1,0 +1,17 @@
+{
+  "status": "passed-observed-absence",
+  "service": "OPA72JHNLv3kKVVXL39w5v",
+  "prefix": "pulse-rc-h04/0c151b89-0bef-46fe-87c1-2a5f0e9845cd/",
+  "cleanupFinishedAt": "2026-11-26T20:11:26.046Z",
+  "startedAt": "2026-11-26T20:11:26.117Z",
+  "keys": [
+    {
+      "key": "pulse-rc-h04/0c151b89-0bef-46fe-87c1-2a5f0e9845cd/payload.txt",
+      "httpStatus": 404,
+      "status": "passed"
+    }
+  ],
+  "observationStartedAt": "2026-11-26T20:11:56.054Z",
+  "graceAfterCleanupMs": 30008,
+  "finishedAt": "2026-11-26T20:11:59.723Z"
+}
