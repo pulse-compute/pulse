@@ -113,6 +113,28 @@ function bindNativeDigestMac(moduleExports) {
   return Object.freeze({ sha256: (data) => run(data), hmacSha256: (key, data) => run(data, key) });
 }
 
+// A synchronous borrow of the existing bounded byte frame. No per-call
+// memory.grow staging and no change to the ordinary/JWT verification limits.
+function bindNativeMacTextVerifier(exports) {
+  const memory = exports?.memory;
+  if (!(memory instanceof WebAssembly.Memory) || typeof exports.pulse_crypto_hs256_verify !== 'function'
+    || typeof exports.pulse_crypto_bytes_frame_v1 !== 'function') throw new TypeError('Native MAC exports unavailable.');
+  return Object.freeze({ verify({ key, data, tag }) {
+    const bytes = key?.bytes;
+    if (!(bytes instanceof Uint8Array) || bytes.length < 32 || bytes.length > 4096
+      || !(data instanceof Uint8Array) || data.length > 65536
+      || !(tag instanceof Uint8Array) || tag.length !== 32) throw new TypeError('Invalid bounded MAC bytes.');
+    const pointer = exports.pulse_crypto_bytes_frame_v1(), capacity = 8192 + 65536 + 32;
+    if (!Number.isInteger(pointer) || pointer < 0 || pointer + capacity > memory.buffer.byteLength) throw new TypeError('Invalid MAC frame.');
+    try {
+      const frame = new Uint8Array(memory.buffer, pointer, capacity);
+      frame.fill(0); frame.set(bytes); frame.set(data, 8192); frame.set(tag, 8192 + 65536);
+      const code = exports.pulse_crypto_hs256_verify(pointer, bytes.length, pointer + 8192, data.length, pointer + 8192 + 65536, 32);
+      return Object.freeze({ status: code === 1 ? 'valid' : code === 0 ? 'invalid-authenticator' : 'realization-failure' });
+    } finally { new Uint8Array(memory.buffer, pointer, capacity).fill(0); }
+  } });
+}
+
 function pulseEs256GuestUnit() {
   return Object.freeze({
     version: GUEST_UNIT_CONTRIBUTION_VERSION,
@@ -189,6 +211,7 @@ function bindNativeRs256(moduleExports) {
 }
 
 module.exports = Object.freeze({
+  bindNativeMacTextVerifier,
   bindNativeEs256Signer,
   bindNativeRs256,
   CRYPTO_GUEST_SOURCE_CONTRACT_VERSION,

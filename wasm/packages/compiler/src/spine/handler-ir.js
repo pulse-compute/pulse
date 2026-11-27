@@ -419,6 +419,7 @@ function buildPlainHandlerIr(frontend, options = {}) {
       contractId: String(effect.contractId || ''),
       payload: Object.freeze({ ...(effect.payload || {}) }),
       result: String(effect.result || 'value'),
+      providerRequirements: Object.freeze([...(effect.providerRequirements || [])]),
       resource: effect.resource || Object.freeze({ kind: 'none' }),
       position: packageEffectPosition(effect, call),
       ...(options.internalGeneratedHandler ? { generatedPosition: positionFor(sourceFile, call) } : {})

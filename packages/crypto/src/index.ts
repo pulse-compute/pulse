@@ -126,8 +126,12 @@ export const signature = Object.freeze({
 export { DIGEST_TEXT_MAX_BYTES, digestText, type TextDigestResult } from './digest.js';
 import { digestText } from './digest.js';
 
+export { verifyMacText, MAC_TEXT_MAX_BYTES, type MacTextOptions, type MacTextVerificationResult } from './mac-text.js';
+import { verifyMacText } from './mac-text.js';
+
 export const crypto = Object.freeze({
   digestText,
+  verifyMacText,
   mac,
   signature,
 });

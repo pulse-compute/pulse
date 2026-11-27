@@ -16,6 +16,7 @@ const CANONICAL_PROVIDER_CAPABILITIES = Object.freeze([
   'fetch',
   'time.wall-clock',
   'crypto.digestText',
+  'crypto.verifyMacText',
   'config.get',
   'secret.get',
   'kv.get',

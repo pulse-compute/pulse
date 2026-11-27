@@ -68,3 +68,15 @@ digestText('exact text');
 // @ts-expect-error Digest has no alternate algorithm or encoding options.
 digestText(ctx, 'text', { encoding: 'base64' });
 void [digest, maximum, grouped];
+
+import { verifyMacText, type MacTextVerificationResult } from '../src/index.js';
+const proof: Promise<MacTextVerificationResult> = verifyMacText(ctx, 'message', 'a'.repeat(64), {
+  algorithm: 'HS256', key: { type: 'secret', binding: 'REQUEST_PROOF_KEY' },
+});
+// @ts-expect-error HMAC-SHA256 byte output is not the HS256 verifier selection.
+verifyMacText(ctx, '', '', { algorithm: 'HMAC-SHA256', key: { type: 'secret', binding: 'KEY' } });
+// @ts-expect-error Raw key bytes never cross the text verification authoring boundary.
+verifyMacText(ctx, '', '', { algorithm: 'HS256', key: { type: 'hmac-key-bytes', bytes: new Uint8Array(32) } });
+// @ts-expect-error Message input is exact text, not bytes.
+verifyMacText(ctx, new Uint8Array(), '', { algorithm: 'HS256', key: { type: 'secret', binding: 'KEY' } });
+void proof;
