@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "serviceId": "44QDLZWERny7vdaBHNn3Mo",
+  "serviceVersion": 1,
+  "active": true,
+  "filesHash": "c297b23fd54334ba24ea6fc662ddd17be3e5de1b8a7922b40fbbc343d1e8bc40bbdec3fc4e6e2f81a559ef4f412f19098962a5645267ad3eb96f3e944cbc2fda",
+  "storeId": "68afP8Eo4W0JCHNgbdc0oF",
+  "binding": "app_secrets",
+  "url": "https://pulse-mac-proof-244314fae2e5.edgecompute.app/"
+}

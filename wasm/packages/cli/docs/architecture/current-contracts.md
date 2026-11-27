@@ -2643,8 +2643,12 @@ deadlines outrank projection. Owned staging is wiped on returned paths and
 the Node bridge clears its frame after caught traps; terminal Fastly guest
 traps abandon the instance without an in-guest erasure guarantee. Local
 provider/fixture parity is established. MAC-03 adds exact-tarball consumer
-qualification and a separate hosted runner; deployed qualification remains
-pending its exact-artifact receipt. See [Crypto](../packages/crypto.md#exact-text-mac-authoring-implementation-in-progress).
+qualification. Its retained Fastly Native Wasm passed all 18 hosted proof
+checks on 2026-11-27 with real secret bindings, unchanged Bearer headers and
+package identity verified before and after traffic. Temporary resources were
+removed; the receipt qualifies that development artifact, not a published
+beta.11 package or an aggregate release seal. See
+[Crypto](../packages/crypto.md#exact-text-mac-authoring-qualified-development-source).
 
 S3 operations require exact `SHA-256` and `HMAC-SHA256` selection. Native
 composes the same Crypto-owned source once; Node JavaScript explicitly selects

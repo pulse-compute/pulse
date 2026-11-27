@@ -1,0 +1,15 @@
+{
+  "version": "pulse.mac-hosted-package.v1",
+  "archive": "/workspace/scratch/39050e9be62b/mac-hosted-proof/mac03-package.tar.gz",
+  "archiveSha256": "bab8dd605403d4d8daa11b0e0dc1d61f4bd8926885efd45bd5405b3ac362867f",
+  "filesHash": "c297b23fd54334ba24ea6fc662ddd17be3e5de1b8a7922b40fbbc343d1e8bc40bbdec3fc4e6e2f81a559ef4f412f19098962a5645267ad3eb96f3e944cbc2fda",
+  "wasmSha256": "a5bf015c81f7706a0db19a5b863fb19120bab16bd0b60dd21794575e7a1b3764",
+  "bytes": 39889,
+  "cli": {
+    "file": "/workspace/scratch/39050e9be62b/mac-hosted-proof/tools/fastly",
+    "sha256": "56bdd56d086d419ba335488fb3ed814050c75e2b16741c5676af2163bc40bbc1",
+    "version": "Fastly CLI version v16.1.0 (4d64ad67)\nBuilt with go version go1.26.8 linux/amd64 (2026-11-27)\n\nA new version of the Fastly CLI is available.\nCurrent version: 16.1.0\nLatest version: 17.2.0\n\nNote: Please review the release notes for the major version(s) listed below before upgrading.\nVersion 17.0.0: https://github.com/fastly/cli/releases/tag/v17.0.0\nRun `fastly update` to get the latest version."
+  },
+  "metadataAnnotations": false,
+  "compilation": "none; deterministic archive of retained fastly.toml and bin/main.wasm"
+}

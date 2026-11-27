@@ -1,0 +1,13 @@
+{
+  "version": "pulse.mac03-hosted-config.v1",
+  "serviceId": "44QDLZWERny7vdaBHNn3Mo",
+  "serviceVersion": 1,
+  "url": "https://pulse-mac-proof-244314fae2e5.edgecompute.app/",
+  "package": "/workspace/scratch/39050e9be62b/mac-hosted-proof/mac03-package.tar.gz",
+  "filesHash": "c297b23fd54334ba24ea6fc662ddd17be3e5de1b8a7922b40fbbc343d1e8bc40bbdec3fc4e6e2f81a559ef4f412f19098962a5645267ad3eb96f3e944cbc2fda",
+  "cli": {
+    "file": "/workspace/scratch/39050e9be62b/mac-hosted-proof/tools/fastly",
+    "sha256": "56bdd56d086d419ba335488fb3ed814050c75e2b16741c5676af2163bc40bbc1",
+    "version": "Fastly CLI version v16.1.0 (4d64ad67)\nBuilt with go version go1.26.8 linux/amd64 (2026-11-27)\n\nA new version of the Fastly CLI is available.\nCurrent version: 16.1.0\nLatest version: 17.2.0\n\nNote: Please review the release notes for the major version(s) listed below before upgrading.\nVersion 17.0.0: https://github.com/fastly/cli/releases/tag/v17.0.0\nRun `fastly update` to get the latest version."
+  }
+}

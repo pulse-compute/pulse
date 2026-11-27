@@ -51,17 +51,20 @@ separately from the clean-commit retry.
 
 Hosted qualification requires a human-authorized sandbox service with the
 **retained** `build/bin/main.wasm`; do not rebuild from a different checkout.
-Package the retained build using a pinned Fastly CLI. Retain that archive,
+Package the retained build without recompilation or Wasm annotation. A direct
+tar archive containing `package/fastly.toml` and `package/bin/main.wasm` preserves
+the retained bytes; `fastly compute build` can remove staged build output before
+running its script and is not required here. Retain that archive, the pinned
 CLI SHA-256/version and `fastly compute hash-files --package ARCHIVE --skip-build`
 SHA-512 files hash. The runner checks archive Wasm identity against the bundle,
 then verifies the active service version, domain and deployed files hash before
 and after proof traffic. It does not deploy, activate or provision secrets.
 
-Bind a secret store as `app_secrets`. A human provisions `REQUEST_PROOF_KEY`
+Bind a secret store as `app_secrets`. With explicit owner authorization, provision `REQUEST_PROOF_KEY`
 (32..4096 exact bytes), `MAC03_SHORT_KEY` (31 bytes), and `MAC03_LONG_KEY`
 (4097 bytes), and leaves `MAC03_ABSENT_KEY` absent. Supply the matching proof
 key to the runner as `MAC03_PROOF_KEY_BASE64` and an inspection-only credential
-as `FASTLY_API_TOKEN`. Keep both outside files/reports/command arguments. Use
+as `FASTLY_API_TOKEN`. Keep both outside retained artifacts, reports and command arguments. Use
 a dedicated proof service: the fixture returns outcomes rather than enforcing
 an application authorization policy. It performs no replay protection.
 
@@ -98,6 +101,11 @@ is diagnostic, not cryptographic timing evidence. The mutable runner key is
 wiped; immutable environment strings cannot be erased. Missing configuration
 records `blocked`, and cannot be interpreted as passed hosted evidence.
 
-Hosted acceptance remains pending until an exact-artifact `passed` receipt is
-retained. #601 remains open. No support-tier, release version, provider policy,
-secret configuration or deployment changes are authorized by this harness.
+Hosted acceptance passed on 2026-11-27: all 18 requests passed on the retained
+Fastly Native artifact, and both temporary resources were deleted and confirmed
+absent. [Hosted closeout](mac-hosted/README.md) retains the exact receipt,
+source-tree binding, package, provisioning/cleanup audit and qualification
+limits. The earlier missing-configuration `blocked` receipt remains historical
+evidence, not the terminal hosted outcome. This closes the hosted acceptance
+gap for #601 without changing release/support status. The read-only hosted
+runner itself grants no deployment or secret-provisioning authority.

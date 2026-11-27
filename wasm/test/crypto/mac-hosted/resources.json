@@ -1,0 +1,37 @@
+{
+  "name": "pulse-mac-proof-244314fae2e5",
+  "createdAt": "2026-11-27T22:34:01.926289+00:00",
+  "createdResources": [
+    "service",
+    "secretStore"
+  ],
+  "serviceId": "44QDLZWERny7vdaBHNn3Mo",
+  "serviceVersion": 1,
+  "url": "https://pulse-mac-proof-244314fae2e5.edgecompute.app/",
+  "storeId": "68afP8Eo4W0JCHNgbdc0oF",
+  "secrets": [
+    {
+      "name": "REQUEST_PROOF_KEY",
+      "bytes": 32
+    },
+    {
+      "name": "MAC03_SHORT_KEY",
+      "bytes": 31
+    },
+    {
+      "name": "MAC03_LONG_KEY",
+      "bytes": 4097
+    }
+  ],
+  "provisioned": true,
+  "package": {
+    "archiveSha256": "bab8dd605403d4d8daa11b0e0dc1d61f4bd8926885efd45bd5405b3ac362867f",
+    "filesHash": "c297b23fd54334ba24ea6fc662ddd17be3e5de1b8a7922b40fbbc343d1e8bc40bbdec3fc4e6e2f81a559ef4f412f19098962a5645267ad3eb96f3e944cbc2fda",
+    "wasmSha256": "a5bf015c81f7706a0db19a5b863fb19120bab16bd0b60dd21794575e7a1b3764"
+  },
+  "activationAttempted": true,
+  "activated": true,
+  "deactivated": true,
+  "serviceDeleted": true,
+  "storeDeleted": true
+}

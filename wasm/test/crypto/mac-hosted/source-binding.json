@@ -1,0 +1,18 @@
+{
+  "version": "pulse.mac-hosted-source-binding.v1",
+  "qualifiedCandidate": {
+    "sourceRevision": "9829a509bf4914c685cf8c642a451647495c81bb",
+    "sourceTree": "fab4fc47965dcabba471ca90cbd4a47a93d79bcf",
+    "workingTree": ""
+  },
+  "mergedRevision": "c50da11c58c90557a801d94346e799f026349c6d",
+  "mergedTree": "fab4fc47965dcabba471ca90cbd4a47a93d79bcf",
+  "binding": "identical complete Git tree; retained artifact not rebuilt or relabeled",
+  "installedReceiptSha256": "673a7431af53354e24d0fa6a60bcc8df34bbbf90f6f3c1b261e003d53145f38f",
+  "wasmSha256": "a5bf015c81f7706a0db19a5b863fb19120bab16bd0b60dd21794575e7a1b3764",
+  "hostedReceipt": "hosted-attempt1.json",
+  "hostedStatus": "passed",
+  "hostedCases": 18,
+  "cleanupReceipt": "cleanup.json",
+  "scope": "MAC feature acceptance only; not an aggregate release seal or published beta.11 qualification"
+}
