@@ -2,8 +2,8 @@
 module.exports = Object.freeze({
   version: 'pulsewasm.lowerable-library-manifest.v2', kind: 'pulsewasm.lowerable-library-manifest',
   contractId: 'pulse.crypto', npmPackage: '@pulse-compute/crypto', lowerableSubpath: '@pulse-compute/crypto',
-  facade: { namespace: 'crypto', import: '@pulse-compute/crypto', symbols: ['digestText'] },
-  publicApi: { package: '@pulse-compute/crypto', symbols: ['crypto', 'digestText'], compatibilitySubpaths: [], loweringIntentionallyNarrow: true },
+  facade: { namespace: 'crypto', import: '@pulse-compute/crypto', symbols: ['digestText', 'verifyMacText'] },
+  publicApi: { package: '@pulse-compute/crypto', symbols: ['crypto', 'digestText', 'verifyMacText'], compatibilitySubpaths: [], loweringIntentionallyNarrow: true },
   compiler: { version: 'pulsewasm.lowerable-compiler-builder.v1', entry: './pulsewasm.compiler.cjs', export: 'buildCryptoLoweringPlan', artifact: 'crypto-lowering-plan.json', builderOwner: '@pulse-compute/crypto', trust: 'first-party', inputs: ['typescript.SourceFile'] },
   modes: {
     typescript: { entry: './dist/index.js' }, jsEngine: { entry: './dist/index.js', behavior: 'provider-dependent' },
