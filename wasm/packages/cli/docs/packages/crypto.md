@@ -70,6 +70,69 @@ The separate fixed-memory ES256 guest ABI remains unchanged; its smaller heap
 cannot establish the 2 MiB capacity profile. Allocation failure never enables
 another realization. Applications must select a compatible capacity profile.
 
+## Exact-text MAC authoring (implementation in progress)
+
+The source API provides `crypto.verifyMacText(ctx, message, tag, options)`
+and the named `verifyMacText` export. MAC-02 implements Node/Fastly Native
+with selected `guest-source:pulse-hmac-as`, and Node/Fastly JavaScript with
+selected `runtime-builtin`. All require explicit `HS256` configuration and
+provider secret authority. MAC-03 adds an isolated exact-tarball consumer proof
+and a separately gated hosted Fastly runner; see the repository evidence in
+`wasm/test/crypto/mac-03.md`. Local or injected-host results do not qualify a
+deployed service. This is not a beta.11 publication
+claim, and no target silently falls back.
+
+```ts
+const proof = await crypto.verifyMacText(ctx, message, tag, {
+  algorithm: 'HS256',
+  key: { type: 'secret', binding: 'REQUEST_PROOF_KEY' }
+})
+if (proof.status !== 'valid') return ctx.text('Verification failed', { status: 401 })
+```
+
+Direct await into a local is the initial lowering shape. Default and named
+facades and direct named import aliases are recognized; detached operations,
+dynamic access, shadowed imports and parallel groups are rejected. Native
+options must be an exact static object literal, with no extra fields, spreads,
+accessors or computed properties. A secret binding is nonempty scalar text,
+up to 256 UTF-8 bytes, without NUL; it is preserved without trimming. The
+lowerer records the binding selector, `crypto.verifyMacText` and `secret.get`
+requirements, and exact `HS256` demand. It never resolves a secret.
+
+`MAC_TEXT_MAX_BYTES` is 65,536. The implementation contract uses exact scalar
+text encoded as UTF-8, a full 64-character lowercase hex tag, and provider-owned
+32–4,096-byte secret material. The facade bounds runtime message and tag inputs
+before cloning or serialization. Over-limit prefixes retain 65,537 and 65 code
+units respectively so truncation cannot turn them into valid inputs. Non-text
+inputs become null; invalid option descriptors return `invalid-input` without
+dispatch. This operation alone has a 458,752-byte effect envelope; unrelated
+operations retain their existing bounds.
+
+`MacTextVerificationResult` is a frozen status-only record: `valid`,
+`invalid-authenticator`, `invalid-input`, `too-large`, `unavailable`,
+`invalid-key`, or `realization-failure`. Unexpected or extra provider result
+fields normalize to `realization-failure`. Payload and tag values are absent
+from lowering artifacts and effect observations. Only `valid` means success.
+
+Validation precedes lookup: options, message type, early code-unit bound,
+scalar validity, UTF-8 byte bound, tag, selected authority/primitive, secret
+lookup, key validity, verification. Explicit absence is `invalid-key`; an
+unexpected lookup or primitive failure is `realization-failure`. Cancellation
+and deadlines terminate through the existing request lifecycle rather than
+returning a verification status. Fastly JavaScript retains its existing lack
+of a request deadline; cancellation is supported.
+
+Both Native adapters borrow the existing 73,760-byte Crypto frame without
+per-call frame growth. JavaScript uses the existing Web Crypto HMAC verify
+primitive. Owned key/message/tag buffers and native staging are erased on
+normal and returned-error paths; the Node bridge also clears its frame after
+a caught Wasm trap. A terminal Fastly guest trap cannot run cleanup inside
+that guest: the instance is abandoned, and no in-guest erasure claim is made.
+Immutable provider strings and Web Crypto key objects cannot be explicitly
+erased. Raw-byte verification and JWT semantics are unchanged. Applications
+still own request canonicalization, freshness, replay and key rotation; this
+operation does not read or modify Authorization or the request body.
+
 ## Verification surface
 
 Applications may import the package root and request MAC or signature

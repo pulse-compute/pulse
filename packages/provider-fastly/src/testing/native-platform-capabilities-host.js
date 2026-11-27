@@ -598,6 +598,8 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
     fastly_secret_store: {
       open(namePointer, nameLength, handleOut) {
         const name = readUtf8(namePointer, nameLength);
+        const openFault = options.secretFault?.('open');
+        if (openFault?.status !== undefined) return openFault.status;
         const values = secretStores.get(name);
         trace.push({ module: 'fastly_secret_store', name: 'open', store: name, found: Boolean(values) });
         if (!values) return FASTLY_STATUS_NONE;
@@ -606,18 +608,31 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
       get(handle, keyPointer, keyLength, secretOut) {
         monotonicMs += Number(options.secretDelayMs || 0);
         if (typeof options.onSecretLookup === 'function') options.onSecretLookup();
+        const getFault = options.secretFault?.('get');
+        if (getFault?.status !== undefined) return getFault.status;
         const values = secretStoreHandles.get(Number(handle));
         const key = readUtf8(keyPointer, keyLength);
         const value = values && values.get(key);
         trace.push({ module: 'fastly_secret_store', name: 'get', handle: Number(handle), key, found: value !== undefined });
         if (!values) return FASTLY_STATUS_BADF;
         if (value === undefined) return FASTLY_STATUS_NONE;
-        const secretHandle = alloc('secret'); secretHandles.set(secretHandle, String(value)); writeU32(secretOut, secretHandle); return FASTLY_STATUS_OK;
+        const secretHandle = alloc('secret'); secretHandles.set(secretHandle, value instanceof Uint8Array ? Buffer.from(value) : String(value)); writeU32(secretOut, secretHandle); return FASTLY_STATUS_OK;
       },
       plaintext(handle, valuePointer, valueLength, writtenOut) {
+        const fault = options.secretFault?.('plaintext');
+        if (fault) {
+          if (fault.fill !== undefined) new Uint8Array(memory().buffer, Number(valuePointer), Number(valueLength)).fill(fault.fill);
+          writeU32(writtenOut, fault.written || 0);
+          return fault.status;
+        }
         const value = secretHandles.get(Number(handle));
         trace.push({ module: 'fastly_secret_store', name: 'plaintext', handle: Number(handle), value: '[REDACTED]' });
-        return value === undefined ? FASTLY_STATUS_BADF : writeUtf8(value, valuePointer, valueLength, writtenOut);
+        if (value === undefined) return FASTLY_STATUS_BADF;
+        const bytes = value instanceof Uint8Array ? value : Buffer.from(value, 'utf8');
+        writeU32(writtenOut, bytes.length);
+        if (bytes.length > Number(valueLength)) return FASTLY_STATUS_BUFLEN;
+        new Uint8Array(memory().buffer, Number(valuePointer), bytes.length).set(bytes);
+        return FASTLY_STATUS_OK;
       }
     },
     fastly_kv_store: {
