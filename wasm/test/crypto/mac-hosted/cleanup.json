@@ -1,0 +1,23 @@
+{
+  "status": "passed",
+  "serviceId": "44QDLZWERny7vdaBHNn3Mo",
+  "storeId": "68afP8Eo4W0JCHNgbdc0oF",
+  "deactivated": true,
+  "serviceDeleted": true,
+  "storeDeleted": true,
+  "localProofKeysRemoved": true,
+  "absenceChecks": [
+    {
+      "path": "/service/44QDLZWERny7vdaBHNn3Mo",
+      "status": 200,
+      "deletedAt": "2026-11-27T22:37:55Z",
+      "allVersionsInactive": true,
+      "disposition": "deleted-service-tombstone"
+    },
+    {
+      "path": "/resources/stores/secret/68afP8Eo4W0JCHNgbdc0oF",
+      "status": 404
+    }
+  ],
+  "scope": "Only the service and secret store created by this run; original management token not revoked"
+}

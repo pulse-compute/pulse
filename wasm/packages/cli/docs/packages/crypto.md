@@ -70,17 +70,20 @@ The separate fixed-memory ES256 guest ABI remains unchanged; its smaller heap
 cannot establish the 2 MiB capacity profile. Allocation failure never enables
 another realization. Applications must select a compatible capacity profile.
 
-## Exact-text MAC authoring (implementation in progress)
+## Exact-text MAC authoring (qualified development source)
 
 The source API provides `crypto.verifyMacText(ctx, message, tag, options)`
 and the named `verifyMacText` export. MAC-02 implements Node/Fastly Native
 with selected `guest-source:pulse-hmac-as`, and Node/Fastly JavaScript with
 selected `runtime-builtin`. All require explicit `HS256` configuration and
-provider secret authority. MAC-03 adds an isolated exact-tarball consumer proof
-and a separately gated hosted Fastly runner; see the repository evidence in
-`wasm/test/crypto/mac-03.md`. Local or injected-host results do not qualify a
-deployed service. This is not a beta.11 publication
-claim, and no target silently falls back.
+provider secret authority. MAC-03 qualifies an isolated exact-tarball consumer
+on all four realizations. Its retained Fastly Native Wasm also passed all 18
+hosted request-proof checks on 2026-11-27, with the same active package verified
+before and after traffic and the temporary service and secret store removed.
+See the exact source/artifact binding and limits in repository evidence
+`wasm/test/crypto/mac-hosted/README.md`. Hosted evidence covers Fastly Native;
+the other realizations retain their local evidence. This is not a beta.11
+publication claim, and no target silently falls back.
 
 ```ts
 const proof = await crypto.verifyMacText(ctx, message, tag, {

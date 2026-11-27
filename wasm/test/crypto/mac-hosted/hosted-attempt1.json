@@ -1,0 +1,128 @@
+{
+  "version": "pulse.mac03-hosted.v1",
+  "lane": "hosted-fastly-native",
+  "status": "passed",
+  "bundleSha256": "673a7431af53354e24d0fa6a60bcc8df34bbbf90f6f3c1b261e003d53145f38f",
+  "artifactSha256": "a5bf015c81f7706a0db19a5b863fb19120bab16bd0b60dd21794575e7a1b3764",
+  "cases": [
+    {
+      "id": "valid",
+      "status": "passed",
+      "outcome": "valid",
+      "elapsedMs": 6321
+    },
+    {
+      "id": "changed-message",
+      "status": "passed",
+      "outcome": "invalid-authenticator",
+      "elapsedMs": 7247
+    },
+    {
+      "id": "changed-key",
+      "status": "passed",
+      "outcome": "invalid-authenticator",
+      "elapsedMs": 2911
+    },
+    {
+      "id": "tag-byte-0",
+      "status": "passed",
+      "outcome": "invalid-authenticator",
+      "elapsedMs": 3025
+    },
+    {
+      "id": "tag-byte-15",
+      "status": "passed",
+      "outcome": "invalid-authenticator",
+      "elapsedMs": 3316
+    },
+    {
+      "id": "tag-byte-31",
+      "status": "passed",
+      "outcome": "invalid-authenticator",
+      "elapsedMs": 3120
+    },
+    {
+      "id": "tag-uppercase",
+      "status": "passed",
+      "outcome": "invalid-input",
+      "elapsedMs": 2894
+    },
+    {
+      "id": "tag-short",
+      "status": "passed",
+      "outcome": "invalid-input",
+      "elapsedMs": 3083
+    },
+    {
+      "id": "tag-nonhex",
+      "status": "passed",
+      "outcome": "invalid-input",
+      "elapsedMs": 3333
+    },
+    {
+      "id": "tag-missing",
+      "status": "passed",
+      "outcome": "invalid-input",
+      "elapsedMs": 3524
+    },
+    {
+      "id": "maximum-nul",
+      "status": "passed",
+      "outcome": "valid",
+      "elapsedMs": 3547
+    },
+    {
+      "id": "maximum-multibyte",
+      "status": "passed",
+      "outcome": "valid",
+      "elapsedMs": 2779
+    },
+    {
+      "id": "oversize",
+      "status": "passed",
+      "outcome": "too-large",
+      "elapsedMs": 3096
+    },
+    {
+      "id": "utf8-oversize",
+      "status": "passed",
+      "outcome": "too-large",
+      "elapsedMs": 3815
+    },
+    {
+      "id": "unpaired",
+      "status": "passed",
+      "outcome": "invalid-input",
+      "elapsedMs": 3156
+    },
+    {
+      "id": "key/missing",
+      "status": "passed",
+      "outcome": "invalid-key",
+      "elapsedMs": 3591
+    },
+    {
+      "id": "key/short",
+      "status": "passed",
+      "outcome": "invalid-key",
+      "elapsedMs": 3523
+    },
+    {
+      "id": "key/long",
+      "status": "passed",
+      "outcome": "invalid-key",
+      "elapsedMs": 3808
+    }
+  ],
+  "configSha256": "70432b4ea7440e064d06956cfdb28858339c4b022bcf3bfe7ac68f3989a98724",
+  "deployment": {
+    "serviceId": "44QDLZWERny7vdaBHNn3Mo",
+    "serviceVersion": 1,
+    "filesHash": "c297b23fd54334ba24ea6fc662ddd17be3e5de1b8a7922b40fbbc343d1e8bc40bbdec3fc4e6e2f81a559ef4f412f19098962a5645267ad3eb96f3e944cbc2fda",
+    "archiveSha256": "bab8dd605403d4d8daa11b0e0dc1d61f4bd8926885efd45bd5405b3ac362867f",
+    "cli": {
+      "sha256": "56bdd56d086d419ba335488fb3ed814050c75e2b16741c5676af2163bc40bbc1",
+      "version": "Fastly CLI version v16.1.0 (4d64ad67)\nBuilt with go version go1.26.8 linux/amd64 (2026-11-27)\n\nA new version of the Fastly CLI is available.\nCurrent version: 16.1.0\nLatest version: 17.2.0\n\nNote: Please review the release notes for the major version(s) listed below before upgrading.\nVersion 17.0.0: https://github.com/fastly/cli/releases/tag/v17.0.0\nRun `fastly update` to get the latest version."
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "status": "failed",
+  "stage": "absence-verification",
+  "reason": "Expected service GET 404 after DELETE; Fastly retains an HTTP 200 service tombstone with deleted_at and inactive versions",
+  "deactivationSucceeded": true,
+  "serviceDeleteSucceeded": true,
+  "secretStoreDeleteSucceeded": true,
+  "resolution": "Verify explicit deletion tombstone plus all versions inactive; require secret store 404. No second DELETE needed."
+}

@@ -1,0 +1,39 @@
+✓ Verifying fastly.toml
+| Fetching latest wasm-tools release...
+/ Fetching latest wasm-tools release...
+- Fetching latest wasm-tools release...
+✓ Fetching latest wasm-tools release
+| Identifying package name...
+✓ Identifying package name
+| Identifying toolchain...
+✓ Identifying toolchain
+| Running [scripts.build]...
+/ Running [scripts.build]...
+✗ Running [scripts.build]
+
+INFO: Command output:
+--------------------------------------------------------------------------------
+Run pulse build before Fastly packaging.
+--------------------------------------------------------------------------------
+
+A new version of the Fastly CLI is available.
+Current version: 16.1.0
+Latest version: 17.2.0
+
+Note: Please review the release notes for the major version(s) listed below before upgrading.
+Version 17.0.0: https://github.com/fastly/cli/releases/tag/v17.0.0
+Run `fastly update` to get the latest version.
+
+
+ERROR: error during execution process (see 'command output' above): exit status 1.
+
+Here are some steps you can follow to debug the issue:
+
+- Re-run the fastly command with the --verbose flag to see more information.
+- Is the required language toolchain (node/npm, rust/cargo etc) installed correctly?
+- Is the required version (if any) of the language toolchain installed/activated?
+- Were the required dependencies (package.json, Cargo.toml etc) installed?
+- Did the build script (see fastly.toml [scripts.build]) produce a ./bin/main.wasm binary file?
+- Was there a configured [scripts.post_build] step that needs to be double-checked?
+
+For more information on fastly.toml configuration settings, refer to https://www.fastly.com/documentation/reference/compute/fastly-toml
