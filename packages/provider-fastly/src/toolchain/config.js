@@ -36,6 +36,7 @@ function normalizeFastlyProviderConfig(value) {
     kind: 'fastly',
     bodyForwarding: require('./body-forwarding.js').normalizeBodyForwarding(input.bodyForwarding, input.maxDurationMs),
     maxDurationMs: require('@pulse-compute/runtime/host').normalizeRequestDuration(input.maxDurationMs),
+    timeoutDiagnostics: require('./timeout-diagnostics.js').normalizeTimeoutDiagnostics(input.timeoutDiagnostics, input.maxDurationMs),
     version: input.version ? String(input.version) : undefined,
     bindings: Object.freeze({
       ...(bindings.logEndpoint === undefined ? {} : { logEndpoint: require('./logging.js').normalizeFastlyLogEndpoint(bindings.logEndpoint) }),
@@ -73,6 +74,7 @@ function fastlyProjectConfigDocument(config) {
     kind: 'fastly',
     bindings: config.bindings,
     maxDurationMs: config.maxDurationMs,
+    timeoutDiagnostics: config.timeoutDiagnostics,
     bodyForwarding: config.bodyForwarding,
     build: config.build,
     local: config.local,
@@ -113,6 +115,7 @@ const FASTLY_PROJECT_CONFIG_REFERENCE = Object.freeze({
     Object.freeze({section:'fastly',path:'fastly.maxWasmBytes',type:'integer',allowed:'positive safe integer',default:'4194304 (4 MiB)',scope:'fastly() facade',description:'Facade option projected to build.maxWasmBytes. Conventional profiles configure fastly.build.maxWasmBytes.'}),
     Object.freeze({section:'fastly',path:'fastly.build.maxWasmBytes',type:'integer',allowed:'positive safe integer',default:'4194304 (4 MiB)',scope:'Native final Wasm artifact',description:'Inclusive byte budget checked for newly compiled and reused artifacts. Raising it does not increase runtime memory or change Fastly service limits. The fastly() facade accepts maxWasmBytes.'}),
     Object.freeze({section:'fastly',path:'fastly.maxDurationMs',type:'integer',allowed:'1–30000',default:'omitted',scope:'HTTP request execution',description:'One provider-owned monotonic budget through buffered response handoff; expiry attempts 504 before headers commit and never asserts rollback of dispatched writes. No CPU preemption or post-handoff delivery guarantee.'}),
+    Object.freeze({section:'fastly',path:'fastly.timeoutDiagnostics',type:'boolean',default:'false',scope:'Fastly Native build',description:'Opt in to bounded request-timeout logging, probe correlation and conditional-KV dispatch timing. Requires maxDurationMs. Omitted or false compiles out diagnostic instrumentation and its imports; the request budget remains active. Changing this option requires rebuilding the Native artifact.'}),
     Object.freeze({ section: 'fastly', path: 'fastly.bindings.s3', type: 'Readonly<Record<string, S3Binding & { backend: string }>>', default: '`{}`', scope: 'Fastly Native S3', description: 'Maps logical names to fixed HTTPS endpoint, bucket, region, named static backend, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–2097152, default 32768) and timeoutMs (1–30000, default 10000).', security: 'Credentials resolve through the configured Secret Store at execution. Dynamic backend authority and guest endpoint overrides are forbidden.' }),
     Object.freeze({ section: 'fastly', path: 'fastly.configStore', type: 'string', default: '`pulse_config`', scope: 'Fastly config capability', description: 'Fastly Config Store resource name.' }),
     Object.freeze({ section: 'fastly', path: 'fastly.secretStore', type: 'string', default: '`pulse_secrets`', scope: 'Fastly secret capability', description: 'Fastly Secret Store resource name.', security: 'The name is build metadata; secret values are never embedded by this option.' }),

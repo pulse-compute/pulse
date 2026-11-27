@@ -2,6 +2,7 @@ const { normalizeFastlyLogEndpoint } = require('../src/toolchain/logging.js') as
 const { normalizeBodyForwarding } = require('../src/toolchain/body-forwarding.js') as { normalizeBodyForwarding(value: PulseFastlyBodyForwardingOptions | undefined, maxDurationMs?: number): PulseFastlyBodyForwardingOptions | undefined };
 const { normalizeFastlyMaxWasmBytes } = require('../src/build/wasm-budget.js') as { normalizeFastlyMaxWasmBytes(value?: number): number };
 const { normalizeRequestDuration } = require('@pulse-compute/runtime/host') as { normalizeRequestDuration(value?: number): number | undefined };
+const { normalizeTimeoutDiagnostics } = require('../src/toolchain/timeout-diagnostics.js') as { normalizeTimeoutDiagnostics(value?: boolean, maxDurationMs?: number): boolean };
 import FASTLY_CONFIG_SCHEMA from './config-schema.json';
 
 type FastlySchemaRule = Readonly<{ kind: string; default?: unknown }>;
@@ -35,6 +36,8 @@ export interface PulseFastlyProviderOptions {
   /** Inclusive final Native Wasm byte budget; default 4 MiB. */
   readonly maxWasmBytes?: number;
   readonly maxDurationMs?: number;
+  /** Build-time Native timeout diagnostics; default false. Requires maxDurationMs. */
+  readonly timeoutDiagnostics?: boolean;
   /** Experimental Native metered pump; final close hands delivery to Fastly. */
   readonly bodyForwarding?: PulseFastlyBodyForwardingOptions;
   /** Named production log stream; omitted preserves stdout. */
@@ -53,6 +56,7 @@ export interface PulseFastlyProviderOptions {
 
 export interface PulseFastlyProviderConfig {
   readonly maxDurationMs?: number;
+  readonly timeoutDiagnostics?: boolean;
   /** Experimental Native metered pump; final close hands delivery to Fastly. */
   readonly bodyForwarding?: PulseFastlyBodyForwardingOptions;
   readonly kind: 'fastly';
@@ -119,6 +123,7 @@ export function fastly(options: PulseFastlyProviderOptions = {}): PulseFastlyPro
   return Object.freeze({
     kind: 'fastly',
     maxDurationMs: normalizeRequestDuration(options.maxDurationMs),
+    ...(options.timeoutDiagnostics === undefined ? {} : { timeoutDiagnostics: normalizeTimeoutDiagnostics(options.timeoutDiagnostics, options.maxDurationMs) }),
     bodyForwarding: normalizeBodyForwarding(options.bodyForwarding, options.maxDurationMs),
     version: FASTLY_PROVIDER_API_VERSION,
     bindings: Object.freeze({

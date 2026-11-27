@@ -35,6 +35,17 @@ assert.equal(provider.fastly({maxDurationMs: 10000}).maxDurationMs, 10000);
 assert.throws(() => provider.fastly({maxDurationMs: 0}), {code: 'PULSE_REQUEST_DURATION_INVALID'});
 
 const { normalizeFastlyProviderConfig, fastlyProjectConfigDocument } = require(path.join(providerRoot, 'src/toolchain/config.js'));
+assert.equal(Object.hasOwn(safeDefaults, 'timeoutDiagnostics'), false);
+assert.equal(normalizeFastlyProviderConfig({maxDurationMs:10000}).timeoutDiagnostics, false);
+assert.equal(provider.fastly({timeoutDiagnostics:false}).timeoutDiagnostics, false);
+assert.equal(provider.fastly({maxDurationMs:10000,timeoutDiagnostics:true}).timeoutDiagnostics, true);
+assert.equal(fastlyProjectConfigDocument(normalizeFastlyProviderConfig({maxDurationMs:10000,timeoutDiagnostics:true})).timeoutDiagnostics, true);
+for (const normalize of [provider.fastly, normalizeFastlyProviderConfig]) {
+  assert.throws(() => normalize({timeoutDiagnostics:true}), /requires maxDurationMs/);
+  for (const value of ['true', 1, null, {}, []]) {
+    assert.throws(() => normalize({maxDurationMs:10000,timeoutDiagnostics:value}), /must be a boolean/);
+  }
+}
 assert.equal(safeDefaults.build.maxWasmBytes, 4194304);
 assert.equal(provider.fastly({maxWasmBytes: 8388608}).build.maxWasmBytes, 8388608);
 assert.equal(normalizeFastlyProviderConfig({build:{maxWasmBytes:8388608}}).build.maxWasmBytes, 8388608);
@@ -56,6 +67,12 @@ try {
   assert.equal(resolveProject({cwd:profileFixture,profile:'local'}).providerConfig.build.maxWasmBytes, 8388608);
   fs.writeFileSync(configFile, source.replace('build: { name:', 'build: { maxWasmBytes: 0, name:'));
   assert.throws(() => resolveProject({cwd:profileFixture,profile:'local'}), {code:'PULSE_FASTLY_MAX_WASM_BYTES_INVALID'});
+  fs.writeFileSync(configFile, source.replace('build: { name:', 'maxDurationMs: 10000, timeoutDiagnostics: true, build: { name:'));
+  const diagnosticProject = resolveProject({cwd:profileFixture,profile:'local'});
+  assert.equal(diagnosticProject.providerConfig.timeoutDiagnostics, true);
+  assert.equal(diagnosticProject.providerConfig.maxDurationMs, 10000);
+  fs.writeFileSync(configFile, source.replace('build: { name:', 'timeoutDiagnostics: true, build: { name:'));
+  assert.throws(() => resolveProject({cwd:profileFixture,profile:'local'}), /requires maxDurationMs/);
 } finally { fs.rmSync(profileFixture, {recursive:true,force:true}); }
 
 const configured = provider.fastly({

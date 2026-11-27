@@ -36,6 +36,13 @@ function providerBuildError(code, message, detail = {}) {
   return error;
 }
 
+function assertTimeoutDiagnosticsSelection(native, providerConfig) {
+  const selected = require('../toolchain/timeout-diagnostics.js').normalizeTimeoutDiagnostics(providerConfig.timeoutDiagnostics, providerConfig.maxDurationMs);
+  if (native.manifest.bindings?.timeoutDiagnostics !== selected) {
+    throw providerBuildError('PULSE_FASTLY_NATIVE_ARTIFACT_INVALID', 'Fastly artifact timeout diagnostics do not match the selected provider profile; rebuild the Native artifact.');
+  }
+}
+
 function assertFastlyProviderPlan(providerPlan) {
   if (
     !providerPlan
@@ -240,6 +247,7 @@ function inspectFastlyCanonicalTarget(options = {}) {
         profile: options.profile,
         bindings,
         maxDurationMs: providerConfig.maxDurationMs,
+        timeoutDiagnostics: providerConfig.timeoutDiagnostics,
         bodyForwarding: providerConfig.bodyForwarding,
         maxWasmBytes,
         requirePlatformCapability: false,
@@ -263,6 +271,7 @@ function inspectFastlyCanonicalTarget(options = {}) {
   if (native.manifest.bindings?.maxDurationMs !== duration) {
     throw providerBuildError('PULSE_REQUEST_DURATION_ARTIFACT_MISMATCH', 'Fastly artifact request deadline does not match the selected provider profile.');
   }
+  assertTimeoutDiagnosticsSelection(native, providerConfig);
   const forwarding = require('../toolchain/body-forwarding.js').normalizeBodyForwarding(providerConfig.bodyForwarding, duration);
   if (JSON.stringify(native.manifest.bindings?.bodyForwarding) !== JSON.stringify(forwarding)) {
     throw providerBuildError('PULSE_FASTLY_BODY_FORWARDING_ARTIFACT_MISMATCH', 'Fastly artifact forwarding bounds do not match the selected provider profile.');
@@ -328,6 +337,7 @@ function writeFastlyCanonicalTarget(options = {}) {
     ? assertExactProviderNative(options.native)
     : null;
   if (auditedNative) {
+    assertTimeoutDiagnosticsSelection(auditedNative, providerConfig);
     native = auditedNative;
   } else {
     const realization = inspectFastlyCanonicalTarget({

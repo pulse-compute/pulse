@@ -42,6 +42,7 @@ function fastly(options = {}) {
     kind: 'fastly',
     ...(options.bodyForwarding === undefined ? {} : {bodyForwarding: require('./toolchain/body-forwarding.js').normalizeBodyForwarding(options.bodyForwarding, options.maxDurationMs)}),
     ...(options.maxDurationMs === undefined ? {} : { maxDurationMs: require('@pulse-compute/runtime/host').normalizeRequestDuration(options.maxDurationMs) }),
+    ...(options.timeoutDiagnostics === undefined ? {} : { timeoutDiagnostics: require('./toolchain/timeout-diagnostics.js').normalizeTimeoutDiagnostics(options.timeoutDiagnostics, options.maxDurationMs) }),
     version: FASTLY_PROVIDER_API_VERSION,
     bindings: Object.freeze({
       ...(options.logEndpoint === undefined ? {} : { logEndpoint: normalizeFastlyLogEndpoint(options.logEndpoint) }),

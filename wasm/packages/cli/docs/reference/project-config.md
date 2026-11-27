@@ -33,7 +33,7 @@ A conventional project uses `.pulse/config.ts`. Start with the property map, the
 
 | Object | Properties — select for details |
 | --- | --- |
-| `<profile>.fastly` | [`bodyForwarding`](#config-profile-fastly-bodyforwarding), [`maxDurationMs`](#config-profile-fastly-maxdurationms), [`local`](#config-profile-fastly-local), [`bindings`](#config-profile-fastly-bindings), [`build`](#config-profile-fastly-build) |
+| `<profile>.fastly` | [`bodyForwarding`](#config-profile-fastly-bodyforwarding), [`maxDurationMs`](#config-profile-fastly-maxdurationms), [`timeoutDiagnostics`](#config-profile-fastly-timeoutdiagnostics), [`local`](#config-profile-fastly-local), [`bindings`](#config-profile-fastly-bindings), [`build`](#config-profile-fastly-build) |
 | `<profile>.fastly.bindings` | [`logEndpoint`](#config-profile-fastly-bindings-logendpoint), [`s3`](#config-profile-fastly-bindings-s3), [`configStore`](#config-profile-fastly-bindings-configstore), [`secretStore`](#config-profile-fastly-bindings-secretstore), [`kv`](#config-profile-fastly-bindings-kv), [`backends`](#config-profile-fastly-bindings-backends), [`dynamicBackends`](#config-profile-fastly-bindings-dynamicbackends), [`grip`](#config-profile-fastly-bindings-grip) |
 | `<profile>.fastly.bindings.grip` | [`fanoutBackend`](#config-profile-fastly-bindings-grip-fanoutbackend), [`publishEndpoint`](#config-profile-fastly-bindings-grip-publishendpoint), [`publishUrl`](#config-profile-fastly-bindings-grip-publishurl), [`publishBackend`](#config-profile-fastly-bindings-grip-publishbackend), [`authentication`](#config-profile-fastly-bindings-grip-authentication), [`directHold`](#config-profile-fastly-bindings-grip-directhold) |
 | `<profile>.fastly.bindings.grip.authentication` | [`scheme`](#config-profile-fastly-bindings-grip-authentication-scheme), [`secretRef`](#config-profile-fastly-bindings-grip-authentication-secretref) |
@@ -623,6 +623,17 @@ One provider-owned monotonic budget through buffered response handoff; expiry at
 - **Required/default:** Optional; default omitted.
 - **Allowed values or constraints:** 1–30000
 - **Scope:** HTTP request execution
+
+<a id="fastlytimeoutdiagnostics"></a>
+<a id="config-profile-fastly-timeoutdiagnostics"></a>
+
+### `<profile>.fastly.timeoutDiagnostics`
+
+Opt in to bounded request-timeout logging, probe correlation and conditional-KV dispatch timing. Requires maxDurationMs. Omitted or false compiles out diagnostic instrumentation and its imports; the request budget remains active. Changing this option requires rebuilding the Native artifact.
+
+- **Type:** boolean
+- **Required/default:** Optional; default false.
+- **Scope:** Fastly Native build
 
 <a id="fastlybindingss3"></a>
 <a id="config-profile-fastly-bindings-s3"></a>

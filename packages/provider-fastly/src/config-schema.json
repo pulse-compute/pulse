@@ -76,6 +76,10 @@
     "fastly.maxDurationMs": {
       "kind": "optional-number"
     },
+    "fastly.timeoutDiagnostics": {
+      "kind": "boolean",
+      "default": false
+    },
     "fastly.build.maxWasmBytes": {
       "kind": "positive-safe-integer",
       "default": 4194304
