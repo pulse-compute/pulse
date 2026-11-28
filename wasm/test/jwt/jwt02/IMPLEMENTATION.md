@@ -23,7 +23,9 @@ Installed-package and hosted acceptance remain JWT-02.3 work.
   init/update/final/clear operations. The frame is allocated on first use;
   SHA-256 remains Crypto-owned and receives at most 64 KiB per update. The 2 MiB
   digest, 64 KiB HMAC data and 8 KiB HMAC key limits are unchanged. Existing raw
-  verification and byte primitives retain their contracts. Algorithm identity
+  verification and byte primitives retain their contracts. The ordinary Node HS256
+  verifier also uses this bridge through its existing 1 MiB limit; Crypto performs
+  the full 32-byte tag comparison before returning. Algorithm identity
   remains `pulse-hmac-as.v1`; the private source/staging protocol advances to v2.
 - Linked schemas automatically use the pinned disabled-cache-elision recipe.
   Unlinked runtime selection and enabled-cache semantics remain unchanged.
@@ -44,10 +46,14 @@ fixture, not Viceroy or deployment.
 
 `jwt02-runtime-boundaries` checks Node initializer failure/reentry/forbidden
 host calls, the actual Fastly entry wrapper's once/failure/reentry behavior,
-SHA-256 boundary vectors through 2 MiB, HMAC maxima, oversize and invalid state
+SHA-256 boundary vectors through 2 MiB, HS256 verification through 1 MiB,
+HMAC maxima, oversize and invalid state
 rejection, repeated allocation/collection/reallocation, and retained heap
 exhaustion. Rust reservations and every signature-frame byte carry canaries.
 It verifies no implicit start or memory growth and refuses unsafe raw reset.
+Both new tests are registered in the existing conformance/release shard. The
+installed composition inventory now expects the repaired Native builds; its
+exact-tarball execution remains JWT-02.3, not evidence claimed by this patch.
 The guest-link adversarial suite rejects malformed initializer signatures,
 missing/active layout witnesses and static/shadow-stack overlap.
 

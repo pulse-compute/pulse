@@ -80,6 +80,15 @@ async function main() {
       assert.equal(primary.hasStart, false);
       assert.equal(primary.instructions.memoryGrow, 0);
       assert(native.manifest.linkedRuntime);
+      if (kind === 'combined') {
+        const controller = tc.instantiateCanonicalNativeModule(native, tc.driver.executionOptions(project.providerConfig, { strict: false }));
+        const key = crypto.randomBytes(32), data = Buffer.alloc(1048576, 0x81);
+        const tag = crypto.createHmac('sha256', key).update(data).digest();
+        const input = { algorithm: 'HS256', key: { type: 'hmac-key-bytes', bytes: key }, data, tag };
+        assert.equal(controller.cryptoVerifier.mac.verify(input).status, 'valid');
+        tag[31] ^= 1; assert.equal(controller.cryptoVerifier.mac.verify(input).status, 'invalid-authenticator');
+        assert.equal(controller.exports.memory.buffer.byteLength, 2097152); controller.close();
+      }
       const built = tc.buildProject(tc.resolveProject({ cwd: root, profile: 'fastly-native' }));
       assert.equal(built.status, 'built');
       const providerWasm = fs.readFileSync(path.join(built.outDir, 'bin/main.wasm'));

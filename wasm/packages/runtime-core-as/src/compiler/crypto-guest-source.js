@@ -266,10 +266,12 @@ function normalizeContribution(entry, definition) {
     || !Array.isArray(contribution.imports)
     || contribution.imports.length !== 0
     || !Array.isArray(contribution.exports)
-    || contribution.exports.length !== 9
+    || contribution.exports.length !== 11
     || !contribution.exports.includes('pulse_crypto_hs256_verify')
     || !contribution.exports.includes('pulse_crypto_sha256_digest')
     || !contribution.exports.includes('pulse_crypto_bytes_frame_v1')
+    || !contribution.exports.includes('pulse_crypto_mac_init_v2')
+    || !contribution.exports.includes('pulse_crypto_mac_verify_v2')
     || !['init', 'update', 'final', 'clear'].every(name => contribution.exports.includes(`pulse_crypto_digest_${name}_v2`))
     || !contribution.exports.includes('pulse_crypto_sha256_bytes_v1')
     || !contribution.exports.includes('pulse_crypto_hmac_sha256_bytes_v1')

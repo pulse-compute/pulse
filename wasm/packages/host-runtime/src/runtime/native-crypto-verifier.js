@@ -8,18 +8,16 @@ const {
   CRYPTO_REALIZATION_PLAN_VERSION
 } = require('@pulse-compute/wasm-contracts/crypto/contracts');
 
-const NATIVE_CRYPTO_VERIFIER_VERSION = 'pulse.native-crypto-verifier.v1';
+const NATIVE_CRYPTO_VERIFIER_VERSION = 'pulse.native-crypto-verifier.v2';
 const HS256_REALIZATION = 'guest-source:pulse-hmac-as';
 const HS256_EXPORT = 'pulse_crypto_hs256_verify';
 const ES256_EXPORT = 'pulse_crypto_es256_verify';
 const ES256_REALIZATION = CRYPTO_ES256_GUEST_LINKED_REALIZATION;
 const PAGE_BYTES = 64 * 1024;
-const GUARD_BYTES = PAGE_BYTES;
 const KEY_BYTES_MINIMUM = 32;
 const KEY_BYTES_MAXIMUM = 4 * 1024;
 const DATA_BYTES_MAXIMUM = 1024 * 1024;
 const TAG_BYTES = 32;
-const MAX_SIGNED_POINTER = 0x7fffffff;
 const ES256_MEMORY_BYTES = 32 * PAGE_BYTES;
 const ES256_FRAME_POINTER = 8 * PAGE_BYTES;
 const ES256_FRAME_CAPACITY = 16_640;
@@ -144,35 +142,6 @@ function normalizeSignatureRequest(request) {
   return Object.freeze({ keyBytes, data, signature });
 }
 
-function stage(memory, inputs) {
-  const payloadBytes = inputs.reduce((total, input) => total + input.byteLength, 0);
-  const oldEnd = memory.buffer.byteLength;
-  const required = GUARD_BYTES + payloadBytes + 48;
-  const pages = Math.ceil(required / PAGE_BYTES);
-  const newEnd = oldEnd + pages * PAGE_BYTES;
-  if (
-    !Number.isSafeInteger(newEnd)
-    || newEnd > MAX_SIGNED_POINTER
-    || memory.grow(pages) < 0
-  ) return undefined;
-
-  const view = new Uint8Array(memory.buffer);
-  const pointers = [];
-  let cursor = oldEnd + GUARD_BYTES;
-  for (const input of inputs) {
-    cursor = (cursor + 15) & ~15;
-    pointers.push(cursor);
-    view.set(input, cursor);
-    cursor += input.byteLength;
-  }
-  return Object.freeze({
-    pointers: Object.freeze(pointers),
-    wipe() {
-      new Uint8Array(memory.buffer).fill(0, oldEnd + GUARD_BYTES, cursor);
-    }
-  });
-}
-
 function align16(value) {
   return (value + 15) & ~15;
 }
@@ -252,7 +221,7 @@ function createNativeGuestSourceCryptoVerifier(input = {}) {
   );
   const byteAlgorithms = ['SHA-256', 'HMAC-SHA256'].filter((algorithm) =>
     selectedAlgorithm(plan, algorithm, HS256_REALIZATION, 'guest-source', CRYPTO_GUEST_SOURCE_IMPLEMENTATION));
-  const digestMac = byteAlgorithms.length > 0
+  const digestMac = byteAlgorithms.length > 0 || hs256Available
     ? require('@pulse-compute/crypto/pulsewasm-native').bindNativeDigestMac(moduleExports) : undefined;
   const selectedRealizations = Object.freeze([
     ...(selectedRsa ? [{ algorithm: 'RS256', realization: CRYPTO_RS256_GUEST_LINKED_REALIZATION, implementation: CRYPTO_RS256_GUEST_LINKED_IMPLEMENTATION, guestUnitRequired: true, available: Boolean(rsa) }] : []),
@@ -287,7 +256,7 @@ function createNativeGuestSourceCryptoVerifier(input = {}) {
     ? require('@pulse-compute/crypto/pulsewasm-native').bindNativeEs256Signer(moduleExports) : undefined;
   const verifier = Object.freeze({
     macText,
-    ...(digestMac || signer || rsa ? { bytes: Object.freeze({
+    ...(byteAlgorithms.length > 0 || signer || rsa ? { bytes: Object.freeze({
       ...(signer ? { es256Sign: signer } : {}),
       ...(rsa ? { rs256Sign: rsa.sign } : {}),
       ...(byteAlgorithms.includes('SHA-256') ? { sha256: digestMac.sha256 } : {}),
@@ -298,29 +267,9 @@ function createNativeGuestSourceCryptoVerifier(input = {}) {
         const normalized = normalizeRequest(request);
         if (normalized.result) return normalized.result;
         if (!hs256Available) return result('realization-failure');
-        let staged;
         try {
-          staged = stage(memory, [
-            normalized.keyBytes,
-            normalized.data,
-            normalized.tag
-          ]);
-          if (!staged) return result('realization-failure');
-          const [keyPointer, dataPointer, tagPointer] = staged.pointers;
-          const code = verifyHs256(
-            keyPointer,
-            normalized.keyBytes.byteLength,
-            dataPointer,
-            normalized.data.byteLength,
-            tagPointer,
-            normalized.tag.byteLength
-          );
-          return result(RESULT_BY_CODE[String(code)] || 'realization-failure');
-        } catch {
-          return result('realization-failure');
-        } finally {
-          if (staged) staged.wipe();
-        }
+          return digestMac.verifyHs256(normalized.keyBytes, normalized.data, normalized.tag);
+        } catch { return result('realization-failure'); }
       }
     }),
     signature: Object.freeze({

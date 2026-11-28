@@ -187,6 +187,8 @@ assert.deepEqual(cryptoEvidence.exports, [
   'pulse_crypto_digest_update_v2',
   'pulse_crypto_digest_final_v2',
   'pulse_crypto_digest_clear_v2',
+  'pulse_crypto_mac_init_v2',
+  'pulse_crypto_mac_verify_v2',
   'pulse_crypto_sha256_bytes_v1',
   'pulse_crypto_hmac_sha256_bytes_v1'
 ]);

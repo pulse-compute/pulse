@@ -2657,7 +2657,7 @@ Crypto's `runtime-builtin` Web Crypto byte realization through the trusted
 data at 2 MiB, HMAC data at 64 KiB and HMAC keys at 8 KiB, and snapshot and wipe
 staging inputs. The private Crypto guest-source v2 bridge stages host-provided
 digests in at most 64 KiB chunks through a demand-allocated 73,760-byte frame.
-Crypto owns incremental SHA-256 state and clears it and staging on returned
+Crypto owns incremental SHA-256/HMAC state and clears it and staging on returned
 paths; the host copies the result before release. Native also checks guest memory ranges. JWT verification retains its separate limits.
 No target probes or falls back to a different realization.
 
@@ -2852,7 +2852,9 @@ json-as disabled-cache elision transform. Enabled-cache behavior and unlinked
 opt-in behavior are unchanged. Removing its unused 1 MiB arena fixes startup
 pressure; it does not promise arbitrary schema size or allocation workloads fit
 inside the fixed heap. The byte digest bridge preserves its 2 MiB input limit
-without retaining that input inside Wasm. Other managed strings and objects
+without retaining that input inside Wasm. The Node HS256 verifier uses the same
+bounded bridge up to its existing 1 MiB limit, with the full-tag comparison inside
+Crypto; it no longer grows memory to stage each verification. Other managed strings and objects
 remain subject to the fixed memory budget.
 
 Workspace composition, invalid-input, initializer and allocator tests are

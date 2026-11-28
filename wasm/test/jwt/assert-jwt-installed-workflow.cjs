@@ -182,12 +182,11 @@ async function main() {
         commandContext={composition:name,profile};
         console.log(`jwt-installed - inventory: ${name}, ${profile}`);
         const s3Restriction=profile==='fastly-javascript'&&name.endsWith('S3');
-        const expectedFailure=s3Restriction||profile.endsWith('native')&&(name.includes('SHA-256')||name.includes('HMAC')||name.includes('S3'))
-          ||profile==='fastly-native'&&name.endsWith('verification');
+        const expectedFailure=s3Restriction||profile==='fastly-native'&&name.endsWith('verification');
         const result=await run(process.execPath,[cli,'build','--profile',profile,'--json'],{allowFailure:true});
         const diagnostics=result.stdout+result.stderr;
         assert.equal(result.code!==0,expectedFailure,`${name}: ${profile}: ${clean(diagnostics)}`);
-        if(expectedFailure) assert.match(diagnostics,s3Restriction?/fastly-javascript-s3-raw-headers-unavailable/:name.endsWith('verification')?/PULSE_FASTLY_NATIVE_JWT_CRYPTO_REALIZATION_INVALID/:/forbidden start|fixed-memory|MVP/);
+        if(expectedFailure) assert.match(diagnostics,s3Restriction?/fastly-javascript-s3-raw-headers-unavailable/:/PULSE_FASTLY_NATIVE_JWT_CRYPTO_REALIZATION_INVALID/);
         else assert.equal(JSON.parse(result.stdout).status,'built');
         report.composition.push({name,profile,status:expectedFailure?'ineligible':'built',
           diagnosticCodes:expectedFailure?[...new Set(diagnostics.match(/PULSE[A-Z0-9_]+/g)||[])]:[]});saveReport();

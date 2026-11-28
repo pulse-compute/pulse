@@ -86,6 +86,16 @@ export function reallocProbe(): i32 {
     assert(new Uint8Array(e.memory.buffer, e.pulse_crypto_bytes_frame_v1(), 73760).every(b => b === 0));
     canary();
   }
+  for (const length of [0, 55, 64, 65536, 65537, 1048576]) {
+    const key = Buffer.alloc(4096, 0x52), data = Buffer.alloc(length, 0x97);
+    const tag = crypto.createHmac('sha256', key).update(data).digest();
+    assert.equal(bridge.verifyHs256(key, data, tag).status, 'valid');
+    for (const index of [0, 15, 31]) {
+      tag[index] ^= 1; assert.equal(bridge.verifyHs256(key, data, tag).status, 'invalid-authenticator'); tag[index] ^= 1;
+    }
+    assert(new Uint8Array(e.memory.buffer, e.pulse_crypto_bytes_frame_v1(), 73760).every(b => b === 0)); canary();
+  }
+  assert.throws(() => bridge.verifyHs256(Buffer.alloc(32), Buffer.alloc(1048577), Buffer.alloc(32)));
   assert.throws(() => bridge.sha256(Buffer.alloc(2097153)));
   for (const keyLength of [0, 32, 8192]) {
     const key = Buffer.alloc(keyLength, 0x42), data = Buffer.alloc(65536, 0x71);
