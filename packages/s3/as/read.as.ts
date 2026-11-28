@@ -83,13 +83,13 @@ function __pulse_s3_date(seconds: i64): string {
 class __PulseS3Signature {
   date: string = ''; digest: string = ''; authorization: string = '';
 }
-function __pulse_s3_sign(method: string, path: string, host: string, region: string, id: string, secret: string, token: string, seconds: i64, body: Uint8Array, contentType: string, range: string = '', ifNoneMatch: string = ''): __PulseS3Signature {
+function __pulse_s3_sign(method: string, path: string, host: string, region: string, id: string, secret: string, token: string, seconds: i64, body: Uint8Array, contentType: string, range: string = '', ifNoneMatch: string = '', query: string = ''): __PulseS3Signature {
   const result = new __PulseS3Signature(); result.date = __pulse_s3_date(seconds);
   result.digest = __pulse_s3_hex(__pulse_s3_sha(body));
   const names = (contentType.length ? 'content-type;' : '') + 'host;' + (ifNoneMatch.length ? 'if-none-match;' : '') + (range.length ? 'range;' : '') + 'x-amz-content-sha256;x-amz-date' + (token.length ? ';x-amz-security-token' : '');
   const headers = (contentType.length ? 'content-type:' + __pulse_s3_header_spaces(contentType) + '\n' : '') + 'host:' + host + '\n' + (ifNoneMatch.length ? 'if-none-match:' + ifNoneMatch + '\n' : '') + (range.length ? 'range:' + range + '\n' : '') + 'x-amz-content-sha256:' + result.digest + '\nx-amz-date:' + result.date + '\n'
     + (token.length ? 'x-amz-security-token:' + token + '\n' : '');
-  const canonical = method + '\n' + path + '\n\n' + headers + '\n' + names + '\n' + result.digest;
+  const canonical = method + '\n' + path + '\n' + query + '\n' + headers + '\n' + names + '\n' + result.digest;
   const day = result.date.slice(0, 8), scope = day + '/' + region + '/s3/aws4_request';
   const toSign = 'AWS4-HMAC-SHA256\n' + result.date + '\n' + scope + '\n' + __pulse_s3_hex(__pulse_s3_sha(__pulse_s3_bytes(canonical)));
   let key = __pulse_s3_mac(__pulse_s3_bytes('AWS4' + secret), day);

@@ -17,7 +17,7 @@ function normalizeFastlyS3(input = {}) {
 function resolveFastlyS3(effects, input) {
   const configured = normalizeFastlyS3(input);
   return Object.freeze(effects.flatMap((effect, index) => {
-    if (!['s3.head', 's3.getText', 's3.putText', 's3.getBody'].includes(effect.kind)) return [];
+    if (!['s3.head', 's3.getText', 's3.putText', 's3.getBody', 's3.list', 's3.delete'].includes(effect.kind)) return [];
     const name = effect.resource && effect.resource.binding;
     if (!Object.hasOwn(configured, name)) throw new TypeError('The required Fastly S3 binding is missing.');
     return [Object.freeze({ index, ...configured[name], ...(effect.operation === 'getBody' ? require('@pulse-compute/s3/provider').normalizeBodyOptions(Object.fromEntries(['method', 'range', 'ifNoneMatch'].filter(key => effect.payload?.[key] !== undefined).map(key => [key, effect.payload[key]]))) : {}), contentType: effect.operation === 'putText' ? require('@pulse-compute/s3/provider').normalizePutOptions({ contentType: effect.payload && effect.payload.contentType }).contentType : '' })];

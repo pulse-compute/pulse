@@ -3,7 +3,7 @@
   "kind": "pulse.package-contract",
   "contractId": "pulse.s3",
   "npmPackage": "@pulse-compute/s3",
-  "description": "Bounded exact-key S3 reads and writes.",
+  "description": "Bounded S3 object reads, writes, single-key deletes and paginated listing.",
   "authoring": {
     "namespace": "s3",
     "import": "@pulse-compute/s3",
@@ -11,7 +11,9 @@
       "head",
       "getText",
       "putText",
-      "getBody"
+      "getBody",
+      "list",
+      "delete"
     ]
   },
   "ownership": {
@@ -35,7 +37,9 @@
         "s3.getText",
         "s3.putText",
         "secret.get",
-        "time.wall-clock"
+        "time.wall-clock",
+        "s3.list",
+        "s3.delete"
       ],
       "reasonCode": "PULSE_PACKAGE_PROVIDER_CAPABILITY_REQUIRED"
     },
@@ -48,7 +52,9 @@
         "s3.getText",
         "s3.putText",
         "secret.get",
-        "time.wall-clock"
+        "time.wall-clock",
+        "s3.list",
+        "s3.delete"
       ]
     }
   },
@@ -68,7 +74,9 @@
       "s3.head",
       "s3.getText",
       "s3.putText",
-      "s3.getBody"
+      "s3.getBody",
+      "s3.list",
+      "s3.delete"
     ]
   },
   "docs": {

@@ -21,7 +21,7 @@ function classifyFastlyJavascriptCapability(id, restrictions = {}) {
   if (capability === 'crypto.verifyMacText') return decision(capability, 'eligible', 'fastly-javascript-crypto-hs256-runtime-builtin', 'provider-fastly');
   if (capability === 'crypto.digestText') return decision(capability, 'eligible', 'fastly-javascript-crypto-sha256-runtime-builtin', 'provider-fastly');
   if (['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'kv.list', 'kv.delete'].includes(capability)) return decision(capability, 'blocked', 'fastly-conditional-kv-incomplete', 'provider-fastly');
-  if (['s3.head', 's3.getText', 's3.putText', 's3.getBody'].includes(capability)) return decision(capability, 'blocked', 'fastly-javascript-s3-raw-headers-unavailable', 'provider-fastly');
+  if (['s3.head', 's3.getText', 's3.putText', 's3.getBody', 's3.list', 's3.delete'].includes(capability)) return decision(capability, 'blocked', 'fastly-javascript-s3-raw-headers-unavailable', 'provider-fastly');
   if (isJavascriptCoreCapability(capability)) {
     return decision(capability, 'eligible', 'fastly-request-router-runtime', 'provider-fastly');
   }
@@ -111,7 +111,7 @@ function classifyFastlyJavascriptProviderRequirement(id, restrictions = {}) {
   if (requirement === 'crypto.verifyMacText') return decision(requirement, 'eligible', 'fastly-javascript-crypto-hs256-runtime-builtin', 'provider-fastly');
   if (requirement === 'crypto.digestText') return decision(requirement, 'eligible', 'fastly-javascript-crypto-sha256-runtime-builtin', 'provider-fastly');
   if (['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'kv.list', 'kv.delete'].includes(requirement)) return decision(requirement, 'blocked', 'fastly-conditional-kv-incomplete', 'provider-fastly');
-  if (['s3.head', 's3.getText', 's3.putText', 's3.getBody'].includes(requirement)) return decision(requirement, 'blocked', 'fastly-javascript-s3-raw-headers-unavailable', 'provider-fastly');
+  if (['s3.head', 's3.getText', 's3.putText', 's3.getBody', 's3.list', 's3.delete'].includes(requirement)) return decision(requirement, 'blocked', 'fastly-javascript-s3-raw-headers-unavailable', 'provider-fastly');
   if (requirement === 'request' || ['response.json', 'response.text', 'response.custom'].includes(requirement)) {
     return decision(requirement, 'eligible', 'fastly-request-response-lifecycle', 'provider-fastly');
   }

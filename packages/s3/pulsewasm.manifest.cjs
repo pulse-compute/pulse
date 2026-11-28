@@ -3,7 +3,7 @@ const { S3_PACKAGE, S3_CONTRACT_ID, S3_OPERATIONS } = require('@pulse-compute/wa
 module.exports = Object.freeze({
   version: 'pulsewasm.lowerable-library-manifest.v2', kind: 'pulsewasm.lowerable-library-manifest',
   contractId: S3_CONTRACT_ID, npmPackage: S3_PACKAGE, lowerableSubpath: S3_PACKAGE,
-  facade: { namespace: 's3', import: S3_PACKAGE, symbols: ['head', 'getText', 'putText', 'getBody'] },
+  facade: { namespace: 's3', import: S3_PACKAGE, symbols: ['head', 'getText', 'putText', 'getBody', 'list', 'delete'] },
   publicApi: { package: S3_PACKAGE, symbols: ['s3'], compatibilitySubpaths: [], loweringIntentionallyNarrow: true },
   compiler: { version: 'pulsewasm.lowerable-compiler-builder.v1', entry: './pulsewasm.compiler.cjs', export: 'buildS3LoweringPlan', artifact: 's3-lowering-plan.json', builderOwner: S3_PACKAGE, trust: 'first-party', inputs: ['typescript.SourceFile'] },
   modes: {
@@ -12,7 +12,7 @@ module.exports = Object.freeze({
       mode: 'wasm-sidecar', sidecar: './as/read.as.ts',
       // The builder emits canonical effects. Native realizations
       // compose the shared package-owned signing protocol, not a direct call.
-      lowerings: Object.keys(S3_OPERATIONS).map((name) => ({ tsSymbol: `s3.${name}`, asSymbol: '__pulse_s3_sign', callShape: name === 'putText' ? 'context-literal-binding-runtime-key-text-literal-options' : 'context-literal-binding-runtime-key', hostCapabilities: ['backend-fetch', 'body', 'clock', 'result'] })),
+      lowerings: Object.keys(S3_OPERATIONS).map((name) => ({ tsSymbol: `s3.${name}`, asSymbol: '__pulse_s3_sign', callShape: name === 'list' ? 'context-literal-binding-runtime-options' : name === 'putText' ? 'context-literal-binding-runtime-key-text-literal-options' : 'context-literal-binding-runtime-key', hostCapabilities: ['backend-fetch', 'body', 'clock', 'result'] })),
       hostCapabilities: ['backend-fetch', 'body', 'clock', 'result']
     }
   },

@@ -550,7 +550,7 @@ function createNodeProviderAdapter(baseOptions = {}) {
       if (effect.kind === 'crypto.verifyMacText') return require('@pulse-compute/crypto/provider').executeMacText(effect, { ...executionOptions, secretLookup: name => bindingValue(executionOptions, 'secrets', name) });
       if (effect.kind === 'crypto.digestText') return require('@pulse-compute/crypto/provider').executeTextDigest(effect, executionOptions);
       if (effect.kind === 'time.now') return portableRuntimeHost.readWallTime(baseOptions.wallClock === undefined ? () => Date.now() : baseOptions.wallClock);
-      if (['s3.head', 's3.getText', 's3.putText', 's3.getBody'].includes(effect.kind)) {
+      if (['s3.head', 's3.getText', 's3.putText', 's3.getBody', 's3.list', 's3.delete'].includes(effect.kind)) {
         const result = await require('./s3-reader.js').readS3(effect, { ...baseOptions, ...executionOptions,
           fetchImplementation: executionOptions.s3FetchImplementation || baseOptions.s3FetchImplementation
             || executionOptions.fetchImplementation || baseOptions.fetchImplementation

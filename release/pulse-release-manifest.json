@@ -331,12 +331,12 @@
       "documentation": "docs/packages/s3.md",
       "role": "public-extension",
       "tier": "supported-extension",
-      "audience": "Applications using bounded exact-key object reads and writes through Pulse effects.",
+      "audience": "Applications using bounded S3 reads, writes, single-key deletion and paginated listing through Pulse effects.",
       "directInstall": "Yes, when an application uses S3 object operations.",
       "entryPoints": [
         "@pulse-compute/s3"
       ],
-      "stability": "The package root supports head, getText, getBody and putText on Node Native, Node JavaScript and Fastly Native. getBody returns bounded opaque binary responses with the documented HTTP subset. Fastly JavaScript is ineligible. Provider and lowering subpaths are toolchain-only; live origin acceptance is separate."
+      "stability": "The package root supports head, getText, getBody and putText on Node Native, Node JavaScript and Fastly Native. Current source adds bounded list and single-key delete; these additions are not in the published beta.11 artifacts. getBody returns bounded opaque binary responses with the documented HTTP subset. Fastly JavaScript is ineligible. Provider and lowering subpaths are toolchain-only; live origin acceptance is separate."
     },
     {
       "dir": "wasm/packages/build-support",

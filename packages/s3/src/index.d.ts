@@ -41,8 +41,24 @@ export interface S3PutTextOptions {
   readonly contentType?: string;
 }
 
-// Binding and options must be compiler-proven literals. Key and text may be
-// runtime strings. TypeScript alone cannot enforce that lowering restriction.
+export interface S3ListOptions {
+  readonly prefix?: string;
+  readonly continuationToken?: string;
+  /** 1–1000; default 100. One page per effect, no automatic traversal. */
+  readonly maxKeys?: number;
+}
+export interface S3ListEntry { readonly key: string; readonly byteLength: number; readonly etag?: string }
+export type S3ListResult =
+  | { readonly status: 'listed'; readonly entries: readonly S3ListEntry[]; readonly isTruncated: false }
+  | { readonly status: 'listed'; readonly entries: readonly S3ListEntry[]; readonly isTruncated: true; readonly nextContinuationToken: string }
+  | { readonly status: 'failed'; readonly reason: S3ReadFailureReason | 'invalid-options'; readonly httpStatus?: number };
+export type S3DeleteResult =
+  | { readonly status: 'deleted' }
+  | { readonly status: 'not-deleted'; readonly reason: 'invalid-key' | 'configuration' | 'credentials' | 'not-authorized' | 'rejected' | 'throttled' | 'transport' | 'timeout'; readonly httpStatus?: number }
+  | { readonly status: 'unknown'; readonly reason: 'transport' | 'timeout' | 'unavailable' | 'protocol'; readonly httpStatus?: number };
+
+// Binding and PUT/body options must be compiler-proven literals. Keys, text
+// and LIST options may be runtime values. TypeScript cannot enforce lowering.
 export interface S3GetBodyOptions {
   readonly method?: 'GET' | 'HEAD';
   /** One closed byte range, for example bytes=0-1023; GET only. */
@@ -52,6 +68,10 @@ export interface S3GetBodyOptions {
 }
 
 export declare const s3: {
+  /** Runtime prefix/cursor/page size; bucket authority remains in the binding. */
+  list(ctx: PulseContext, binding: string, options?: S3ListOptions): PulseParallelEffect<S3ListResult>;
+  /** Complete 204 acknowledgement; does not prove prior existence or erase version history. */
+  delete(ctx: PulseContext, binding: string, key: string): PulseParallelEffect<S3DeleteResult>;
   /** Opaque binary response; capped by maxTextBytes. Return without decoding. */
   getBody(ctx: PulseContext, binding: string, key: string, options?: S3GetBodyOptions): PulseParallelEffect<Response>;
   head(ctx: PulseContext, binding: string, key: string): PulseParallelEffect<S3HeadResult>;

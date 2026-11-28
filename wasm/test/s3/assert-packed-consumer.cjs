@@ -58,7 +58,7 @@ async function main() {
     return;
   }
   const s3 = installed('@pulse-compute/s3');
-  for (const operation of ['head', 'getText', 'putText']) assert.equal(typeof s3.s3[operation], 'function');
+  for (const operation of ['head', 'getText', 'getBody', 'putText', 'list', 'delete']) assert.equal(typeof s3.s3[operation], 'function');
   const support = manifest.packages.find(({ name }) => name === '@pulse-compute/s3');
   assert.equal(support.supportTier, 'supported-extension');
   assert.deepEqual(support.entryPoints, ['@pulse-compute/s3']);
@@ -79,7 +79,7 @@ async function main() {
   const results = {};
   // Each corpus installs its application/configuration fixture at the actual
   // consumer root. Compiler contract discovery is project-local.
-  for (const [kind, runner] of [['reads', './run-native-read-acceptance.cjs'], ['writes', './run-write-acceptance.cjs']]) {
+  for (const [kind, runner] of [['reads', './run-native-read-acceptance.cjs'], ['writes', './run-write-acceptance.cjs'], ['list-delete', './run-list-delete-acceptance.cjs']]) {
     fs.writeFileSync(path.join(packedRoot, 'package.json'), JSON.stringify({
       name: `packed-s3-${kind}`, private: true, version: '0.0.0',
       dependencies: Object.fromEntries(['pulse', 'runtime', 's3', 'crypto', 'cli', 'provider-node', 'provider-fastly']
