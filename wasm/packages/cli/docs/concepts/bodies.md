@@ -32,6 +32,14 @@ Request-owned values and caches end with that request. They cannot be retained
 for background work. Provider-owned opaque handles stay opaque: they cannot be converted into a structured body. Structured values cannot be promoted into
 a userland stream.
 
+Package-produced Web responses from Assets, `s3.getBody`, and GRIP response
+helpers carry the `PulsePackageResponse` type, exported by
+`@pulse-compute/pulse` and `@pulse-compute/runtime`. This declaration-only marker
+allows supported package responses as handler, middleware, and error-handler
+results. It does not add a runtime property, transfer body ownership, or admit
+arbitrary response construction on Native targets. Package lowering, provider
+capabilities, and request-owned cleanup still determine valid execution.
+
 ## Structured request bodies
 
 `ctx.req.text()` and `ctx.req.json()` read a bounded request body. JSON can be decoded generically or against an explicitly compiled schema. Repeated schema reads are deterministic within one request.

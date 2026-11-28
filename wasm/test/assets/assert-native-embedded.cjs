@@ -3,6 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
 const {pathToFileURL}=require('node:url');
+const {execFileSync}=require('node:child_process');
 const {acceptanceToolchain}=require('../s3/acceptance-toolchain.cjs');
 const root=path.resolve(__dirname,'../../..');
 async function main(options={}){
@@ -19,8 +20,10 @@ async function main(options={}){
     if(!options.packedRoot)for(const name of ['pulse','assets'])fs.symlinkSync(path.join(root,'packages',name),path.join(cwd,'node_modules/@pulse-compute',name),'dir');
     const config={pulse:{entry:'src/index.ts',defaultProfile:'native',strict:false},native:{host:'node',target:'native'},fastly:{host:'fastly',target:'native',fastly:{maxDurationMs:1000}}};
     fs.writeFileSync(path.join(cwd,'.pulse/config.ts'),`import {defineConfig} from '@pulse-compute/pulse';export default defineConfig((_scope)=>(${JSON.stringify(config)}));`);
-    const route=(method,url,key)=>`app.${method.toLowerCase()}('${url}',async ctx=>{const r=await assets.lookup(ctx,'embedded','${key}',{method:'${method}',embeddedManifest:${JSON.stringify(serialized)}});return r;});`;
+    const route=(method,url,key)=>`app.${method.toLowerCase()}('${url}',async ctx=>{const r=await assets.lookup(ctx,'embedded','${key}',{method:'${method}',embeddedManifest:${JSON.stringify(serialized)}});return ${key==='/image.bin'?'assets.respond(r)':'r'};});`;
     fs.writeFileSync(path.join(cwd,'src/index.ts'),`import {Pulse} from '@pulse-compute/pulse';import {assets} from '@pulse-compute/assets';const app=new Pulse({auto:true});${route('GET','/image','/image.bin')}${route('HEAD','/head','/image.bin')}${route('GET','/empty','/empty')}${route('GET','/missing','/absent')}export default app;`);
+    // The same source must satisfy installed declarations and Native admission.
+    execFileSync(process.execPath,[installed.resolve('typescript/bin/tsc'),'--noEmit','--strict','--module','NodeNext','--target','ES2022','--lib','ES2022,DOM,DOM.Iterable','src/index.ts'],{cwd,stdio:'pipe',timeout:30000});
     const tools=acceptanceToolchain(options.packedRoot),project=tools.resolveProject({cwd,profile:'native'});
     const compileFastly=()=>{
       const built=tools.buildProject(tools.resolveProject({cwd,profile:'fastly'}));assert.equal(built.status,'built');

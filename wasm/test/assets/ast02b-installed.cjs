@@ -17,8 +17,8 @@ async function main() {
   try {
     const consumer=path.join(temporary,'consumer'); fs.mkdirSync(consumer);
     const packed=packRelease({repoRoot:root,outDir:path.join(temporary,'pack')});
-    const packages=packed.manifest.packages.filter(p=>['assets','s3','runtime','wasm-contracts'].includes(p.name.replace('@pulse-compute/','')));
-    assert.equal(packages.length,4);
+    const packages=packed.manifest.packages.filter(p=>['assets','s3','grip','pulse','runtime','wasm-contracts'].includes(p.name.replace('@pulse-compute/','')));
+    assert.equal(packages.length,6);
     report.packages=packages.map(({name,version,sha256})=>({name,version,sha256}));
     const env={...process.env,npm_config_cache:path.join(temporary,'cache')}; delete env.NODE_PATH; delete env.NODE_OPTIONS;
     fs.writeFileSync(path.join(consumer,'package.json'),'{"private":true,"type":"module"}\n');
@@ -52,6 +52,10 @@ async function main() {
       const manifest:EmbeddedAssetManifest=await createEmbeddedManifest([{path:'/x',bytes:new Uint8Array([1])}]);
       const config:EmbeddedAssetsConfig={mode:'embedded',manifest};createAssets(config);`);
     execFileSync(process.execPath,[require.resolve('typescript/bin/tsc'),'--noEmit','--strict','--module','NodeNext','--target','ES2022','--lib','ES2022,DOM,DOM.Iterable','check.ts'],{cwd:consumer,env,stdio:'pipe',timeout:30000});
+    const responseTypes=fs.readFileSync(path.join(__dirname,'package-response-types.ts'));
+    fs.writeFileSync(path.join(consumer,'response-types.ts'),responseTypes);
+    execFileSync(process.execPath,[require.resolve('typescript/bin/tsc'),'--noEmit','--strict','--module','NodeNext','--target','ES2022','--lib','ES2022,DOM,DOM.Iterable','response-types.ts'],{cwd:consumer,env,stdio:'pipe',timeout:30000});
+    report.packageResponseTypes={status:'passed',fixtureSha256:hash(responseTypes)};
     assert.equal(verify(),report.verifiedFiles);report.status='passed';report.installedTypes='passed';
   } catch(error) {report.status='failed';report.error=String(error.stack||error);throw error;}
   finally {fs.writeFileSync(reportFile,JSON.stringify(report,null,2)+'\n');fs.rmSync(temporary,{recursive:true,force:true});}

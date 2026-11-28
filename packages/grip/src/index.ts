@@ -1,4 +1,4 @@
-import type { PulseContext, PulseParallelEffect } from '@pulse-compute/runtime';
+import type { PulseContext, PulseParallelEffect, PulsePackageResponse } from '@pulse-compute/runtime';
 import packageRuntime from '@pulse-compute/runtime/package';
 
 export type GripRequestLike = Request | {
@@ -104,25 +104,25 @@ export function isWebSocket(request: GripRequestLike): boolean {
 }
 
 /** Pure response decoration. The external GRIP gateway owns the held connection. */
-export function subscribe(response: Response, options: GripSubscriptionOptions): Response {
+export function subscribe(response: Response, options: GripSubscriptionOptions): PulsePackageResponse {
   if (!(response instanceof Response)) throw new TypeError('grip.subscribe requires a Web Response.');
   const headers = applySubscriptionHeaders(new Headers(response.headers), options);
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,
     headers,
-  });
+  }) as PulsePackageResponse;
 }
 
 /** Pure HTTP handoff framing for websocket-over-HTTP requests. */
-export function handoff(options: GripHandoffOptions): Response {
+export function handoff(options: GripHandoffOptions): PulsePackageResponse {
   const headers = new Headers(options.headers);
   if (!headers.has('content-type')) headers.set('Content-Type', 'application/websocket-events');
   applySubscriptionHeaders(headers, options);
   return new Response(options.body ?? null, {
     status: options.status ?? 200,
     headers,
-  });
+  }) as PulsePackageResponse;
 }
 
 /** The only request-bound I/O operation in the bounded GRIP API. */

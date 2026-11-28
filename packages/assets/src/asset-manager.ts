@@ -7,7 +7,7 @@ import {
   type AssetBucketRouteContext,
   type RouteNext,
 } from './asset-bucket.js';
-import type { PulseContext, RouterNext } from '@pulse-compute/runtime';
+import type { PulseContext, RouterNext, PulsePackageResponse } from '@pulse-compute/runtime';
 import { AssetBucketConfigError, AssetBucketFetchError } from './errors.js';
 import { normalizeAssetContext, type LegacyAssetBucketRouteContext } from './asset-context.js';
 import { cancelResponseBody } from './response-ownership.js';
@@ -46,7 +46,7 @@ export type EmbeddedAssetsConfig = AssetCacheOptions & { mode: 'embedded'; manif
 export type AssetsConfig = LocalAssetsConfig | HostedAssetsConfig | BucketAssetsConfig | EmbeddedAssetsConfig;
 
 export type AssetManagerMiddleware =
-  & ((ctx: PulseContext, next: RouterNext) => Promise<Response>)
+  & ((ctx: PulseContext, next: RouterNext) => Promise<PulsePackageResponse>)
   & ((ctx: LegacyAssetBucketRouteContext, next?: RouteNext) => Promise<Response | void>);
 
 export type AssetManagerInstance = AssetManagerMiddleware & {

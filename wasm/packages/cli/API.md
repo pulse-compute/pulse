@@ -68,8 +68,15 @@ export default handler
 Every managed handler is async-shaped:
 
 ```ts
-type Handler = (ctx: PulseContext) => Promise<PulseResult | PulseFetchResponse>
+type Handler = (ctx: PulseContext) => Promise<PulseResult | PulseFetchResponse | PulsePackageResponse>
 ```
+
+`PulsePackageResponse` is a type-only Web `Response` marker for supported package
+facades, including Assets responses, `s3.getBody`, and GRIP response helpers.
+It makes those results assignable to handlers, middleware, and error handlers;
+it is not a runtime brand or proof of body ownership. A raw `Response` is not
+assignable to this marker. Native source admission and provider eligibility
+remain independent checks; a type assertion cannot grant Native support.
 
 For native targets the compiler erases the async wrapper. Awaited Pulse effects lower into the existing explicit effect and continuation state machine; no Promise runtime or Asyncify transform is linked. Awaiting a proven synchronous `ctx` expression is redundant and may warn, while arbitrary non-Pulse awaits mark the native eligibility boundary. The canonical [handler authoring reference](./docs/reference/handler-authoring.md) defines the static language subset; the [compatibility matrix](./docs/reference/compatibility-matrix.md) owns the tested four-mode claims.
 
