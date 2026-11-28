@@ -4,6 +4,9 @@ Pulse follows semantic versioning for public releases. The repository begins its
 
 ## Unreleased
 
+- Fix public handler result declarations for supported Assets, S3 opaque-body,
+  and GRIP responses. Add strict installed-consumer coverage without widening
+  Native source admission or changing response ownership.
 - Align canonical host fetch admission with the JavaScript runtime: reject invalid
   methods and malformed headers before dispatch, and preserve an explicit empty
   JSON content type. Add installed-runtime DELETE/OPTIONS HTTP regressions.

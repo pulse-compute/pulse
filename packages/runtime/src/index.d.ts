@@ -4,6 +4,16 @@ declare const pulseEffectBrand: unique symbol;
 declare const pulseParallelEffectBrand: unique symbol;
 declare const pulseEffectsBrand: unique symbol;
 declare const incomingBodyBrand: unique symbol;
+declare const packageResponseBrand: unique symbol;
+
+/**
+ * Web Response produced or adopted by a supported package facade.
+ * Type-only marker, not a runtime property or proof of ownership. Native source
+ * admission, provider eligibility and request-owned body handling still apply.
+ */
+export interface PulsePackageResponse extends Response {
+  readonly [packageResponseBrand]: true;
+}
 
 /** Single-use opaque marker, admitted only inline as a configured Node fetch body. */
 export interface PulseIncomingBody { readonly [incomingBodyBrand]: true; }
@@ -299,7 +309,7 @@ export interface PulseEventContext<Payload = unknown> extends PulseExecutionCont
 
 export type PulseEventHandler<Payload = unknown, Result = void> = (ctx: PulseEventContext<Payload>) => Promise<Result>;
 
-export type HandlerResult = PulseResult | PulseFetchResponse;
+export type HandlerResult = PulseResult | PulseFetchResponse | PulsePackageResponse;
 export type Handler = (ctx: PulseContext) => Promise<HandlerResult>;
 /** Terminal Router control transfer. The current handler never resumes after this value is returned. */
 export type RouterNext = (error?: unknown) => never;

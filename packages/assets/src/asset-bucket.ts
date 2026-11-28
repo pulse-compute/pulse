@@ -1,4 +1,4 @@
-import type { PulseContext, RouterNext } from '@pulse-compute/runtime';
+import type { PulseContext, RouterNext, PulsePackageResponse } from '@pulse-compute/runtime';
 import { AssetBucketConfigError, AssetBucketFetchError } from './errors.js';
 import { encodeS3Key, signSigV4, type SecretValue, type SigV4Credentials } from './sigv4.js';
 import { cancelResponseBody } from './response-ownership.js';
@@ -67,7 +67,7 @@ export type AssetBucketOptions = {
 };
 
 export type AssetBucketMiddleware =
-  & ((ctx: PulseContext, next: RouterNext) => Promise<Response>)
+  & ((ctx: PulseContext, next: RouterNext) => Promise<PulsePackageResponse>)
   & ((ctx: LegacyAssetBucketRouteContext, next?: RouteNext) => Promise<Response | void>);
 
 export type AssetBucketInstance = AssetBucketMiddleware & {

@@ -1,4 +1,4 @@
-import type { PulseContext, PulseParallelEffect } from '@pulse-compute/runtime';
+import type { PulseContext, PulseParallelEffect, PulsePackageResponse } from '@pulse-compute/runtime';
 import { pulseAssetsRuntime } from './internal/package-runtime.js';
 
 export type AssetLookupMethod = 'GET' | 'HEAD';
@@ -20,7 +20,7 @@ export type AssetResponseOptions = {
 };
 
 export type AssetLookup = Response;
-export type AssetLookupEffect = PulseParallelEffect<AssetLookup>;
+export type AssetLookupEffect = PulseParallelEffect<PulsePackageResponse>;
 
 function requireNonEmpty(label: string, value: string): string {
   if (typeof value !== 'string' || value.length === 0) {
@@ -63,11 +63,11 @@ function normalizeLookupOptions(options: AssetLookupOptions | undefined): Readon
   });
 }
 
-function normalizeAssetResult(value: unknown): AssetLookup {
+function normalizeAssetResult(value: unknown): PulsePackageResponse {
   if (!(value instanceof Response)) {
     throw new TypeError('Pulse assets.lookup providers must return a Web Response.');
   }
-  return value;
+  return value as PulsePackageResponse;
 }
 
 function responseBodyAllowed(status: number): boolean {
@@ -101,11 +101,11 @@ export function lookup(
  * Pure response adoption/decorating helper. With no overrides, the provider
  * Response is returned by identity so a host-owned stream can pass through.
  */
-export function respond(asset: AssetLookup, options?: AssetResponseOptions): Response {
+export function respond(asset: AssetLookup, options?: AssetResponseOptions): PulsePackageResponse {
   if (!(asset instanceof Response)) {
     throw new TypeError('Pulse assets.respond requires the Response produced by assets.lookup.');
   }
-  if (options === undefined || (options.status === undefined && options.headers === undefined)) return asset;
+  if (options === undefined || (options.status === undefined && options.headers === undefined)) return asset as PulsePackageResponse;
 
   const headers = new Headers(asset.headers);
   if (options.headers !== undefined) {
@@ -119,7 +119,7 @@ export function respond(asset: AssetLookup, options?: AssetResponseOptions): Res
     status,
     statusText: asset.statusText,
     headers,
-  });
+  }) as PulsePackageResponse;
 }
 
 export const assets = Object.freeze({ lookup, respond });

@@ -1,5 +1,5 @@
 // Bounded S3 contract. Provider/target eligibility remains explicit.
-import type { PulseContext, PulseParallelEffect } from '@pulse-compute/runtime';
+import type { PulseContext, PulseParallelEffect, PulsePackageResponse } from '@pulse-compute/runtime';
 
 export type S3ReadFailureReason =
   | 'invalid-key' | 'configuration' | 'credentials' | 'not-authorized'
@@ -73,7 +73,7 @@ export declare const s3: {
   /** Complete 204 acknowledgement; does not prove prior existence or erase version history. */
   delete(ctx: PulseContext, binding: string, key: string): PulseParallelEffect<S3DeleteResult>;
   /** Opaque binary response; capped by maxTextBytes. Return without decoding. */
-  getBody(ctx: PulseContext, binding: string, key: string, options?: S3GetBodyOptions): PulseParallelEffect<Response>;
+  getBody(ctx: PulseContext, binding: string, key: string, options?: S3GetBodyOptions): PulseParallelEffect<PulsePackageResponse>;
   head(ctx: PulseContext, binding: string, key: string): PulseParallelEffect<S3HeadResult>;
   getText(ctx: PulseContext, binding: string, key: string): PulseParallelEffect<S3GetTextResult>;
   putText(ctx: PulseContext, binding: string, key: string, text: string,

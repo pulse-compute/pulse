@@ -14,6 +14,7 @@ export type {
   PulseStructuredResponse,
   PulseOpaqueResponse,
   PulseFetchResponse,
+  PulsePackageResponse,
   PulseFetchOperation,
   PulseFetchError,
   PulseFetchOutcome,
