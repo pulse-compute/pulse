@@ -98,6 +98,7 @@ try {
     });
     assert.equal(observed.response.status, 200);
     assert.equal(observed.response.body, body);
+    assert.equal(observed.trace.filter(entry => entry.module === 'fastly_http_body' && entry.name === 'close').length, route === '/parallel' ? 2 : 1, 'every acquired asset body closes');
     assert.deepEqual(observed.trace.filter(entry => entry.module === 'fastly_kv_store').map(entry => entry.name), calls);
   }
   assert.doesNotMatch(zeroEffectCompiled.source, /^\s*else __pulse_fastly_fail\(PULSE_ERROR_UNSUPPORTED/m, 'zero-effect dispatch must not emit a dangling else');

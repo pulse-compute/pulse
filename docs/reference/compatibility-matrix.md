@@ -195,9 +195,10 @@ owners. Runtime behavior remains covered by the owning tests above.
 - [Diagnostics and remediation](./diagnostics.md)
 
 
-RS256 and ES256 can share a Native artifact. The fixed-memory linked guest
-currently cannot compose with the allocating SHA/HMAC guest. Fastly Native
-also requires one JWT verification algorithm per artifact. These builds fail
-closed; an explicitly selected JavaScript target can compose these algorithms.
+RS256 and ES256 can share a Native artifact. Linked SHA/HMAC and schema
+composition uses explicit initialization within the fixed 2 MiB memory;
+JWT-02.3 requires installed execution of the independent and combined cells.
+Fastly Native still requires one JWT verification algorithm per artifact.
+Fastly JavaScript S3 remains ineligible for its raw-header limitation.
 See [JWT](../packages/jwt.md) for canonical key limits and
 [Crypto](../packages/crypto.md) for private-key timing and memory assumptions.

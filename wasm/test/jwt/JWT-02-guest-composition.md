@@ -13,9 +13,10 @@ recommends preserving fixed memory and the no-start audit, sharing the existing
 reserved-heap runtime, explicit initialization, bounded crypto staging and a
 linked schema recipe that elides the disabled cache. Production behavior remains
 unchanged at that checkpoint. [JWT-02.2 implementation](jwt02/IMPLEMENTATION.md)
-now repairs the Native composition path; JWT-02.3 installed acceptance remains open.
+now repairs the Native composition path. [JWT-02.3 installed acceptance](jwt02/QUALIFICATION.md)
+requires execution of the complete synthetic matrix.
 
-## Problem and reproduction
+## Historical problem and reproduction
 
 The ES256/RS256 signature guest shares a fixed-memory linking contract.
 Native SHA-256/HMAC uses an allocating AssemblyScript guest. An artifact that
@@ -44,9 +45,9 @@ node wasm/scripts/run-wasm-tests.cjs --task cli-stab05-compiler-replay --no-repo
 ```
 
 STAB-03 retains installed-package composition evidence; STAB-05 is a workspace
-replay and diagnostic regression. Their currently expected blocked cells are
-not passing Native acceptance. Preserve the historical failure evidence and
-update the expectations only when replacement build-and-execution proof exists.
+replay and diagnostic regression. The original blocked receipts are not passing Native acceptance. Current
+regressions require replacement build-and-execution proof and no longer accept
+the repaired compositions as blocked. Preserve historical failure receipts.
 
 ## Decision and owners
 

@@ -133,7 +133,13 @@ function attachConditionalKvHost(imports, host, options) {
     const original = imports.fastly_http_body[name];
     imports.fastly_http_body[name] = (...args) => {
       const [handle] = args;
-      if (sendingResponse) return original(...args);
+      if (sendingResponse) {
+        const result = original(...args);
+        // Response construction may close a previously read KV body. Keep
+        // ownership evidence accurate even after fault injection has ended.
+        if (name === 'close' && result === 0) bodyFixtures.delete(handle);
+        return result;
+      }
       if (name === 'read' && !bodyFixtures.has(handle)) return original(...args);
       const fault = call('body_' + name, { handle });
       if (fault.status) return fault.status;
@@ -144,7 +150,7 @@ function attachConditionalKvHost(imports, host, options) {
         if (fault.written !== undefined) writeU32(args[3], fault.written);
       }
       if (name === 'write' && fault.written !== undefined) writeU32(args[4], fault.written);
-      if (name === 'close') bodyFixtures.delete(handle);
+      if (name === 'close' && result === 0) bodyFixtures.delete(handle);
       return result;
     };
   }
