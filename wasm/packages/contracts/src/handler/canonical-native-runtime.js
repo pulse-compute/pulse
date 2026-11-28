@@ -3,8 +3,8 @@
 const CANONICAL_NATIVE_WASM_VERSION = 'pulse.canonical-native-wasm.v2';
 const CANONICAL_NATIVE_ABI_VERSION = 2;
 const CANONICAL_NATIVE_AS_GENERATOR_VERSION = 'pulse.canonical-native-as-generator.v11';
-const CANONICAL_NATIVE_COMPILER_VERSION = 'pulse.canonical-native-wasm-compiler.v3';
-const CANONICAL_NATIVE_HOST_VERSION = 'pulse.canonical-native-host.v7';
+const CANONICAL_NATIVE_COMPILER_VERSION = 'pulse.canonical-native-wasm-compiler.v4';
+const CANONICAL_NATIVE_HOST_VERSION = 'pulse.canonical-native-host.v8';
 
 // Execution-wide containment for plans with bounded storage-read loops. These
 // are accounting limits, not a JavaScript process/RSS limit. Native providers

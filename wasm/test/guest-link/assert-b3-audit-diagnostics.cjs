@@ -366,6 +366,18 @@ function main() {
       });
     });
 
+    for (const [id, initializer, witness, code] of [
+      ['initializer-signature', '(func (export "__pulse_initialize") (result i32) (i32.const 0))', '(func (export "__pulse_primary_layout_end") (result i32) (i32.const 300000))', guestLink.diagnosticCodes.abiMismatch],
+      ['initializer-layout-missing', '(func (export "__pulse_initialize"))', '', guestLink.diagnosticCodes.memoryMismatch],
+      ['initializer-layout-overlap', '(func (export "__pulse_initialize"))', '(func (export "__pulse_primary_layout_end") (result i32) (i32.const 540928))', guestLink.diagnosticCodes.memoryMismatch],
+      ['initializer-layout-active', '(func (export "__pulse_initialize"))', '(func (export "__pulse_primary_layout_end") (result i32) (call $guest (i32.const 0) (i32.const 0)))', guestLink.diagnosticCodes.memoryMismatch]
+    ]) {
+      const primary = compileWat(inputs, id, `(module
+        (import "pulse_guest_memory" "pulse_guest_span_checksum" (func $guest (param i32 i32) (result i32)))
+        (import "env" "memory" (memory 32 32)) ${initializer} ${witness})`);
+      expectFailure(matrix, id, code, () => realize(fixture, plan, projectRoot, path.join(temporary, id), { primaryFile: primary, memoryOwnerFile }));
+    }
+
     const simdPrimary = compileWat(inputs, 'simd-primary', `(module
       (type $guest (func (param i32 i32) (result i32)))
       (import "pulse_guest_memory" "pulse_guest_span_checksum" (func $guest (type $guest)))
@@ -453,6 +465,10 @@ function main() {
     assert.deepEqual(matrix.map((entry) => entry.id).sort(), [
       'abi-mismatch',
       'artifact-hash-mismatch',
+      'initializer-layout-active',
+      'initializer-layout-missing',
+      'initializer-layout-overlap',
+      'initializer-signature',
       'invalid-metadata',
       'link-failure',
       'memory-policy-mismatch',

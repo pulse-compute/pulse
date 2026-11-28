@@ -266,11 +266,11 @@ function normalizeContribution(entry, definition) {
     || !Array.isArray(contribution.imports)
     || contribution.imports.length !== 0
     || !Array.isArray(contribution.exports)
-    || contribution.exports.length !== 6
+    || contribution.exports.length !== 9
     || !contribution.exports.includes('pulse_crypto_hs256_verify')
     || !contribution.exports.includes('pulse_crypto_sha256_digest')
     || !contribution.exports.includes('pulse_crypto_bytes_frame_v1')
-    || !contribution.exports.includes('pulse_crypto_digest_frame_v1')
+    || !['init', 'update', 'final', 'clear'].every(name => contribution.exports.includes(`pulse_crypto_digest_${name}_v2`))
     || !contribution.exports.includes('pulse_crypto_sha256_bytes_v1')
     || !contribution.exports.includes('pulse_crypto_hmac_sha256_bytes_v1')
     || !contribution.resourceLimits
@@ -283,7 +283,7 @@ function normalizeContribution(entry, definition) {
     || contribution.resourceLimits.digestDataBytesMaximum !== 2097152
     || contribution.resourceLimits.byteOperationOutputBytes !== 32
     || contribution.resourceLimits.byteOperationFrameBytes !== 73760
-    || contribution.resourceLimits.digestFrameBytes !== 2097184
+    || contribution.resourceLimits.digestFrameBytes !== 73760
     || !contribution.resultCodes
     || contribution.resultCodes.valid !== 1
     || contribution.resultCodes.invalidAuthenticator !== 0

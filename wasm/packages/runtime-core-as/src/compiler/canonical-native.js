@@ -239,6 +239,8 @@ function assembleNativeResult({
 }
 
 module.exports = Object.freeze({
+  linkedRuntime: require('./linked-runtime').linkedRuntime,
+  prepareLinkedPrimary: require('./linked-runtime').prepareLinkedPrimary,
   resourceLedgerSource: require('./resource-ledger.js').resourceLedgerSource,
   createLifecycleEmitter: require('./lifecycle-emitter.js').createLifecycleEmitter,
   CANONICAL_NATIVE_AS_GENERATOR_VERSION,

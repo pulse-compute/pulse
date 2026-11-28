@@ -2655,8 +2655,10 @@ composes the same Crypto-owned source once; Node JavaScript explicitly selects
 Crypto's `runtime-builtin` Web Crypto byte realization through the trusted
 `@pulse-compute/crypto/provider` export. Both return 32-byte results, cap SHA-256
 data at 2 MiB, HMAC data at 64 KiB and HMAC keys at 8 KiB, and snapshot and wipe
-staging inputs. Large host-staged hashes use a separate lazy digest frame. Native
-also checks guest memory ranges. JWT verification retains its separate limits.
+staging inputs. The private Crypto guest-source v2 bridge stages host-provided
+digests in at most 64 KiB chunks through a demand-allocated 73,760-byte frame.
+Crypto owns incremental SHA-256 state and clears it and staging on returned
+paths; the host copies the result before release. Native also checks guest memory ranges. JWT verification retains its separate limits.
 No target probes or falls back to a different realization.
 
 The supported-extension `@pulse-compute/s3` package owns `head`, `getText`, `getBody`,
@@ -2825,9 +2827,40 @@ arithmetic compiled with Zig 0.13.0's Clang and statically linked by Cargo;
 source inventory, toolchain identity and final bytes are part of the trusted
 package catalog. The existing module/path identifiers are retained, while the
 ABI/build identities advance to v3. This expands neither linked-unit count
-nor the fixed memory/host-import policy. Native SHA/HMAC source composition
-remains rejected by that policy, and Fastly Native keeps one verification
-algorithm per artifact.
+nor the fixed memory/host-import policy. JWT-02.2 repairs Native SHA/HMAC and
+schema composition under that policy. Fastly Native keeps one signature
+verification algorithm per artifact; a separate HMAC operation can compose.
+
+Linked primaries use the runtime-core-owned fixed allocator on both canonical
+Node and Fastly paths. The heap remains [540928, 2097152); raw reset is forbidden
+while managed roots can exist. The private `pulse.primary-initialization.v1`
+export has exactly `() -> ()` type. Node initializes before managed export binding
+and rejects host calls during initialization. Fastly initializes before handler
+entry. Initialization is once per instance; failure/reentry poisons that instance
+and requires disposal. No request or event reset reruns the initializer.
+
+The mandatory linker audit still rejects implicit starts, memory growth and
+unsupported features. An inert constant layout witness proves primary static
+data plus its 32 KiB shadow stack end by 524288, before the signature frame.
+The final audit checks preservation and records heap/layout bounds. Generated
+source and manifests bind the shared allocator identity and content hash.
+Canonical compiler v4, host v8, Fastly compiler v2 and Crypto guest-source v2
+identify the revised private recipes. Unlinked runtime selection is unchanged.
+
+Linked schema builds automatically select the existing pinned, fail-closed
+json-as disabled-cache elision transform. Enabled-cache behavior and unlinked
+opt-in behavior are unchanged. Removing its unused 1 MiB arena fixes startup
+pressure; it does not promise arbitrary schema size or allocation workloads fit
+inside the fixed heap. The byte digest bridge preserves its 2 MiB input limit
+without retaining that input inside Wasm. Other managed strings and objects
+remain subject to the fixed memory budget.
+
+Workspace composition, invalid-input, initializer and allocator tests are
+JWT-02.2 evidence. JWT-02.3 separately owns exact installed Node/Fastly acceptance
+and the generic composed-consumer matrix. These changes do not establish hosted
+qualification or a consumer migration. Returned crypto paths erase owned state
+and staging; terminal Fastly Wasm traps require instance disposal and cannot
+promise in-guest finalizers or whole-memory erasure.
 
 JWT owns strict private/public RSA JWK metadata and deterministic static JWKS
 selection. Crypto checks RSA/CRT consistency and signing output. No remote

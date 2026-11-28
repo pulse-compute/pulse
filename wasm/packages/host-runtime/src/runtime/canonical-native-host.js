@@ -413,6 +413,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     if (options.signal?.aborted) throw nativeRequestCancelled(options.signal);
   });
   let invocations = createInvocations();
+  let eventResult;
   let invocationState = 'ready';
   let running = false;
   let entering = false;
@@ -969,7 +970,18 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     };
   }
   pulseHost.router_error_take = () => { const error = applicationError; applicationError = 0; return error; };
-  instance = new WebAssembly.Instance(module, { pulse_host: pulseHost, env });
+  const linkedInitialization = moduleShape.exports.some(entry => entry.name === '__pulse_initialize');
+  const initializer = linkedInitialization ? require('./native-initialization').createNativeInitializer(() => instance.exports.__pulse_initialize()) : null;
+  if (initializer) for (const [name, implementation] of Object.entries(pulseHost)) {
+    pulseHost[name] = (...args) => { initializer.assertReady(); return implementation(...args); };
+  }
+  try {
+    instance = new WebAssembly.Instance(module, { pulse_host: pulseHost, env });
+    initializer?.run();
+  } catch (error) { closeAfterFailure(); throw error; }
+  if (initializer) Object.defineProperty(instance, 'exports', {
+    value: Object.freeze({ ...instance.exports, __pulse_initialize: initializer.run }), configurable: true
+  });
   if (schemaIndexes.size > 0) {
     const available = new Set(moduleShape.exports.map((entry) => entry.name));
     const missingSchemaExports = runtimeContract.CANONICAL_NATIVE_SCHEMA_EXPORT_NAMES.filter((name) => !available.has(name));
@@ -1104,7 +1116,6 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     });
   }
 
-  let eventResult;
   function resultValue() {
     if (executionPlane === 'event') return invocationState === 'completed' ? eventResult : undefined;
     return rawResultValue();

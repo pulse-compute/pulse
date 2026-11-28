@@ -1,5 +1,5 @@
 /*
- * Fixed-memory AssemblyScript runtime for guest-linked Fastly Native modules.
+ * Fixed-memory AssemblyScript runtime for guest-linked Native modules.
  *
  * The ES256 guest contract reserves [0, 262144) for Rust, [262144, 524288)
  * for primary static data, and [524288, 540928) for the private invocation
@@ -89,7 +89,7 @@ function coalesce(): void {
 
 @unsafe @global
 export function __alloc(size: usize): usize {
-  if (size > BLOCK_MAXSIZE) unreachable()
+  if (__heap_base > 524288 || size > BLOCK_MAXSIZE) unreachable()
   const payloadSize = computeSize(size)
   let pointer = tryAllocate(payloadSize)
   if (pointer == 0 && !collecting) {
@@ -106,6 +106,7 @@ export function __alloc(size: usize): usize {
 @unsafe @global
 export function __realloc(pointer: usize, size: usize): usize {
   if (pointer == 0 || (pointer & AL_MASK) != 0) unreachable()
+  if (size > BLOCK_MAXSIZE) unreachable()
   const block = pointer - BLOCK_OVERHEAD
   const actualSize = blockSize(block)
   const payloadSize = computeSize(size)
@@ -144,5 +145,6 @@ export function __free(pointer: usize): void {
 
 @unsafe @global
 export function __reset(): void {
-  endOffset = startOffset
+  // Live managed roots make a raw heap reset unsound. Instance disposal owns reset.
+  unreachable()
 }

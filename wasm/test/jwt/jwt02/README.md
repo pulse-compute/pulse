@@ -1,13 +1,17 @@
 # JWT-02.1 — initialization diagnosis and implementation design
 
-This is a design and evidence checkpoint, not the Native composition fix.
+JWT-02.2 now implements this design; see [implementation evidence](IMPLEMENTATION.md).
+The findings below describe the JWT-02.1 historical checkpoint, not current behavior.
+
+This was a design and evidence checkpoint, not the Native composition fix.
 Production compiler, provider, crypto and guest-link owners are unchanged.
 The generic reductions extend the existing [JWT-02 card](../JWT-02-guest-composition.md).
 
-## Reproduce
+## Reproduce the historical diagnosis
 
 ```sh
-node wasm/scripts/run-wasm-tests.cjs --task jwt02-initialization-design --no-report
+# Run from historical revision 41f4b4e2865f6d1dcecdeed075d95d2343e34350
+node wasm/test/jwt/jwt02/diagnose.cjs
 # Optional: retain generated sources, primary Wasm, disassemblies and probes.
 node wasm/test/jwt/jwt02/diagnose.cjs --out /absolute/path/to/new-directory
 ```

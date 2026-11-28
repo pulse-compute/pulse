@@ -487,7 +487,7 @@
             }
           ],
           "kind": "boolean",
-          "description": "Opt in to omitting the json-as arena when string caching is disabled. Native only; preserves enabled caches. May increase peak memory for allocation-heavy workloads."
+          "description": "Omit the json-as arena when string caching is disabled. Linked Native builds select this automatically; other Native builds opt in. Preserves enabled caches. May increase peak memory for allocation-heavy workloads."
         },
         {
           "id": "emit-wat",
@@ -632,7 +632,7 @@
             }
           ],
           "kind": "boolean",
-          "description": "Opt in to omitting the json-as arena when string caching is disabled. Native only; preserves enabled caches. May increase peak memory for allocation-heavy workloads."
+          "description": "Omit the json-as arena when string caching is disabled. Linked Native builds select this automatically; other Native builds opt in. Preserves enabled caches. May increase peak memory for allocation-heavy workloads."
         },
         {
           "id": "emit-wat",

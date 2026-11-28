@@ -12,7 +12,8 @@ eager digest-buffer and disabled schema-cache allocation problems. The design
 recommends preserving fixed memory and the no-start audit, sharing the existing
 reserved-heap runtime, explicit initialization, bounded crypto staging and a
 linked schema recipe that elides the disabled cache. Production behavior remains
-unchanged; JWT-02.2 implementation and JWT-02.3 installed acceptance remain open.
+unchanged at that checkpoint. [JWT-02.2 implementation](jwt02/IMPLEMENTATION.md)
+now repairs the Native composition path; JWT-02.3 installed acceptance remains open.
 
 ## Problem and reproduction
 

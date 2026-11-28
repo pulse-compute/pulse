@@ -200,6 +200,19 @@ function assertPrimaryAndOwner(plan, manifest, primary, owner) {
     fail(diagnosticCodes.memoryMismatch, 'Memory-owner module must be inert.');
   }
 
+  const initializer = primary.exports.find(entry => entry.name === '__pulse_initialize');
+  if (initializer && (initializer.kind !== 'function' || !equal(initializer.parameters, []) || !equal(initializer.results, []))) {
+    fail(diagnosticCodes.abiMismatch, 'Primary initializer must have the exact () -> () signature.');
+  }
+  if (initializer) {
+    const layout = primary.exports.find(entry => entry.name === '__pulse_primary_layout_end');
+    if (!layout || layout.kind !== 'function' || !equal(layout.parameters, []) || !equal(layout.results, ['i32'])
+      || !Number.isInteger(layout.constantI32)
+      || layout.constantI32 < contract.layout.primaryStatic.start
+      || layout.constantI32 > contract.layout.primaryStatic.endExclusive) {
+      fail(diagnosticCodes.memoryMismatch, 'Primary static data and shadow stack escape their reserved region.');
+    }
+  }
   const abiExports = manifest.exports.filter((entry) => entry.role === 'abi');
   const guestImports = primary.imports.filter((entry) => entry.module === manifest.module);
   const expectedGuestImports = abiExports.map((entry) => ({
@@ -255,6 +268,10 @@ function assertFinal(plan, before, final) {
       expected: allowedImports,
       actual: actualImports
     });
+  }
+  const primaryLayout = before.primary.exports.find(entry => entry.name === '__pulse_primary_layout_end');
+  if (primaryLayout && final.exports.find(entry => entry.name === '__pulse_primary_layout_end')?.constantI32 !== primaryLayout.constantI32) {
+    fail(diagnosticCodes.finalAuditFailed, 'Final primary layout witness differs from the validated input.');
   }
   const expectedExports = expectedFinalExports(before.primary, before.guest, before.owner);
   const actualExports = sortedSurface(final.exports.map(surfaceExport));
@@ -409,6 +426,12 @@ function finalAudit(plan, before, afterLink, final, artifactRecord) {
       memoryContract: contract.identity,
       occupiedAndReservedRangesPairwiseDisjoint: true,
       staticSegmentsPreserved: true,
+      ...(before.primary.exports.some(entry => entry.name === '__pulse_initialize') ? {
+        primaryInitialization: 'pulse.primary-initialization.v1',
+        primaryStaticAndShadowStackEnd: before.primary.exports.find(entry => entry.name === '__pulse_primary_layout_end').constantI32,
+        primaryHeapStart: contract.layout.unallocated.start,
+        primaryHeapEndExclusive: contract.layout.unallocated.endExclusive
+      } : {}),
       ...(plan.version === versions.guestUnitPlanV2 ? {
         beforeOptimization,
         afterOptimization
