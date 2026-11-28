@@ -19,6 +19,11 @@ hashes, generated-source and artifact identities, selected memory limits and
 terminal observations. Keys and tokens used for injected-host requests remain
 in memory. All consumer source and data are synthetic.
 
+[The retained checkpoint](evidence.json) records the clean tested source and
+owner hashes. Each replay generates fresh independent signing keys, so artifact
+hashes can differ across runs; the expected semantic observations remain fixed.
+The receipt is development evidence, not an installed or release qualification.
+
 ## Findings
 
 1. **The ordinary build fails at the provider-neutral primary.**

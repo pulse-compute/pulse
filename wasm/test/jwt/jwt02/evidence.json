@@ -1,0 +1,535 @@
+{
+  "version": "pulse.jwt02.initialization-design.v1",
+  "status": "passed",
+  "sourceRevision": "5c0a3c5124211fb387b47b910481c424f43fd680",
+  "workingTreeStatus": "",
+  "ownerHashes": {
+    "wasm/packages/compiler/src/canonical-native-compiler.js": "9b3928ee361dac34e451fd1b7943cc07481c54a49cf2e08bc29fe83fe9cbb93c",
+    "wasm/packages/wasm-guest-link/src/constants.js": "ea333668f73174b3b860270820a8c77e6a1896643fa9ba870294cbf65ff2af8d",
+    "wasm/packages/wasm-guest-link/src/pipeline.js": "91a3060e80731b65bdcdf2d5f2da8b451dca0fca29e8edda7a6690aa28f0c3c9",
+    "packages/crypto/as/pulse-hmac-as.ts": "9a37fdd09bef3d82267ed55bd7f69f2832372977b254b48081c60ef189c39507",
+    "packages/crypto/pulsewasm.native.cjs": "96537aef72881f0d59cc22b8b123a79324fc2fd5cbe2473410659ecc48c6f6c2",
+    "packages/provider-fastly/src/build/fixed-memory-runtime.as.ts": "3a658c16eb806406106ff6f1c3783f4f8ad2e895a070f6556e61c5c2692f297d",
+    "packages/provider-fastly/src/build/native-platform-capabilities.js": "ab1ab6b69d3adaeb43c02f612eb642c0a6f61a3e7223973112438716de259197",
+    "packages/provider-fastly/src/testing/native-platform-capabilities-host.js": "cc5a3bdcf532f5ca4f21c8f038d5c18bf98c1911f1c4cbbe6073976f38ffeff1",
+    "wasm/packages/build-support/src/schema-cache-arena-transform.cjs": "e8aa5e2f14d901017d102cd7b4c7bc9600b8832bdd9850ff06091cb3a9dfc467",
+    "wasm/test/qualification/stab03/fixture.cjs": "74b73471cc337969230ca5a87191a9650a71e502269aab3c5528417928eed563",
+    "wasm/test/jwt/jwt02/diagnose.cjs": "95899a0783a6a27adeb184f0b9be915e27c15d28366361e068d0d448f7bf440d",
+    "wasm/test/suite/registry.cjs": "10252025ee38f51ff682890cf63e867f0c3fcee27acde4bdb715c6b7bd794dc5"
+  },
+  "nodeVersion": "v24.18.0",
+  "assemblyScriptVersion": "0.28.18",
+  "binaryenVersion": "129.0.0-nightly.20260428",
+  "memory": {
+    "identity": "pulse.guest-memory.invocation-frame.v2",
+    "pointerWidthBits": 32,
+    "pageBytes": 65536,
+    "minimumPages": 32,
+    "maximumPages": 32,
+    "bytes": 2097152,
+    "importModule": "env",
+    "importName": "memory",
+    "layout": {
+      "rustStack": {
+        "start": 0,
+        "endExclusive": 65536
+      },
+      "stackStaticGuard": {
+        "start": 65536,
+        "endExclusive": 131072
+      },
+      "rustStatic": {
+        "start": 131072,
+        "endExclusive": 262144
+      },
+      "primaryStatic": {
+        "start": 262144,
+        "endExclusive": 524288
+      },
+      "invocationFrame": {
+        "start": 524288,
+        "endExclusive": 540928
+      },
+      "unallocated": {
+        "start": 540928,
+        "endExclusive": 2097152
+      }
+    },
+    "frame": {
+      "identity": "pulse.crypto.es256.invocation-frame.v2",
+      "memoryIdentity": "pulse.guest-memory.invocation-frame.v2",
+      "pointerWidthBits": 32,
+      "byteOrder": "little-endian",
+      "magic": 844318032,
+      "version": 2,
+      "headerBytes": 64,
+      "capacityBytes": 16640,
+      "alignmentBytes": 16,
+      "signingInputBytesMaximum": 16340,
+      "publicKeyBytes": 64,
+      "signatureBytes": 64,
+      "export": "pulse_crypto_es256_verify",
+      "parameters": [
+        "i32",
+        "i32"
+      ],
+      "results": [
+        "i32"
+      ]
+    }
+  },
+  "cases": [
+    {
+      "kind": "baseline",
+      "planHash": "76c35a0d5c1f5350f8dac78307a16f3738f8cd259dbbea8d7e23900231c27321",
+      "generatedSourceSha256": "00e2bca0dcd2953f1890590ce79442ea6c1d9d256bb2c637639e6fd737f37773",
+      "canonical": {
+        "status": "built",
+        "sha256": "2fd8e7feb50950b899af12ce4aa18d066a6421629e30606154a7ada3aa1f8800",
+        "bytes": 36658
+      },
+      "primary": {
+        "sha256": "bc58766d1f021fb280278b9706c9ab14956abc900964af6feb1fae3b8f45c3af",
+        "bytes": 3570,
+        "hasStart": false,
+        "memoryTypes": [
+          {
+            "minimumPages": 32,
+            "maximumPages": 32,
+            "shared": false
+          }
+        ],
+        "instructions": {
+          "memoryGrow": 0,
+          "memoryCopy": 0,
+          "memoryFill": 0,
+          "memoryInit": 0,
+          "globalSet": 46,
+          "store": 0,
+          "callIndirect": 0
+        },
+        "dataBytes": 1152,
+        "dataEndExclusive": 263308
+      },
+      "fastlyDirect": {
+        "sha256": "6dce109ad5dbd3d19d5b1fc3c9299dab082edfc18a103da991ef863a0af2c31d",
+        "bytes": 98124,
+        "hasStart": false,
+        "memoryTypes": [
+          {
+            "minimumPages": 32,
+            "maximumPages": 32,
+            "shared": false
+          }
+        ],
+        "instructions": {
+          "memoryGrow": 0,
+          "memoryCopy": 0,
+          "memoryFill": 0,
+          "memoryInit": 0,
+          "globalSet": 628,
+          "store": 2921,
+          "callIndirect": 0
+        },
+        "dataBytes": 16450,
+        "dataEndExclusive": 278008,
+        "execution": {
+          "status": "returned",
+          "httpStatus": 200,
+          "body": "reader",
+          "hostcalls": [
+            "fastly_abi.init",
+            "fastly_http_req.body_downstream_get",
+            "fastly_http_req.method_get",
+            "fastly_http_req.uri_get",
+            "fastly_http_req.header_values_get",
+            "wasi_snapshot_preview1.clock_time_get",
+            "fastly_http_resp.new",
+            "fastly_http_body.new",
+            "fastly_http_resp.status_set",
+            "fastly_http_resp.header_append",
+            "fastly_http_body.write",
+            "fastly_http_resp.send_downstream"
+          ]
+        },
+        "authority": "direct provider-stage injected-host experiment, not ordinary build or hosted qualification"
+      }
+    },
+    {
+      "kind": "mac",
+      "planHash": "9716035a4c722471e9d988171eca1def17f98a65827dc9479cba0e87c1ed76cc",
+      "generatedSourceSha256": "13c39ac6cd415dad433796d18eed2adff4c26e572306171185c561bfcb19d6fb",
+      "canonical": {
+        "status": "blocked",
+        "code": "PULSE_GUEST_UNIT_START_MISMATCH",
+        "message": "Primary module has a forbidden start section."
+      },
+      "primary": {
+        "sha256": "7c6459b6981dd36f8aee9ca63d2a662bc1eda09aab6323d59a0191b1e20ccc7a",
+        "bytes": 7997,
+        "hasStart": true,
+        "memoryTypes": [
+          {
+            "minimumPages": 32,
+            "maximumPages": 32,
+            "shared": false
+          }
+        ],
+        "instructions": {
+          "memoryGrow": 2,
+          "memoryCopy": 0,
+          "memoryFill": 0,
+          "memoryInit": 0,
+          "globalSet": 64,
+          "store": 30,
+          "callIndirect": 0
+        },
+        "dataBytes": 2144,
+        "dataEndExclusive": 264300
+      },
+      "fastlyDirect": {
+        "sha256": "37a298f52220146d4c58cae5f935e8842e2ed955232853d35c156a415c105108",
+        "bytes": 105627,
+        "hasStart": false,
+        "memoryTypes": [
+          {
+            "minimumPages": 32,
+            "maximumPages": 32,
+            "shared": false
+          }
+        ],
+        "instructions": {
+          "memoryGrow": 0,
+          "memoryCopy": 0,
+          "memoryFill": 0,
+          "memoryInit": 0,
+          "globalSet": 705,
+          "store": 3179,
+          "callIndirect": 0
+        },
+        "dataBytes": 17602,
+        "dataEndExclusive": 279160,
+        "execution": {
+          "status": "trapped",
+          "errorType": "RuntimeError",
+          "hostcalls": []
+        },
+        "authority": "direct provider-stage injected-host experiment, not ordinary build or hosted qualification"
+      }
+    },
+    {
+      "kind": "schema",
+      "planHash": "fb28255db1420833707c24cb65b0f081bb7d666a5377e7dc8cd966b4fac3517b",
+      "generatedSourceSha256": "bf2b252c4651b940d05451629827c3659e85d1c10f7ff3ffd5700325a38448e0",
+      "canonical": {
+        "status": "blocked",
+        "code": "PULSE_GUEST_UNIT_START_MISMATCH",
+        "message": "Primary module has a forbidden start section."
+      },
+      "primary": {
+        "sha256": "6d2bbb7604e723ba25465eca80390eff4a6a815459831d8ba040d08a7a9b3cd8",
+        "bytes": 31938,
+        "hasStart": true,
+        "memoryTypes": [
+          {
+            "minimumPages": 32,
+            "maximumPages": 32,
+            "shared": false
+          }
+        ],
+        "instructions": {
+          "memoryGrow": 3,
+          "memoryCopy": 0,
+          "memoryFill": 0,
+          "memoryInit": 0,
+          "globalSet": 197,
+          "store": 297,
+          "callIndirect": 0
+        },
+        "dataBytes": 15203,
+        "dataEndExclusive": 277440
+      },
+      "fastlyDirect": {
+        "sha256": "9bdad44ef41c069f40bcba9ebb96479302a84bf03d4ac8938983423394472c62",
+        "bytes": 119876,
+        "hasStart": false,
+        "memoryTypes": [
+          {
+            "minimumPages": 32,
+            "maximumPages": 32,
+            "shared": false
+          }
+        ],
+        "instructions": {
+          "memoryGrow": 0,
+          "memoryCopy": 0,
+          "memoryFill": 0,
+          "memoryInit": 0,
+          "globalSet": 748,
+          "store": 3151,
+          "callIndirect": 0
+        },
+        "dataBytes": 29213,
+        "dataEndExclusive": 290804,
+        "execution": {
+          "status": "trapped",
+          "errorType": "RuntimeError",
+          "hostcalls": []
+        },
+        "cacheElision": {
+          "sha256": "a9b9f2da52b041ac9718d8778bf2b57f92cd06b0cc8a00737da73404d4c0c3dc",
+          "bytes": 119873,
+          "hasStart": false,
+          "memoryTypes": [
+            {
+              "minimumPages": 32,
+              "maximumPages": 32,
+              "shared": false
+            }
+          ],
+          "instructions": {
+            "memoryGrow": 0,
+            "memoryCopy": 0,
+            "memoryFill": 0,
+            "memoryInit": 0,
+            "globalSet": 748,
+            "store": 3151,
+            "callIndirect": 0
+          },
+          "dataBytes": 29213,
+          "dataEndExclusive": 290804,
+          "execution": {
+            "status": "returned",
+            "httpStatus": 200,
+            "body": "1",
+            "hostcalls": [
+              "fastly_abi.init",
+              "fastly_http_req.body_downstream_get",
+              "fastly_http_req.method_get",
+              "fastly_http_req.uri_get",
+              "fastly_http_req.header_values_get",
+              "wasi_snapshot_preview1.clock_time_get",
+              "fastly_http_resp.new",
+              "fastly_http_body.new",
+              "fastly_http_resp.status_set",
+              "fastly_http_resp.header_append",
+              "fastly_http_body.write",
+              "fastly_http_resp.send_downstream"
+            ]
+          },
+          "authority": "existing opt-in cache-elision counterfactual; not a default-policy change"
+        },
+        "authority": "direct provider-stage injected-host experiment, not ordinary build or hosted qualification"
+      }
+    },
+    {
+      "kind": "combined",
+      "planHash": "e3ca142ac9e73af203579684079e520c0435691e939322d3081efd70648e5e9c",
+      "generatedSourceSha256": "79aab1229c22b35e9db080c97af01cdea635d7b1cc402b891c0dcfaf3bd94e81",
+      "canonical": {
+        "status": "blocked",
+        "code": "PULSE_GUEST_UNIT_START_MISMATCH",
+        "message": "Primary module has a forbidden start section."
+      },
+      "primary": {
+        "sha256": "b990f82928cb2c7fe2b8c8b40d787d6f022e3090cb994d6686b1b4896d342e84",
+        "bytes": 37967,
+        "hasStart": true,
+        "memoryTypes": [
+          {
+            "minimumPages": 32,
+            "maximumPages": 32,
+            "shared": false
+          }
+        ],
+        "instructions": {
+          "memoryGrow": 3,
+          "memoryCopy": 0,
+          "memoryFill": 0,
+          "memoryInit": 0,
+          "globalSet": 270,
+          "store": 519,
+          "callIndirect": 0
+        },
+        "dataBytes": 16059,
+        "dataEndExclusive": 278296
+      },
+      "fastlyDirect": {
+        "sha256": "37e4919b900f134ecc149fae433a2403074d34b058a37481c6229b9df74fcb0d",
+        "bytes": 127477,
+        "hasStart": false,
+        "memoryTypes": [
+          {
+            "minimumPages": 32,
+            "maximumPages": 32,
+            "shared": false
+          }
+        ],
+        "instructions": {
+          "memoryGrow": 0,
+          "memoryCopy": 0,
+          "memoryFill": 0,
+          "memoryInit": 0,
+          "globalSet": 829,
+          "store": 3407,
+          "callIndirect": 0
+        },
+        "dataBytes": 30413,
+        "dataEndExclusive": 292004,
+        "execution": {
+          "status": "trapped",
+          "errorType": "RuntimeError",
+          "hostcalls": []
+        },
+        "authority": "direct provider-stage injected-host experiment, not ordinary build or hosted qualification"
+      }
+    }
+  ],
+  "experiments": [
+    {
+      "kind": "mac",
+      "runtime": "standard",
+      "sha256": "bf636a877bb792672c2d1dbd59207a936e741ca7dd0f6bd2d31803321aef0c13",
+      "bytes": 8023,
+      "hasStart": false,
+      "memoryTypes": [
+        {
+          "minimumPages": 32,
+          "maximumPages": 32,
+          "shared": false
+        }
+      ],
+      "instructions": {
+        "memoryGrow": 2,
+        "memoryCopy": 0,
+        "memoryFill": 0,
+        "memoryInit": 0,
+        "globalSet": 67,
+        "store": 30,
+        "callIndirect": 0
+      },
+      "dataBytes": 2144,
+      "dataEndExclusive": 264300,
+      "initialization": "trapped",
+      "signatureFrameChangedBytes": 0,
+      "authority": "isolated initializer probe; not linked, admitted or executable application evidence"
+    },
+    {
+      "kind": "mac",
+      "runtime": "fixed",
+      "sha256": "6f956e403dc94c98dbfb35459eb77cec50c0463d112fcae2ba09d8b811b9e087",
+      "bytes": 12039,
+      "hasStart": false,
+      "memoryTypes": [
+        {
+          "minimumPages": 32,
+          "maximumPages": 32,
+          "shared": false
+        }
+      ],
+      "instructions": {
+        "memoryGrow": 0,
+        "memoryCopy": 0,
+        "memoryFill": 0,
+        "memoryInit": 0,
+        "globalSet": 151,
+        "store": 253,
+        "callIndirect": 0
+      },
+      "dataBytes": 2360,
+      "dataEndExclusive": 264540,
+      "initialization": "trapped",
+      "signatureFrameChangedBytes": 0,
+      "authority": "isolated initializer probe; not linked, admitted or executable application evidence"
+    },
+    {
+      "kind": "mac",
+      "runtime": "fixed-demand",
+      "sha256": "d09c2e5f2a4fc83e6601228cfa089d28c236086016b81989006b64c8acc0e8ae",
+      "bytes": 12044,
+      "hasStart": false,
+      "memoryTypes": [
+        {
+          "minimumPages": 32,
+          "maximumPages": 32,
+          "shared": false
+        }
+      ],
+      "instructions": {
+        "memoryGrow": 0,
+        "memoryCopy": 0,
+        "memoryFill": 0,
+        "memoryInit": 0,
+        "globalSet": 151,
+        "store": 253,
+        "callIndirect": 0
+      },
+      "dataBytes": 2360,
+      "dataEndExclusive": 264540,
+      "initialization": "initialized",
+      "signatureFrameChangedBytes": 0,
+      "largeDigestAllocation": "trapped",
+      "sourceMutation": "experiment-only runtime-deferred digest buffer",
+      "authority": "isolated initializer probe; not linked, admitted or executable application evidence"
+    },
+    {
+      "kind": "schema",
+      "runtime": "standard",
+      "sha256": "a9e59ebc5574861413fd99b8e0a790da3c7580fb14e9829129100e78c81596ba",
+      "bytes": 31948,
+      "hasStart": false,
+      "memoryTypes": [
+        {
+          "minimumPages": 32,
+          "maximumPages": 32,
+          "shared": false
+        }
+      ],
+      "instructions": {
+        "memoryGrow": 3,
+        "memoryCopy": 0,
+        "memoryFill": 0,
+        "memoryInit": 0,
+        "globalSet": 200,
+        "store": 297,
+        "callIndirect": 0
+      },
+      "dataBytes": 15187,
+      "dataEndExclusive": 277424,
+      "initialization": "initialized",
+      "signatureFrameChangedBytes": 16640,
+      "authority": "isolated initializer probe; not linked, admitted or executable application evidence"
+    },
+    {
+      "kind": "schema",
+      "runtime": "fixed",
+      "sha256": "0953e5bc5b4275f317d8985b8772487e6c244b6c0031403c8aefa909099f7f77",
+      "bytes": 30967,
+      "hasStart": false,
+      "memoryTypes": [
+        {
+          "minimumPages": 32,
+          "maximumPages": 32,
+          "shared": false
+        }
+      ],
+      "instructions": {
+        "memoryGrow": 0,
+        "memoryCopy": 0,
+        "memoryFill": 0,
+        "memoryInit": 0,
+        "globalSet": 206,
+        "store": 276,
+        "callIndirect": 0
+      },
+      "dataBytes": 15123,
+      "dataEndExclusive": 277344,
+      "initialization": "initialized",
+      "signatureFrameChangedBytes": 0,
+      "authority": "isolated initializer probe; not linked, admitted or executable application evidence"
+    }
+  ],
+  "productionFix": false,
+  "installedQualified": false,
+  "hostedQualified": false
+}
