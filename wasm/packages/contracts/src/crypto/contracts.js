@@ -40,7 +40,7 @@ const CRYPTO_REALIZATIONS = Object.freeze([
     id: 'guest-source:pulse-hmac-as', kind: 'guest-source', backend: 'pulse-hmac-as',
     implementation: CRYPTO_GUEST_SOURCE_IMPLEMENTATION, algorithm, targets: Object.freeze(['native']),
     source: Object.freeze({ package: '@pulse-compute/crypto', export: './pulsewasm-native',
-      contractVersion: 'pulse.crypto-guest-source.v1', contribution: 'pulse-hmac-as' })
+      contractVersion: 'pulse.crypto-guest-source.v2', contribution: 'pulse-hmac-as' })
   })),
   Object.freeze({
     id: 'runtime-builtin',
@@ -59,7 +59,7 @@ const CRYPTO_REALIZATIONS = Object.freeze([
     source: Object.freeze({
       package: '@pulse-compute/crypto',
       export: './pulsewasm-native',
-      contractVersion: 'pulse.crypto-guest-source.v1',
+      contractVersion: 'pulse.crypto-guest-source.v2',
       contribution: 'pulse-hmac-as'
     })
   }),

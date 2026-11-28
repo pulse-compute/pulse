@@ -101,7 +101,7 @@ const SOURCE_FILES = Object.freeze([
   'packages/crypto/guests/es256-rustcrypto/source/rust-toolchain.toml',
   'packages/jwt/as/index.as.ts',
   'packages/jwt/pulsewasm.native.cjs',
-  'packages/provider-fastly/src/build/fixed-memory-runtime.as.ts',
+  'wasm/packages/runtime-core-as/src/compiler/fixed-memory-runtime.as.ts',
   'packages/provider-fastly/src/build/native-platform-capabilities.js',
   'packages/provider-fastly/src/build/canonical-target.js',
   'packages/provider-fastly/src/provider-contract.js',

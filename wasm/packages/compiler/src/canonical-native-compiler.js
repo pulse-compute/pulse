@@ -138,7 +138,7 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
   if (!asc) throw new CanonicalNativeCompileError('AssemblyScript compiler dependency was not found.', { cwd, remediation: 'Install the lockfile-pinned AssemblyScript dependency before compiling native Wasm.' });
   const application = plan.packages && plan.packages.application;
   const source = application && application.source + `\nconst __pulse_application_plan_hash: string = ${JSON.stringify(plan.planHash)}\n`;
-  const generated = application ? Object.freeze({
+  let generated = application ? Object.freeze({
     source, sourceHash: sha256(source), manifest: Object.freeze({
       ...application.manifest, planVersion: plan.version, planHash: plan.planHash, sourceHash: sha256(source)
     })
@@ -150,8 +150,11 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
     // by the canonical numeric proof itself.
     numericRegions: guestUnits.length === 0 ? 'host-numeric-regions-v1' : undefined
   });
+  if (guestUnits.length) generated = runtimeCore.prepareLinkedPrimary(generated);
   const schemaCodecsActive = generated.manifest.schemaCodecs && generated.manifest.schemaCodecs.active === true;
   const eventReachable = Boolean(plan.events?.catalog?.events.length);
+  const linkedRuntime = guestUnits.length ? runtimeCore.linkedRuntime() : null;
+  const elideJsonCacheArena = schemaCodecsActive && (Boolean(linkedRuntime) || options.elideJsonCacheArena === true);
   let jsonAs;
   if (schemaCodecsActive) {
     let transform;
@@ -195,7 +198,7 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
       asc.script,
       path.basename(sourceFile),
       '--outFile', wasmFile,
-      '--runtime', schemaCodecsActive || eventReachable ? 'incremental' : 'stub',
+      '--runtime', linkedRuntime ? linkedRuntime.module : (schemaCodecsActive || eventReachable ? 'incremental' : 'stub'),
       '--noAssert',
       '--optimize'
     ];
@@ -218,7 +221,8 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
         '--noExportMemory',
         '--initialMemory', String(memoryAbi.minimumPages),
         '--maximumMemory', String(memoryAbi.maximumPages),
-        '--memoryBase', String(memoryAbi.layout.primaryStatic.start)
+        '--memoryBase', String(memoryAbi.layout.primaryStatic.start),
+        '--stackSize', '32768', '--exportStart', '__pulse_initialize'
       );
     }
     if (schemaCodecsActive) {
@@ -229,7 +233,7 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
         '--path', jsonAs.dependencyRoot
       );
     }
-    require('@pulse-compute/wasm-build-support/native-optimization').appendJsonCacheArenaArgs(args, options.elideJsonCacheArena, schemaCodecsActive);
+    require('@pulse-compute/wasm-build-support/native-optimization').appendJsonCacheArenaArgs(args, elideJsonCacheArena, schemaCodecsActive);
     const readReportCapture = options.reportCapture === false ? () => null : prepareReportCapture(args, stagingDir, generated.manifest,
       require(path.join(asc.packageRoot, 'package.json')).version, 'canonical-native.as/');
     const startedAt = process.hrtime.bigint();
@@ -270,7 +274,8 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
       wasm,
       wat: emitWat ? fs.readFileSync(watFile, 'utf8') : '',
       textEmitted: emitWat,
-      elideJsonCacheArena: options.elideJsonCacheArena === true,
+      elideJsonCacheArena,
+      linkedRuntime: linkedRuntime && linkedRuntime.evidence,
       assemblyScriptVersion: require(path.join(asc.packageRoot, 'package.json')).version,
       jsonAsVersion: jsonAs && jsonAs.version,
       optimization,
@@ -302,6 +307,7 @@ function verifyCanonicalNativeRealization(realization) {
     assemblyScript: Object.freeze({ package: 'assemblyscript', version: realization.assemblyScriptVersion }),
     optimization: resolveNativeOptimization(realization.optimization),
     elideJsonCacheArena: realization.elideJsonCacheArena,
+    linkedRuntime: realization.linkedRuntime,
     jsonAs: realization.jsonAsVersion
       ? Object.freeze({ package: 'json-as', version: realization.jsonAsVersion, transform: true, strict: true, mode: 'NAIVE', fastPath: false, elideDisabledCacheArena: realization.elideJsonCacheArena })
       : null,

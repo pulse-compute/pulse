@@ -113,6 +113,14 @@ class __PulseCryptoSha256 {
     return output
   }
 
+  clear(): void {
+    memory.fill(changetype<usize>(this.state), 0, 32)
+    memory.fill(changetype<usize>(this.block), 0, 64)
+    memory.fill(changetype<usize>(this.schedule), 0, 256)
+    this.blockLength = 0
+    this.totalBytes = 0
+  }
+
   private transform(): void {
     const schedule = this.schedule
     for (let index: i32 = 0; index < 16; index += 1) {
@@ -317,15 +325,96 @@ export function pulse_crypto_hs256_verify(
 // Internal digest/MAC output contract. This frame is a rooted allocation owned
 // by Crypto; host callers may stage synchronously, copy the output, then wipe.
 // It does not grow Wasm memory per operation or overlap allocator-owned memory.
-const __pulse_crypto_bytes_frame = new Uint8Array(8192 + 65536 + 32)
-// Allocate the larger digest-only frame only when a host stages a large hash.
-// Small digest/MAC callers and fixed-memory JWT guests use the bounded byte frame.
-@lazy const __pulse_crypto_digest_frame = new Uint8Array(2097152 + 32)
-export function pulse_crypto_digest_frame_v1(): i32 {
-  return <i32>__pulse_crypto_digest_frame.dataStart
-}
+let __pulse_crypto_bytes_frame: Uint8Array | null = null
 export function pulse_crypto_bytes_frame_v1(): i32 {
-  return <i32>__pulse_crypto_bytes_frame.dataStart
+  if (__pulse_crypto_bytes_frame === null) __pulse_crypto_bytes_frame = new Uint8Array(8192 + 65536 + 32)
+  return <i32>__pulse_crypto_bytes_frame!.dataStart
+}
+
+// v2 private streaming bridge: one invocation owns the state and bounded frame.
+// The host only stages chunks; hashing remains entirely inside Crypto.
+let __pulse_crypto_digest_state: __PulseCryptoSha256 | null = null
+let __pulse_crypto_digest_total: i32 = 0
+let __pulse_crypto_digest_outer: __PulseCryptoSha256 | null = null
+export function pulse_crypto_digest_clear_v2(): void {
+  if (__pulse_crypto_digest_state !== null) __pulse_crypto_digest_state!.clear()
+  __pulse_crypto_digest_state = null
+  if (__pulse_crypto_digest_outer !== null) __pulse_crypto_digest_outer!.clear()
+  __pulse_crypto_digest_outer = null
+  __pulse_crypto_digest_total = 0
+  if (__pulse_crypto_bytes_frame !== null) memory.fill(__pulse_crypto_bytes_frame!.dataStart, 0, 73760)
+}
+export function pulse_crypto_digest_init_v2(): i32 {
+  if (__pulse_crypto_digest_state !== null) {
+    pulse_crypto_digest_clear_v2()
+    return __PULSE_CRYPTO_INVALID_INPUT
+  }
+  pulse_crypto_bytes_frame_v1()
+  __pulse_crypto_digest_state = new __PulseCryptoSha256()
+  return __PULSE_CRYPTO_VALID
+}
+export function pulse_crypto_mac_init_v2(keyLength: i32): i32 {
+  if (__pulse_crypto_digest_state !== null || keyLength < 32 || keyLength > 4096) {
+    pulse_crypto_digest_clear_v2()
+    return __PULSE_CRYPTO_INVALID_INPUT
+  }
+  const pointer = <usize><u32>pulse_crypto_bytes_frame_v1()
+  __pulse_crypto_digest_state = new __PulseCryptoSha256()
+  __pulse_crypto_digest_outer = new __PulseCryptoSha256()
+  const block = new StaticArray<u8>(64)
+  if (keyLength > 64) {
+    const digest = __pulse_crypto_sha256_memory(pointer, keyLength)
+    for (let i: i32 = 0; i < 32; i++) unchecked(block[i] = digest[i])
+    __pulse_crypto_wipe(digest)
+  } else {
+    for (let i: i32 = 0; i < keyLength; i++) unchecked(block[i] = load<u8>(pointer + i))
+  }
+  for (let i: i32 = 0; i < 64; i++) {
+    __pulse_crypto_digest_state!.updateByte(unchecked(block[i]) ^ 0x36)
+    __pulse_crypto_digest_outer!.updateByte(unchecked(block[i]) ^ 0x5c)
+  }
+  __pulse_crypto_wipe(block)
+  memory.fill(pointer, 0, 8192)
+  return __PULSE_CRYPTO_VALID
+}
+export function pulse_crypto_digest_update_v2(length: i32): i32 {
+  if (__pulse_crypto_digest_state === null || length < 0 || length > 65536
+    || __pulse_crypto_digest_total > (__pulse_crypto_digest_outer === null ? 2097152 : 1048576) - length) {
+    pulse_crypto_digest_clear_v2()
+    return __PULSE_CRYPTO_INVALID_INPUT
+  }
+  const pointer = __pulse_crypto_bytes_frame!.dataStart + 8192
+  __pulse_crypto_digest_state!.updateMemory(pointer, length)
+  __pulse_crypto_digest_total += length
+  memory.fill(pointer, 0, 65536)
+  return __PULSE_CRYPTO_VALID
+}
+export function pulse_crypto_digest_final_v2(): i32 {
+  if (__pulse_crypto_digest_state === null) return __PULSE_CRYPTO_INVALID_INPUT
+  let digest = __pulse_crypto_digest_state!.finish()
+  if (__pulse_crypto_digest_outer !== null) {
+    __pulse_crypto_digest_outer!.updateStatic(digest, 32)
+    __pulse_crypto_wipe(digest)
+    digest = __pulse_crypto_digest_outer!.finish()
+    __pulse_crypto_digest_outer = null
+  }
+  const pointer = __pulse_crypto_bytes_frame!.dataStart + 73728
+  for (let i: i32 = 0; i < 32; i++) store<u8>(pointer + i, unchecked(digest[i]))
+  __pulse_crypto_wipe(digest)
+  __pulse_crypto_digest_state = null
+  __pulse_crypto_digest_total = 0
+  return __PULSE_CRYPTO_VALID
+}
+
+export function pulse_crypto_mac_verify_v2(): i32 {
+  if (__pulse_crypto_digest_outer === null) { pulse_crypto_digest_clear_v2(); return __PULSE_CRYPTO_INVALID_INPUT }
+  if (pulse_crypto_digest_final_v2() != __PULSE_CRYPTO_VALID) return __PULSE_CRYPTO_INVALID_INPUT
+  const pointer = __pulse_crypto_bytes_frame!.dataStart
+  let mismatch: u32 = 0
+  for (let i: i32 = 0; i < 32; i++) mismatch |= load<u8>(pointer + 8192 + i) ^ load<u8>(pointer + 73728 + i)
+  const valid = mismatch == 0
+  pulse_crypto_digest_clear_v2()
+  return valid ? __PULSE_CRYPTO_VALID : __PULSE_CRYPTO_INVALID_AUTHENTICATOR
 }
 
 export function pulse_crypto_sha256_bytes_v1(dataPointer: i32, dataLength: i32, outputPointer: i32, outputLength: i32): i32 {

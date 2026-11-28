@@ -106,7 +106,7 @@ const { runTool: runGuestTool, binaryenIdentity } = loadGuestToolchain();
 
 const FASTLY_NATIVE_PLATFORM_CAPABILITIES_VERSION = 'pulse.fastly-native-platform-capabilities.v1';
 const FASTLY_NATIVE_PLATFORM_CAPABILITIES_GENERATOR_VERSION = 'pulse.fastly-native-platform-capabilities-generator.v1';
-const FASTLY_NATIVE_PLATFORM_CAPABILITIES_COMPILER_VERSION = 'pulse.fastly-native-platform-capabilities-compiler.v1';
+const FASTLY_NATIVE_PLATFORM_CAPABILITIES_COMPILER_VERSION = 'pulse.fastly-native-platform-capabilities-compiler.v2';
 const FASTLY_NATIVE_PLATFORM_CAPABILITIES_ABI_VERSION = 1;
 // Internal compilation budget, not a Fastly service limit. Keep a finite guard
 // while allowing composed applications beyond the original 1 MiB proof fixture.
@@ -677,10 +677,14 @@ function fastlyGuestLinkedStartWrapperWat() {
   (func (export "_start")
     (if (i32.eqz (global.get $initialized))
       (then
-        (call $initialize)
         (global.set $initialized (i32.const 1))
+        (call $initialize)
+        (if (i32.ne (global.get $initialized) (i32.const 1)) (then unreachable))
+        (global.set $initialized (i32.const 2))
       )
     )
+    (if (i32.ne (global.get $initialized) (i32.const 2))
+      (then (global.set $initialized (i32.const 3)) unreachable))
     (call $handle)
   )
 )
@@ -2378,7 +2382,8 @@ function inspectFastlyNativePlatformCapabilitiesWasm(input, options = {}) {
 
 function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
   const maxWasmBytes = normalizeFastlyMaxWasmBytes(options.maxWasmBytes);
-  const generated = generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options);
+  let generated = generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options);
+  if (generated.guestUnits.length) generated = loadNativeGenerator().prepareLinkedPrimary(generated);
   const cwd = path.resolve(options.cwd || process.cwd());
   const compilerFallback = path.resolve(__dirname, '..', '..', '..', '..', 'wasm', 'packages', 'compiler');
   const asc = resolveAsc(cwd) || resolveAsc(compilerFallback);
@@ -2422,7 +2427,9 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
   if (!emitWat) fs.rmSync(watFile, { force: true });
   const guestLinked = generated.guestUnits.length > 0;
   // asc resolves custom runtimes like module names and appends ".ts".
-  const fixedMemoryRuntimeModule = path.join(__dirname, 'fixed-memory-runtime.as');
+  const linkedRuntime = require('@pulse-compute/wasm-runtime-core-as/compiler/canonical-native').linkedRuntime();
+  const elideJsonCacheArena = schemaCodecsActive && (guestLinked || options.elideJsonCacheArena === true);
+  const fixedMemoryRuntimeModule = linkedRuntime.module;
   const fixedMemoryRuntimeFile = `${fixedMemoryRuntimeModule}.ts`;
   const assemblyScriptWasmFile = guestLinked
     ? path.join(stagingDir, 'fastly-native-platform-capabilities.primary.wasm')
@@ -2457,7 +2464,7 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
         '--initialMemory', String(memoryAbiV2.minimumPages),
         '--maximumMemory', String(memoryAbiV2.maximumPages),
         '--memoryBase', String(memoryAbiV2.layout.primaryStatic.start),
-        '--exportStart', '__pulse_initialize'
+        '--stackSize', '32768', '--exportStart', '__pulse_initialize'
       );
     }
     args.push('--use', 'abort=fastly-native-platform-capabilities.as/__pulse_fastly_abort');
@@ -2469,7 +2476,7 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
         '--path', jsonAs.dependencyRoot
       );
     }
-    require('@pulse-compute/wasm-build-support/native-optimization').appendJsonCacheArenaArgs(args, options.elideJsonCacheArena, schemaCodecsActive);
+    require('@pulse-compute/wasm-build-support/native-optimization').appendJsonCacheArenaArgs(args, elideJsonCacheArena, schemaCodecsActive);
     const readReportCapture = options.reportCapture === false ? () => null : prepareReportCapture(args, stagingDir, generated.manifest,
       require(path.join(asc.packageRoot, 'package.json')).version, 'fastly-native-platform-capabilities.as/');
     const startedAt = process.hrtime.bigint();
@@ -2543,7 +2550,7 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
         wasmAs: assembled.tool,
         wasmMerge: merged.tool,
         fixedMemoryRuntime: Object.freeze({
-          file: 'src/build/fixed-memory-runtime.as.ts',
+          ...linkedRuntime.evidence,
           bytes: fs.statSync(fixedMemoryRuntimeFile).size,
           sha256: sha256(fs.readFileSync(fixedMemoryRuntimeFile)),
           primaryHeapStart: memoryAbiV2.layout.unallocated.start,
@@ -2623,7 +2630,7 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
       compilerVersion: FASTLY_NATIVE_PLATFORM_CAPABILITIES_COMPILER_VERSION,
       assemblyScript: Object.freeze({ package: 'assemblyscript', version: require(path.join(asc.packageRoot, 'package.json')).version }),
       jsonAs: jsonAs
-        ? Object.freeze({ package: 'json-as', version: jsonAs.version, transform: true, strict: true, mode: 'NAIVE', fastPath: false, elideDisabledCacheArena: options.elideJsonCacheArena === true })
+        ? Object.freeze({ package: 'json-as', version: jsonAs.version, transform: true, strict: true, mode: 'NAIVE', fastPath: false, elideDisabledCacheArena: elideJsonCacheArena })
         : undefined,
       optimization,
       wasm: Object.freeze({ bytes: inspection.bytes, sha256: inspection.sha256, magic: inspection.magic }),
@@ -2696,6 +2703,7 @@ function writeFastlyNativePlatformCapabilitiesModule(compiled, outDir, options =
 }
 
 module.exports = Object.freeze({
+  fastlyGuestLinkedStartWrapperWat,
   FASTLY_NATIVE_PLATFORM_CAPABILITIES_VERSION,
   FASTLY_NATIVE_PLATFORM_CAPABILITIES_GENERATOR_VERSION,
   FASTLY_NATIVE_PLATFORM_CAPABILITIES_COMPILER_VERSION,

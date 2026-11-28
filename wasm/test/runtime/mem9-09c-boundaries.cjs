@@ -189,7 +189,7 @@ export function allocate(keep:bool):i32 {
 }
 export function collect():void { __collect(); }
 export function sentinel():i32 { return last![0]; }`;
-  const fixedRuntime = path.join(root, 'packages/provider-fastly/src/build/fixed-memory-runtime.as');
+  const fixedRuntime = path.join(root, 'wasm/packages/runtime-core-as/src/compiler/fixed-memory-runtime.as');
   const rows = [];
   for (const runtime of ['stub', 'incremental', 'fixed']) {
     const artifact = compileProbe(directory, 'allocator-' + runtime, source,

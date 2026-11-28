@@ -210,9 +210,15 @@ export default app;`;
       }
       fs.writeFileSync(path.join(cwd,'src/index.ts'),source);
     }
-    // The existing fixed-memory linker rejects the allocating HMAC guest.
+    // The bounded source recipe composes with the fixed-memory signature guest.
     config.pulse.crypto=['RS256','ES256','HMAC-SHA256'];writeConfig();
-    assert.throws(()=>tc.compileNativeProjectInMemory(tc.resolveProject({cwd,profile:'node-native'})), /forbidden start|fixed-memory|MVP/);
+    const composed = tc.compileNativeProjectInMemory(tc.resolveProject({cwd,profile:'node-native'}));
+    assert.equal(composed.native.manifest.finalWasmAudit.status, 'passed');
+    const composedResponse = await tc.executeCanonicalNativeModule(composed.native, tc.driver.executionOptions(projects['node-native'].providerConfig, {
+      request: { method:'GET', path:'/verify', url:'https://sign.test/verify', headers:[['authorization','Bearer '+external()]] },
+      secrets: {}, strict:false, captureJwtWallClock:()=>({trusted:true,unixEpochSeconds:NOW})
+    }));
+    assert.equal(composedResponse.response.status, 200); assert.equal(composedResponse.response.body, 'scheduler');
     config.pulse.crypto=['ES256'];writeConfig();
     for (const profile of Object.keys(projects)) assert.throws(()=>tc.inspectProject(tc.resolveProject({cwd,profile})),/RS256/);
     console.log(JSON.stringify({status:'passed',bits,executions,targets:Object.keys(projects),providerReality:false,

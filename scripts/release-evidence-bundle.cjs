@@ -228,6 +228,8 @@ const SHARD_DEFINITIONS = Object.freeze([
       'crypto-es256-signing',
       'crypto-rs256',
       'jwt-rs256',
+      'jwt02-native-composition',
+      'jwt02-runtime-boundaries',
       'assets-lowering-plan',
       'assets-package-owned-lowering',
       'assets-native-embedded',

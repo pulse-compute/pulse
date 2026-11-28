@@ -272,9 +272,13 @@ const tasks = Object.freeze({
     timeoutMs: 600000, evidence: 'conformance',
     description: 'RS256 issuance and verification through all four targets and normal CLI builds'
   }),
-  'jwt02-initialization-design': nodeTask('test/jwt/jwt02/diagnose.cjs', {
-    evidence: 'external', timeoutMs: 300000, scheduling: { compiler: true },
-    description: 'JWT-02.1 generic primary/provider initialization and memory counterfactuals; not Native acceptance'
+  'jwt02-runtime-boundaries': nodeTask('test/jwt/jwt02/boundaries.cjs', {
+    evidence: 'conformance', timeoutMs: 180000, scheduling: { compiler: true },
+    description: 'JWT-02.2 initializer failure/reentry, fixed allocator canaries and bounded crypto limits'
+  }),
+  'jwt02-native-composition': nodeTask('test/jwt/jwt02/composition.cjs', {
+    evidence: 'conformance', timeoutMs: 300000, scheduling: { compiler: true },
+    description: 'JWT-02.2 independent RS256/HMAC/schema and combined Native initialization and execution'
   }),
   'jwt-installed-workflow': nodeTask('test/jwt/assert-jwt-installed-workflow.cjs', {
     timeoutMs: 600000, evidence: 'external',
@@ -1690,6 +1694,8 @@ const profiles = Object.freeze({
     'jwt-signing',
     'jwt-es256-signing',
     'jwt-rs256',
+    'jwt02-native-composition',
+    'jwt02-runtime-boundaries',
     's3-write-conformance',
     's3-list-delete-conformance',
     'crypto-cross-target-conformance',

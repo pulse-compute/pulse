@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const packageManifest = require('./package.json');
 
-const CRYPTO_GUEST_SOURCE_CONTRACT_VERSION = 'pulse.crypto-guest-source.v1';
+const CRYPTO_GUEST_SOURCE_CONTRACT_VERSION = 'pulse.crypto-guest-source.v2';
 const GUEST_UNIT_CONTRIBUTION_VERSION = 'pulse.guest-unit-contribution.v1';
 const sourceRelativeFile = 'as/pulse-hmac-as.ts';
 const sourceFile = path.join(__dirname, sourceRelativeFile);
@@ -45,7 +45,12 @@ function pulseHmacAssemblyScriptSource(algorithm = 'HS256') {
       'pulse_crypto_hs256_verify',
       'pulse_crypto_sha256_digest',
       'pulse_crypto_bytes_frame_v1',
-      'pulse_crypto_digest_frame_v1',
+      'pulse_crypto_digest_init_v2',
+      'pulse_crypto_digest_update_v2',
+      'pulse_crypto_digest_final_v2',
+      'pulse_crypto_digest_clear_v2',
+      'pulse_crypto_mac_init_v2',
+      'pulse_crypto_mac_verify_v2',
       'pulse_crypto_sha256_bytes_v1',
       'pulse_crypto_hmac_sha256_bytes_v1'
     ]),
@@ -59,7 +64,7 @@ function pulseHmacAssemblyScriptSource(algorithm = 'HS256') {
       digestDataBytesMaximum: 2097152,
       byteOperationOutputBytes: 32,
       byteOperationFrameBytes: 73760,
-      digestFrameBytes: 2097184
+      digestFrameBytes: 73760
     }),
     resultCodes: Object.freeze({
       valid: 1,
@@ -79,38 +84,59 @@ function pulseHmacAssemblyScriptSource(algorithm = 'HS256') {
 
 function bindNativeDigestMac(moduleExports) {
   const memory = moduleExports && moduleExports.memory;
-  const names = ['pulse_crypto_bytes_frame_v1', 'pulse_crypto_digest_frame_v1', 'pulse_crypto_sha256_bytes_v1', 'pulse_crypto_hmac_sha256_bytes_v1'];
-  if (!(memory instanceof WebAssembly.Memory) || names.some((name) => typeof moduleExports[name] !== 'function')) {
-    throw new TypeError('Native Crypto digest/MAC exports are unavailable.');
+  const names = ['pulse_crypto_bytes_frame_v1', 'pulse_crypto_digest_init_v2', 'pulse_crypto_digest_update_v2',
+    'pulse_crypto_digest_final_v2', 'pulse_crypto_digest_clear_v2', 'pulse_crypto_mac_init_v2', 'pulse_crypto_mac_verify_v2', 'pulse_crypto_hmac_sha256_bytes_v1'];
+  if (!(memory instanceof WebAssembly.Memory) || names.some(name => typeof moduleExports[name] !== 'function')) {
+    throw new TypeError('Native Crypto v2 digest/MAC exports are unavailable.');
   }
-  function run(data, key) {
-    if (!(data instanceof Uint8Array) || data.length > (key === undefined ? 2097152 : 65536)
-      || (key !== undefined && (!(key instanceof Uint8Array) || key.length > 8192))) {
+  let busy = false, failed = false;
+  function run(data, key, tag) {
+    const verification = tag !== undefined;
+    if (!(data instanceof Uint8Array) || data.length > (key === undefined ? 2097152 : verification ? 1048576 : 65536)
+      || (key !== undefined && (!(key instanceof Uint8Array) || key.length > (verification ? 4096 : 8192)))
+      || (verification && (key.length < 32 || !(tag instanceof Uint8Array) || tag.length !== 32))) {
       throw new TypeError('Native Crypto digest/MAC input exceeds its byte contract.');
     }
-    const largeDigest = key === undefined && data.length > 65536;
-    const dataBytes = largeDigest ? 2097152 : 65536;
-    const keyBytes = largeDigest ? 0 : 8192;
-    const frameBytes = keyBytes + dataBytes + 32;
-    const pointer = (largeDigest ? moduleExports.pulse_crypto_digest_frame_v1() : moduleExports.pulse_crypto_bytes_frame_v1()) >>> 0;
-    if (pointer + frameBytes > memory.buffer.byteLength) throw new TypeError('Native Crypto frame is outside memory.');
-    const dataPointer = pointer + keyBytes;
-    const outputPointer = dataPointer + dataBytes;
+    if (busy || failed) throw new TypeError('Native Crypto invocation is unavailable.');
+    busy = true;
+    let pointer;
+    const check = code => { if (code !== 1) throw new TypeError('Native Crypto digest/MAC realization failed.'); };
     try {
-      const view = new Uint8Array(memory.buffer);
-      view.set(data, dataPointer);
-      if (key !== undefined) view.set(key, pointer);
-      const code = key === undefined
-        ? moduleExports.pulse_crypto_sha256_bytes_v1(dataPointer, data.length, outputPointer, 32)
-        : moduleExports.pulse_crypto_hmac_sha256_bytes_v1(pointer, key.length, dataPointer, data.length, outputPointer, 32);
-      if (code !== 1) throw new TypeError('Native Crypto digest/MAC realization failed.');
-      return new Uint8Array(memory.buffer, outputPointer, 32).slice();
-    } finally {
-      // The Wasm allocator can grow memory while hashing: acquire a fresh view.
-      new Uint8Array(memory.buffer, pointer, frameBytes).fill(0);
+      pointer = moduleExports.pulse_crypto_bytes_frame_v1() >>> 0;
+      if (pointer + 73760 > memory.buffer.byteLength) throw new TypeError('Native Crypto frame is outside memory.');
+      const input = pointer + 8192, output = pointer + 73728;
+      new Uint8Array(memory.buffer, pointer, 73760).fill(0);
+      if (key === undefined || verification) {
+        if (verification) new Uint8Array(memory.buffer).set(key, pointer);
+        check(verification ? moduleExports.pulse_crypto_mac_init_v2(key.length) : moduleExports.pulse_crypto_digest_init_v2());
+        for (let offset = 0; offset < data.length; offset += 65536) {
+          const chunk = data.subarray(offset, Math.min(offset + 65536, data.length));
+          new Uint8Array(memory.buffer).set(chunk, input);
+          check(moduleExports.pulse_crypto_digest_update_v2(chunk.length));
+        }
+        if (verification) {
+          new Uint8Array(memory.buffer).set(tag, input);
+          const code = moduleExports.pulse_crypto_mac_verify_v2();
+          if (code !== 0 && code !== 1) throw new TypeError('Native Crypto MAC realization failed.');
+          return Object.freeze({ status: code === 1 ? 'valid' : 'invalid-authenticator' });
+        }
+        check(moduleExports.pulse_crypto_digest_final_v2());
+      } else {
+        new Uint8Array(memory.buffer).set(data, input);
+        new Uint8Array(memory.buffer).set(key, pointer);
+        check(moduleExports.pulse_crypto_hmac_sha256_bytes_v1(pointer, key.length, input, data.length, output, 32));
+      }
+      return new Uint8Array(memory.buffer, output, 32).slice();
+    } catch (error) { failed = true; throw error; }
+    finally {
+      try { moduleExports.pulse_crypto_digest_clear_v2(); }
+      finally {
+        if (pointer !== undefined && pointer + 73760 <= memory.buffer.byteLength) new Uint8Array(memory.buffer, pointer, 73760).fill(0);
+        busy = false;
+      }
     }
   }
-  return Object.freeze({ sha256: (data) => run(data), hmacSha256: (key, data) => run(data, key) });
+  return Object.freeze({ sha256: data => run(data), hmacSha256: (key, data) => run(data, key), verifyHs256: (key, data, tag) => run(data, key, tag) });
 }
 
 // A synchronous borrow of the existing bounded byte frame. No per-call

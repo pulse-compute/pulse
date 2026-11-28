@@ -183,7 +183,12 @@ assert.deepEqual(cryptoEvidence.exports, [
   'pulse_crypto_hs256_verify',
   'pulse_crypto_sha256_digest',
   'pulse_crypto_bytes_frame_v1',
-  'pulse_crypto_digest_frame_v1',
+  'pulse_crypto_digest_init_v2',
+  'pulse_crypto_digest_update_v2',
+  'pulse_crypto_digest_final_v2',
+  'pulse_crypto_digest_clear_v2',
+  'pulse_crypto_mac_init_v2',
+  'pulse_crypto_mac_verify_v2',
   'pulse_crypto_sha256_bytes_v1',
   'pulse_crypto_hmac_sha256_bytes_v1'
 ]);
@@ -197,7 +202,7 @@ assert.deepEqual(cryptoEvidence.resourceLimits, {
   digestDataBytesMaximum: 2097152,
   byteOperationOutputBytes: 32,
   byteOperationFrameBytes: 73760,
-  digestFrameBytes: 2097184
+  digestFrameBytes: 73760
 });
 assert.deepEqual(cryptoEvidence.resultCodes, resultCodes);
 assert.deepEqual(cryptoEvidence.comparison, {
@@ -242,8 +247,8 @@ for (const compiled of [first, optimized]) {
   }
   assert.throws(() => byteCrypto.sha256(Buffer.alloc(2097153)));
   assert.throws(() => byteCrypto.hmacSha256(Buffer.alloc(32), Buffer.alloc(65537)));
-  const digestFrame = controller.exports.pulse_crypto_digest_frame_v1();
-  assert.equal(new Uint8Array(controller.exports.memory.buffer, digestFrame, 2097184).every(byte => byte === 0), true);
+  const digestFrame = controller.exports.pulse_crypto_bytes_frame_v1();
+  assert.equal(new Uint8Array(controller.exports.memory.buffer, digestFrame, 73760).every(byte => byte === 0), true);
   assert.throws(() => byteCrypto.hmacSha256(Buffer.alloc(8193), Buffer.alloc(0)));
   const frame = controller.exports.pulse_crypto_bytes_frame_v1();
   for (let i = 0; i < 100; i++) { byteCrypto.hmacSha256(Buffer.alloc(32), Buffer.alloc(32)); assert.equal(controller.exports.pulse_crypto_bytes_frame_v1(), frame); }

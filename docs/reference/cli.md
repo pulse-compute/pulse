@@ -373,7 +373,7 @@ pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] 
 |---|---|
 | `--evidence-status` | Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html. |
 | `--clean, --no-clean` | Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default. |
-| `--elide-json-cache-arena` | Opt in to omitting the json-as arena when string caching is disabled. Native only; preserves enabled caches. May increase peak memory for allocation-heavy workloads. |
+| `--elide-json-cache-arena` | Omit the json-as arena when string caching is disabled. Linked Native builds select this automatically; other Native builds opt in. Preserves enabled caches. May increase peak memory for allocation-heavy workloads. |
 | `--emit-wat` | Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity. |
 | `--native-shrink0` | Use the previous Native O3/shrink0/no-convergence recipe instead of the bounded default. Mutually exclusive with the experimental Native size flags; overrides profile nativeOptimization. JavaScript build targets reject this flag. |
 | `--experimental-native-bounded-size` | Compatibility selection for O3/shrink2/no convergence, now the ordinary Native recipe; retains its historical explicit recipe identity. JavaScript build targets reject this flag. |
@@ -435,7 +435,7 @@ pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [-
 |---|---|
 | `--evidence-status` | Emit one command-evidence JSON envelope with the original result and bounded evidence status. Does not establish runtime or provider qualification. Excludes dev and --html. |
 | `--clean, --no-clean` | Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default. |
-| `--elide-json-cache-arena` | Opt in to omitting the json-as arena when string caching is disabled. Native only; preserves enabled caches. May increase peak memory for allocation-heavy workloads. |
+| `--elide-json-cache-arena` | Omit the json-as arena when string caching is disabled. Linked Native builds select this automatically; other Native builds opt in. Preserves enabled caches. May increase peak memory for allocation-heavy workloads. |
 | `--emit-wat` | Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity. |
 | `--native-shrink0` | Use the previous Native O3/shrink0/no-convergence recipe instead of the bounded default. Mutually exclusive with the experimental Native size flags; overrides profile nativeOptimization. JavaScript build targets reject this flag. |
 | `--experimental-native-bounded-size` | Compatibility selection for O3/shrink2/no convergence, now the ordinary Native recipe; retains its historical explicit recipe identity. JavaScript build targets reject this flag. |

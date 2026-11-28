@@ -291,7 +291,7 @@ function parseModule(bytes, label) {
       if (kind === 'function') {
         const type = allFunctionTypes[itemIndex];
         if (!type) fail(diagnosticCodes.invalid, `${label} export ${name} references missing function ${itemIndex}.`);
-        return Object.freeze({ name, kind, parameters: type.parameters, results: type.results });
+        return Object.freeze({ name, kind, parameters: type.parameters, results: type.results, ...(name === '__pulse_primary_layout_end' ? { functionIndex: itemIndex } : {}) });
       }
       if (kind === 'memory') {
         const type = allMemories[itemIndex];
@@ -301,6 +301,25 @@ function parseModule(bytes, label) {
       return Object.freeze({ name, kind });
     }));
     reader.done('export section');
+  }
+
+  const layoutIndex = exports.findIndex(entry => entry.name === '__pulse_primary_layout_end');
+  if (layoutIndex >= 0 && sections.has(10)) {
+    const target = exports[layoutIndex].functionIndex - importedFunctionTypes.length;
+    const reader = sections.get(10);
+    reader.vector('code bodies', (entry, index) => {
+      const bodyBytes = entry.take(entry.uleb('body size'), 'body');
+      if (index !== target) return;
+      const body = new Reader(bodyBytes, label);
+      if (body.uleb('layout locals') !== 0 || body.byte('layout opcode') !== 0x41) {
+        fail(diagnosticCodes.memoryMismatch, 'Primary layout witness must be a constant i32 function.');
+      }
+      const constantI32 = body.sleb('layout end');
+      if (body.byte('layout end opcode') !== 0x0b) fail(diagnosticCodes.memoryMismatch, 'Primary layout witness must be inert.');
+      body.done('layout witness');
+      exports[layoutIndex] = Object.freeze({ ...exports[layoutIndex], constantI32 });
+    });
+    reader.done('code section');
   }
 
   let hasStart = false;
