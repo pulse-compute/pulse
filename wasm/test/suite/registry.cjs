@@ -251,6 +251,7 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'crypto profile replacement, reachable requirements, and deterministic target realization planning'
   }),
+  'stab03-installed': nodeTask('test/qualification/stab03/installed.cjs', {timeoutMs:600000,evidence:'external',scheduling:{compiler:true},description:'STAB-03 composed exact-package consumer: ingress/auth/assets/conditional writes/worker/replay; no hosted claim'}),
   'crypto-mac-text-installed': nodeTask('test/crypto/mac03/installed.cjs', {timeoutMs:600000,evidence:'external',scheduling:{compiler:true},description:'MAC-03 exact tarball consumers and independent proof headers across four targets; no hosted claim'}),
   'crypto-mac-text-proof-contract': nodeTask('test/crypto/mac03/assert-proof.cjs', {evidence:'unit',description:'MAC-03 evidence binding, bounded redaction and unchanged Bearer proof controls'}),
   'crypto-mac-text-provider': nodeTask('test/crypto/assert-mac-text-provider.cjs', {timeoutMs:180000,evidence:'unit',description:'MAC provider precedence, secret snapshots, cleanup and cancellation'}),
