@@ -272,6 +272,10 @@ const tasks = Object.freeze({
     timeoutMs: 600000, evidence: 'conformance',
     description: 'RS256 issuance and verification through all four targets and normal CLI builds'
   }),
+  'jwt02-initialization-design': nodeTask('test/jwt/jwt02/diagnose.cjs', {
+    evidence: 'external', timeoutMs: 300000, scheduling: { compiler: true },
+    description: 'JWT-02.1 generic primary/provider initialization and memory counterfactuals; not Native acceptance'
+  }),
   'jwt-installed-workflow': nodeTask('test/jwt/assert-jwt-installed-workflow.cjs', {
     timeoutMs: 600000, evidence: 'external',
     description: 'JWT-01 exact installed signing/verification, rotation, cleanup and composition eligibility'

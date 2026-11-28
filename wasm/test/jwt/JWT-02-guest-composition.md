@@ -5,6 +5,15 @@ qualification pass. Coordinate with the compiler optimization lane before
 editing shared guest-link or memory owners. Suggested effort: Astra / xhigh,
 size M, split after design if the memory contract changes substantially.
 
+**JWT-02.1 design/evidence checkpoint:** see
+[initialization diagnosis and proposed implementation](jwt02/README.md).
+The common primary start-section failure masks independent allocator ownership,
+eager digest-buffer and disabled schema-cache allocation problems. The design
+recommends preserving fixed memory and the no-start audit, sharing the existing
+reserved-heap runtime, explicit initialization, bounded crypto staging and a
+linked schema recipe that elides the disabled cache. Production behavior remains
+unchanged; JWT-02.2 implementation and JWT-02.3 installed acceptance remain open.
+
 ## Problem and reproduction
 
 The ES256/RS256 signature guest shares a fixed-memory linking contract.
