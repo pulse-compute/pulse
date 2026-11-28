@@ -1,0 +1,13 @@
+{
+  "status": 200,
+  "headers": {
+    "content-type": "application/json; charset=utf-8",
+    "x-served-by": "cache-sjc10042-SJC",
+    "date": "Fri, 27 Nov 2026 22:35:51 GMT",
+    "content-length": "79",
+    "x-envoy-upstream-service-time": "994",
+    "server": "envoy",
+    "connection": "close"
+  },
+  "body": "{\"status\":\"invalid-input\",\"authorizationPreserved\":true,\"existingBearer\":false}"
+}

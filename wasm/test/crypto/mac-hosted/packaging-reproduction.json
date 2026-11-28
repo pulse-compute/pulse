@@ -1,0 +1,7 @@
+{
+  "status": "passed",
+  "archiveSha256": "bab8dd605403d4d8daa11b0e0dc1d61f4bd8926885efd45bd5405b3ac362867f",
+  "sameArchiveBytes": true,
+  "script": "package-retained.py",
+  "scope": "Packaging reproduced without compilation or Wasm annotation"
+}

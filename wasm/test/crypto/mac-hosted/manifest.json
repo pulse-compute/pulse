@@ -1,0 +1,145 @@
+{
+  "version": "pulse.mac-hosted-evidence.v1",
+  "files": [
+    {
+      "file": "README.md",
+      "sha256": "1bded9b7edec6a499c2c8df95050cef5eccfb142042f92c905b4d622e0f9e36c",
+      "bytes": 6174
+    },
+    {
+      "file": "acceptance.json",
+      "sha256": "1726b6c8589ec889b09f51b599d1866faecb18aa285909042235167aec741378",
+      "bytes": 5410
+    },
+    {
+      "file": "api-audit.jsonl",
+      "sha256": "420fe527b0d9ae9418a38f74829b8bb1e70f225c522f0bb101aac206690045ce",
+      "bytes": 3192
+    },
+    {
+      "file": "cleanup-attempt1.json",
+      "sha256": "c3d613997ee21983bd1754f796922494ce9b5e5bc8d3f85475ac9ef430403ca6",
+      "bytes": 435
+    },
+    {
+      "file": "cleanup.json",
+      "sha256": "2b186cba80140999e2e9974b8a406b4aafd20e70546f5d3084637f2e7ee9f978",
+      "bytes": 651
+    },
+    {
+      "file": "control-attempt1.py",
+      "sha256": "da2282c1c1a6bec83c8b1baed17cbfb2587bd7e5ab72af09af5168c5855b54e2",
+      "bytes": 8759
+    },
+    {
+      "file": "control.py",
+      "sha256": "acf24514f33042ab60dcee630cf300590532d8e6890f88489cc5545126d7e7d4",
+      "bytes": 9364
+    },
+    {
+      "file": "credential-scan-before-cleanup.json",
+      "sha256": "5288389184af1c9fb12ffb3845d5ccc43af92bbfaae98397ae1ae25f44263c59",
+      "bytes": 2136
+    },
+    {
+      "file": "credential-scan-final.json",
+      "sha256": "d9c534223fe89a75dd06fe5bec41b631fc71a103dd771b0e6b57ee14a8ec5ffc",
+      "bytes": 2419
+    },
+    {
+      "file": "evidence-verification.json",
+      "sha256": "e5a2a7625b9f8441fd22acc68391b1e81e010a62bc60b3c41833683a4ff9d70f",
+      "bytes": 189
+    },
+    {
+      "file": "hosted-attempt1.json",
+      "sha256": "3e1be8aecd9d4bf03799eacd8da0e425887f86f8e402ecf91aa8b721fdc2fe76",
+      "bytes": 3458
+    },
+    {
+      "file": "hosted-attempt1.log",
+      "sha256": "bdb7e7c5e25ca2afb501549d58c4ab08275eab0713e72f5a9dadf936bcf906a0",
+      "bytes": 31
+    },
+    {
+      "file": "hosted-blocked.json",
+      "sha256": "1a06170818a71f17d3abd0bbd3eb119cc509d5f859ccbc04b8b5b15f4234fe6c",
+      "bytes": 389
+    },
+    {
+      "file": "hosted-config.json",
+      "sha256": "70432b4ea7440e064d06956cfdb28858339c4b022bcf3bfe7ac68f3989a98724",
+      "bytes": 1009
+    },
+    {
+      "file": "identity-after.json",
+      "sha256": "f3ec3de098cbf7eec4ab30ebaa0ac3db566d98561dcae4fe118f032663c7785a",
+      "bytes": 387
+    },
+    {
+      "file": "identity-before.json",
+      "sha256": "f3ec3de098cbf7eec4ab30ebaa0ac3db566d98561dcae4fe118f032663c7785a",
+      "bytes": 387
+    },
+    {
+      "file": "installed.json",
+      "sha256": "673a7431af53354e24d0fa6a60bcc8df34bbbf90f6f3c1b261e003d53145f38f",
+      "bytes": 26336
+    },
+    {
+      "file": "mac03-package.tar.gz",
+      "sha256": "bab8dd605403d4d8daa11b0e0dc1d61f4bd8926885efd45bd5405b3ac362867f",
+      "bytes": 19773
+    },
+    {
+      "file": "package-build.log",
+      "sha256": "f9a886718e7b681c3142f33d8cbf5c830d5fb77cb4d47f8148439462af463988",
+      "bytes": 1690
+    },
+    {
+      "file": "package-retained.py",
+      "sha256": "710cc8626e43685f714d584d782a620219c9416a4fb3c00807f42a5de29d95ff",
+      "bytes": 2602
+    },
+    {
+      "file": "package.json",
+      "sha256": "a7b64124d159d7f2b8a701accc9ff713e1532bd004886614efddb89a190747b9",
+      "bytes": 1189
+    },
+    {
+      "file": "packaging-reproduction.json",
+      "sha256": "9227f1f4c474c6ffe22c1a7d82e717497f98cee9596bc150f31f51b55e384fef",
+      "bytes": 249
+    },
+    {
+      "file": "proof-contract.log",
+      "sha256": "4faeb8892336a74ec68dc3ee3dc765b3e8c301235a92bb9fd465970e45e1783a",
+      "bytes": 410
+    },
+    {
+      "file": "readiness-after-propagation.json",
+      "sha256": "e70f49875ddc063d04c73bc40dc52f8b189f9dbb364e41b86e719f513053ab06",
+      "bytes": 62
+    },
+    {
+      "file": "readiness-diagnostic.json",
+      "sha256": "d855a8adfd974f7fae46d390e91430b8597a7f2f2c8b0936f52f8e5f1ecad293",
+      "bytes": 403
+    },
+    {
+      "file": "readiness.json",
+      "sha256": "a470d75867322db41b79abf6bd0fbbb2e9b65e0c1c06bea17c9d7aa629043d53",
+      "bytes": 279
+    },
+    {
+      "file": "resources.json",
+      "sha256": "1beced188cd4a6661552dfe29cf118d49d1750eb296382e2a24718bbecf9f2f8",
+      "bytes": 1032
+    },
+    {
+      "file": "source-binding.json",
+      "sha256": "5456e03cbaa753e9d81b7e72b1d1d34348a5562063876de404b86399cf0e77be",
+      "bytes": 863
+    }
+  ]
+}

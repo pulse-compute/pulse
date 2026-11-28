@@ -1,0 +1,20 @@
+[
+  {
+    "attempt": 1,
+    "httpStatus": 500,
+    "ready": false,
+    "elapsedMs": 4273
+  },
+  {
+    "attempt": 2,
+    "httpStatus": 500,
+    "ready": false,
+    "elapsedMs": 2946
+  },
+  {
+    "attempt": 3,
+    "httpStatus": 500,
+    "ready": false,
+    "elapsedMs": 4866
+  }
+]
