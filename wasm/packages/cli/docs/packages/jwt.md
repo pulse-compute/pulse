@@ -175,14 +175,16 @@ key handling have no Pulse constant-time guarantee. Native uses BearSSL's
 constant-time arithmetic design; compiled Wasm timing still depends on the
 engine and CPU. See the Crypto guide for the implementation assumptions.
 
-Native RS256 and ES256 share one linked guest. The current fixed-memory
-linker rejects composition with the allocating SHA-256/HMAC guest; use a
-separate Native artifact or an explicitly selected JavaScript target for
-that combination. Fastly Native also retains one verification algorithm per
-artifact. Signing and verification with RS256 together, issuance alone,
-verification alone, and RS256/ES256 issuance composition are tested through
-the normal CLI build path. Injected Fastly hosts are portable evidence, not
-a deployed-service confirmation or an aggregate release seal.
+Native RS256 and ES256 share one linked guest. Linked SHA-256/HMAC and schema
+composition uses explicit initialization and a shared allocator within the
+existing fixed 2 MiB memory. The JWT-02.3 installed gate requires independent
+MAC, schema-only and combined execution, plus ES256/RS256 signing and
+verification alongside SHA-256, HMAC and S3 on Node and Fastly Native.
+Managed values must still fit the fixed heap. Fastly Native retains one
+verification algorithm per artifact; mixed ES256/RS256 issuance is supported.
+Injected Fastly hosts are local evidence, not deployed-service confirmation
+or an aggregate release seal. Exact candidate qualification does not upgrade
+an existing consumer's package pin.
 
 ## Installed workflow qualification
 
@@ -203,17 +205,16 @@ resolution, temporary byte cleanup on an injected signing failure, and
 independent signature verification after recovery.
 
 The same gate builds composition probes for signature plus SHA-256, HMAC and
-S3, mixed ES256/RS256 issuance, and mixed verification. Expected restrictions
-must remain explicit errors; a successful JavaScript build is not Native
-eligibility. For signature-plus-S3 composition, select Node JavaScript:
-Fastly JavaScript separately rejects S3 with
-`PULSE_PROVIDER_CAPABILITY_UNSUPPORTED` and reason
-`fastly-javascript-s3-raw-headers-unavailable`. The other retained restrictions
-are the Native guest-memory/start contract and Fastly Native's single
-verification algorithm. Fastly `test`/`dev` evidence uses local provider fixtures, not a
-deployed service or the actual Fastly JavaScript engine. No live-provider or
-aggregate release acceptance follows from this gate.
+S3, mixed ES256/RS256 issuance, and mixed verification. `stab03-installed`
+adds the 20-cell JWT-02.3 Native execution matrix and a generic consumer with
+ingress proof, independent identity, schemas, assets and conditional writes.
+It checks final artifact identity, independent crypto/SigV4 results, invalid
+inputs, cancellation, cleanup and deterministic combined builds. A blocked
+Native composition fails this gate; JavaScript success cannot substitute.
 
-```bash
-node wasm/scripts/run-wasm-tests.cjs --task jwt-installed-workflow --no-report
-```
+Fastly JavaScript still rejects S3 with `PULSE_PROVIDER_CAPABILITY_UNSUPPORTED`
+and reason `fastly-javascript-s3-raw-headers-unavailable`. Fastly Native still
+requires a single verification algorithm per artifact. Fastly `test`/`dev`
+and composition evidence use local provider fixtures, not a deployed service
+or the actual Fastly JavaScript engine. No live-provider or aggregate release
+acceptance follows from these gates.

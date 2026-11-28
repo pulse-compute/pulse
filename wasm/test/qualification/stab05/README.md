@@ -28,13 +28,14 @@ installed-package, Fastly, hosted, whole-application or performance qualificatio
 | `JsonObject` as the schema root | Rejected | Object-root requirement |
 | `JsonObject` inside a declared object property | Compiles and executes | Supported alternative for dynamic properties |
 | RS256 alone | CLI build succeeds | Independent signature-guest control; no request execution claim |
-| RS256 + MAC text; RS256 + explicit schema decoding | Both CLI builds fail with `PULSE_GUEST_UNIT_START_MISMATCH` | Two independent composition blockers; neither is qualified by the baseline |
+| RS256 + MAC text; RS256 + explicit schema decoding | Both CLI builds succeed after JWT-02.2 | Separate installed execution gates in JWT-02.3; baseline alone remains insufficient |
 
 ## Diagnostic repair
 
-The observed guest-link failure previously exited 1 with an uncatalogued
-internal diagnostic. It now exits 3 and carries compile classification, public
-stability, specific remediation and an exact-version documentation anchor.
+The historical guest-link failure exited 1 with an uncatalogued internal
+diagnostic. STAB-05 catalogued that diagnostic with compile exit 3, specific
+remediation and an exact-version documentation anchor. JWT-02.2 repaired the
+compositions; this replay now requires their builds to succeed.
 The forbidden-start audit remains intact. A component compiling by itself is
 not evidence that its allocating compositions work.
 

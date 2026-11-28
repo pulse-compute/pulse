@@ -116,30 +116,20 @@ async function main() {
         cases.push({ id: fixture.id, status: 'executed', target: 'node-native', planHash: plan.planHash });
       }
     }
-    // Real CLI builds, not synthetic exceptions: both independent allocating
-    // compositions must retain their failure code and obtain compile exit 3.
+    // JWT-02.3 replaces historical blocked controls with successful ordinary
+    // CLI builds. Installed execution is owned by stab03-installed.
     const pair = crypto.generateKeyPairSync('rsa', { modulusLength: 2048 });
     const jwk = { ...pair.publicKey.export({ format: 'jwk' }), kid: 'fixture' };
     for (const kind of ['baseline', 'mac', 'schema']) {
       fs.rmSync(path.join(root, 'schemas.ts'), { force: true });
       writeControl(root, jwk, kind);
       const result = run(['build', root, '--profile', 'node-native', '--json'], repo, { timeout: 120000 });
-      if (kind === 'baseline') {
-        assert.equal(result.status, 0, result.stderr);
-        assert.equal(JSON.parse(result.stdout).status, 'built');
-        controls.push({ id: kind, status: 'built', target: 'node-native' });
-      } else {
-        assert.equal(result.status, 3, result.stderr);
-        const error = JSON.parse(result.stderr).error;
-        publicDiagnostic(error, 'PULSE_GUEST_UNIT_START_MISMATCH');
-        assert.equal(error.message, 'Primary module has a forbidden start section.');
-        controls.push({ id: kind, status: 'blocked', target: 'node-native', code: error.code, exitCode: result.status });
-      }
+      assert.equal(result.status, 0, result.stderr);
+      assert.equal(JSON.parse(result.stdout).status, 'built');
+      controls.push({ id: kind, status: 'built', target: 'node-native' });
     }
     const human = run(['build', root, '--profile', 'node-native'], repo, { timeout: 120000 });
-    assert.equal(human.status, 3, human.stderr);
-    assert.match(human.stderr, /help:/);
-    assert.ok(human.stderr.includes(describeDiagnostic('PULSE_GUEST_UNIT_START_MISMATCH').docs));
+    assert.equal(human.status, 0, human.stderr);
     console.log(JSON.stringify({ status: 'passed', cases, controls,
       qualification: 'workspace Node Native replay; no installed, hosted, full-application or performance qualification' }));
   } finally {

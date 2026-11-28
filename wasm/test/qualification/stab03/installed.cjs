@@ -7,7 +7,7 @@ const { execFile } = require('node:child_process');
 const { promisify } = require('node:util');
 const crypto = require('node:crypto');
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
-const harness = ['installed.cjs', 'worker.cjs', 'fixture.cjs'];
+const harness = ['installed.cjs', 'worker.cjs', 'fixture.cjs', '../../jwt/jwt02/installed-composition.cjs'];
 const root = path.resolve(__dirname, '../../../..');
 const { packRelease } = require('../../../../scripts/pack-release.cjs');
 const { candidateIdentity } = require('../../../../scripts/release-feature-acceptance.cjs');
@@ -31,12 +31,18 @@ async function prepare(directory) {
     registry = createReadOnlyRegistry(catalogFromTarballs(manifest.packages.map(p => path.join(pack, p.tarball))));
     await new Promise(resolve => registry.server.listen(0, '127.0.0.1', resolve));
     fs.writeFileSync(path.join(consumer, '.npmrc'), `registry=https://registry.npmjs.org/\n@pulse-compute:registry=http://127.0.0.1:${registry.server.address().port}/\nreplace-registry-host=never\n`);
-    const run = (command, args) => promisify(execFile)(command, args, { cwd: consumer, env, timeout: 300000, maxBuffer: 16 * 1024 * 1024 });
+    const run = (command, args) => {
+      const promise = promisify(execFile)(command, args, { cwd: consumer, env, timeout: 900000, maxBuffer: 16 * 1024 * 1024 });
+      // Worker stdout contains only fixed progress labels and terminal counts.
+      if (args[0] === 'worker.cjs') promise.child.stdout.on('data', chunk => process.stdout.write(chunk));
+      return promise;
+    };
     await run('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund']);
     assert.equal(registry.requests.missing, 0);
     assert.equal(registry.requests.rejected, 0);
     verifyClosure(consumer, pack, manifest);
     for (const file of ['worker.cjs', 'fixture.cjs']) fs.copyFileSync(path.join(__dirname, file), path.join(consumer, file));
+    fs.copyFileSync(path.join(__dirname, '../../jwt/jwt02/installed-composition.cjs'), path.join(consumer, 'installed-composition.cjs'));
     const resultDir = path.join(output, 'result');
     fs.mkdirSync(resultDir);
     const result = await run(process.execPath, ['worker.cjs', resultDir, root]);
@@ -45,10 +51,15 @@ async function prepare(directory) {
     assert.deepEqual(candidateIdentity(root), candidate);
     const worker = JSON.parse(fs.readFileSync(path.join(resultDir, 'worker.json')));
     assert.equal(worker.status, 'passed');
-    const receipt = { ...worker, version: 'pulse.stab03-installed.v1', candidate, packageClosureVerified: true, outsideCheckout: true,
+    const receipt = { ...worker, version: 'pulse.stab03-installed.v2', candidate, packageClosureVerified: true, outsideCheckout: true,
       harness: Object.fromEntries(harness.map(file => [file, hash(fs.readFileSync(path.join(__dirname, file)))])),
       packages: manifest.packages.map(p => ({ name: p.name, version: p.version, file: 'packages/' + p.tarball, sha256: p.sha256 })) };
     fs.writeFileSync(path.join(output, 'installed.json'), JSON.stringify(receipt, null, 2) + '\n');
+    assert.equal(receipt.compositionStatus, 'qualified');
+    assert.equal(receipt.controls.length, 20);
+    assert(receipt.controls.every(c => c.status === 'passed' && c.cases.every(r => r.status === 'passed')));
+    assert.equal(receipt.builds.length, 3);
+    assert(receipt.builds.every(b => b.status === 'admitted'));
     assert.equal(receipt.cases.length, 29 * receipt.builds.filter(b => b.status === 'admitted').length);
     assert(receipt.cases.every(c => c.status === 'passed'));
     assert.equal(receipt.hostedQualified, false);

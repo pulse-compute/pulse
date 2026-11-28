@@ -83,7 +83,7 @@ change requires another replay on the new candidate.
 | `terminal-installed` | Versioned package host-extension contract and both GRIP terminal ABIs; live transport qualification remains separate |
 | `node01-installed` | Finite production Node HTTP, artifact/ABI/version failures, overload, draining and secret-safe diagnostics |
 | `arc01-installed` | Package-owned Entities execution and provider loading without workspace product modules |
-| `jwt-installed-workflow` | Signing/verification, rotation, cleanup and explicit composition rejection |
+| `jwt-installed-workflow` | Signing/verification, rotation, cleanup and explicit composition eligibility |
 | `str02-installed`, `str02b-installed` | Node JavaScript/Native request forwarding, ownership, cancellation and real incremental HTTP |
 | `str03b-installed` | Enabled experimental Node generated output, slow writers and disconnects; no support promotion |
 | `ast01-installed` | Assets signing facade and installed declarations |
@@ -98,6 +98,7 @@ fixtures remain injected evidence, distinct from local-engine and deployed proof
 
 | Separate coverage | Disposition |
 | --- | --- |
+| `stab03-installed` | JWT-02.3 exact-package Native signature/Crypto/S3 and independent schema matrix, plus generic composed consumer; local Fastly ABI evidence only |
 | `str03c-bounded-transforms` | Experimental workspace Native/JavaScript proof in the aggregate profile; installed transform qualification remains pending |
 | `kv-conditional-acceptance` | Separately mandatory local K4 proof plus deployed Pulse cross-location evidence, as described below |
 

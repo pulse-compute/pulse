@@ -12,7 +12,7 @@ export const contextCorpus = freeze({
     "commands": "pulse.cli-command-spec.v5",
     "diagnostics": "pulse.cli-diagnostics.v1"
   },
-  "corpusHash": "db1d3b818ab97399b584ebabc4ff9a532d7f9160f5ead3a1d663f0f4e733aa63",
+  "corpusHash": "b317c2f6c89c4b8f3f74277d60ac65b7188e37522725c3806d6c2cb29113a969",
   "limits": {
     "maxContentBytes": 24576,
     "maxRecords": 512,
@@ -964,9 +964,9 @@ export const contextCorpus = freeze({
         "endLine": 79,
         "path": "docs/reference/compatibility-matrix.md",
         "selection": "heading:Provider and target realization",
-        "sha256": "3ec26a674516cf16d0c9871967e4cf0686a52fc57f5d3f8b20b7f85aeb6a73db",
+        "sha256": "1673613bb7cd3b65342fdcd9d48e01324b82dfab802eb9d5fcd4ce1c0e6e7652",
         "startLine": 53,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/f7e3d44243a9e84d4cbdba0a497a6982e26b54f5"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/de3c768dc265e3f1d7c9be5fc2ea045429fbb532"
       },
       "status": "candidate",
       "tags": [
@@ -1132,9 +1132,9 @@ export const contextCorpus = freeze({
         "endLine": 52,
         "path": "docs/reference/compatibility-matrix.md",
         "selection": "heading:Source-form compatibility",
-        "sha256": "3ec26a674516cf16d0c9871967e4cf0686a52fc57f5d3f8b20b7f85aeb6a73db",
+        "sha256": "1673613bb7cd3b65342fdcd9d48e01324b82dfab802eb9d5fcd4ce1c0e6e7652",
         "startLine": 27,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/f7e3d44243a9e84d4cbdba0a497a6982e26b54f5"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/de3c768dc265e3f1d7c9be5fc2ea045429fbb532"
       },
       "status": "candidate",
       "tags": [
@@ -11452,8 +11452,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "docs/reference/compatibility-matrix.md",
-      "sha256": "3ec26a674516cf16d0c9871967e4cf0686a52fc57f5d3f8b20b7f85aeb6a73db",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/f7e3d44243a9e84d4cbdba0a497a6982e26b54f5"
+      "sha256": "1673613bb7cd3b65342fdcd9d48e01324b82dfab802eb9d5fcd4ce1c0e6e7652",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/de3c768dc265e3f1d7c9be5fc2ea045429fbb532"
     },
     {
       "path": "docs/reference/native-build-optimization.md",

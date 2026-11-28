@@ -120,11 +120,13 @@ key handling have no Pulse constant-time guarantee. Native uses BearSSL's
 constant-time arithmetic design; compiled Wasm timing still depends on the
 engine and CPU. See the Crypto guide for the implementation assumptions.
 
-Native RS256 and ES256 share one linked guest. The current fixed-memory
-linker rejects composition with the allocating SHA-256/HMAC guest; use a
-separate Native artifact or an explicitly selected JavaScript target for
-that combination. Fastly Native also retains one verification algorithm per
-artifact. Signing and verification with RS256 together, issuance alone,
-verification alone, and RS256/ES256 issuance composition are tested through
-the normal CLI build path. Injected Fastly hosts are portable evidence, not
-a deployed-service confirmation or an aggregate release seal.
+Native RS256 and ES256 share one linked guest. Linked SHA-256/HMAC and schema
+composition uses explicit initialization and a shared allocator within the
+existing fixed 2 MiB memory. The JWT-02.3 installed gate requires independent
+MAC, schema-only and combined execution, plus ES256/RS256 signing and
+verification alongside SHA-256, HMAC and S3 on Node and Fastly Native.
+Managed values must still fit the fixed heap. Fastly Native retains one
+verification algorithm per artifact; mixed ES256/RS256 issuance is supported.
+Injected Fastly hosts are local evidence, not deployed-service confirmation
+or an aggregate release seal. Exact candidate qualification does not upgrade
+an existing consumer's package pin.
