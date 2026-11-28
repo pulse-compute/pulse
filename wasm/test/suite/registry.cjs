@@ -251,6 +251,7 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'crypto profile replacement, reachable requirements, and deterministic target realization planning'
   }),
+  'cli-stab05-compiler-replay': nodeTask('test/qualification/stab05/replay.cjs', {timeoutMs:240000,evidence:'native',scheduling:{compiler:true},description:'STAB-05 generic source replay, Native controls and real CLI failure diagnostics; no syntax expansion'}),
   'stab04-installed': nodeTask('test/qualification/stab04/installed.cjs', {timeoutMs:600000,evidence:'external',scheduling:{compiler:true},description:'STAB-04 installed isolated-server sustained load, bounded outage recovery and attribution; no Native/hosted qualification'}),
   'stab04-evidence-contract': nodeTask('test/qualification/stab04/assert-metrics.cjs', {evidence:'unit',description:'STAB-04 interval attribution and incomplete/recovery/resource evidence rejection'}),
   'stab03-installed': nodeTask('test/qualification/stab03/installed.cjs', {timeoutMs:600000,evidence:'external',scheduling:{compiler:true},description:'STAB-03 composed exact-package consumer: ingress/auth/assets/conditional writes/worker/replay; no hosted claim'}),
@@ -1746,6 +1747,7 @@ const profiles = Object.freeze({
     'fastly-entities-native-workflow',
     'events-cli-workflow',
     'cli-diagnostics',
+    'cli-stab05-compiler-replay',
     'docs-executable-contracts',
     'docs-executable-init-dev',
     'docs-migration-schema-lowering',
