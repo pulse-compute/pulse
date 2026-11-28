@@ -477,6 +477,12 @@ it throws synchronously. Timeout before that boundary is `not-stored`; timeout
 or transport loss after it is `unknown`. Cancellation suppresses delivery to an
 inactive execution and records whether dispatch occurred; it promises no rollback.
 
+Both fulfilled and rejected provider completions recheck that monotonic deadline.
+If an overdue timer has not run yet, a completion at or after expiry still reports
+`timeout`, retaining the pre-dispatch versus post-dispatch distinction. A shorter
+operation deadline can yield a typed result; an expired owning request remains
+fatal and cannot be recovered by catching a member failure.
+
 Exact keys are bounded Unicode scalar strings; generations are bounded visible
 ASCII strings. Values retain the portable KV JSON limits. Conditional storage
 uses a strict UTF-8 JSON envelope with exactly `__pulseKv: 1` and `value`, rejecting

@@ -12,7 +12,7 @@ export const contextCorpus = freeze({
     "commands": "pulse.cli-command-spec.v5",
     "diagnostics": "pulse.cli-diagnostics.v1"
   },
-  "corpusHash": "2f219d0a2e9f6455924968f96db379b84b231e2b3253bd7c6f21156108ef4954",
+  "corpusHash": "7e2b4ccb65d72ae28665293a68e37a7b0286e1973f994da9265eb2f67b3b7ac2",
   "limits": {
     "maxContentBytes": 24576,
     "maxRecords": 512,
@@ -577,9 +577,9 @@ export const contextCorpus = freeze({
         "endLine": 22,
         "path": "docs/concepts/effects-and-continuations.md",
         "selection": "heading:Effect",
-        "sha256": "a00e70baee188fa843445c1d65e6c704a31b1971bf0c95bd332237892fdd333b",
+        "sha256": "172072fd39fbc7b343a9c396d7a4da7973d6bb2916c3b4b6e3a0ed0ecb8fe2c8",
         "startLine": 7,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/a6bdb8199662bd964e44d596eba4237910d14b1c"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/9c77c2674e1a57d07ad3871bf534d4288f8b2ee0"
       },
       "status": "candidate",
       "tags": [
@@ -707,9 +707,9 @@ export const contextCorpus = freeze({
         "endLine": 428,
         "path": "docs/concepts/effects-and-continuations.md",
         "selection": "heading:Managed async, not arbitrary async",
-        "sha256": "a00e70baee188fa843445c1d65e6c704a31b1971bf0c95bd332237892fdd333b",
+        "sha256": "172072fd39fbc7b343a9c396d7a4da7973d6bb2916c3b4b6e3a0ed0ecb8fe2c8",
         "startLine": 413,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/a6bdb8199662bd964e44d596eba4237910d14b1c"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/9c77c2674e1a57d07ad3871bf534d4288f8b2ee0"
       },
       "status": "candidate",
       "tags": [
@@ -877,9 +877,9 @@ export const contextCorpus = freeze({
         "endLine": 251,
         "path": "docs/concepts/effects-and-continuations.md",
         "selection": "heading:Explicit portable groups with `ctx.parallel`",
-        "sha256": "a00e70baee188fa843445c1d65e6c704a31b1971bf0c95bd332237892fdd333b",
+        "sha256": "172072fd39fbc7b343a9c396d7a4da7973d6bb2916c3b4b6e3a0ed0ecb8fe2c8",
         "startLine": 226,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/a6bdb8199662bd964e44d596eba4237910d14b1c"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/9c77c2674e1a57d07ad3871bf534d4288f8b2ee0"
       },
       "status": "candidate",
       "tags": [
@@ -11123,8 +11123,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "docs/concepts/effects-and-continuations.md",
-      "sha256": "a00e70baee188fa843445c1d65e6c704a31b1971bf0c95bd332237892fdd333b",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/a6bdb8199662bd964e44d596eba4237910d14b1c"
+      "sha256": "172072fd39fbc7b343a9c396d7a4da7973d6bb2916c3b4b6e3a0ed0ecb8fe2c8",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/9c77c2674e1a57d07ad3871bf534d4288f8b2ee0"
     },
     {
       "path": "docs/concepts/targets-and-hosts.md",

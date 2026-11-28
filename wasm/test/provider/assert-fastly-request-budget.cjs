@@ -34,6 +34,35 @@ assert.equal(uncertain.response.status, 504);
 assert.ok(lateAuthority.stores.get('catalog').has('checkpoint'), '504 must not imply a dispatched conditional write rolled back');
 console.log('ok - Fastly deadline preserves remote acceptance uncertainty');
 
+// STAB-02: distinguish an operation timeout from whole-request revocation at
+// the exact boundary. These are actual compiled-Wasm ABI fixtures, not hosted
+// latency attribution. Each invocation shares the same storage authority model.
+const ackSource=`export default async function handler(ctx) {
+  const result = await ctx.kv('jobs').insertIfAbsent('checkpoint',1);
+  return ctx.json(result);
+}`;
+const ackPlan=buildCanonicalNativePlan(compileCanonicalSource(ackSource,{fileName:path.join(__dirname,'deadline-settlement.ts'),strict:false}));
+for(const maxDurationMs of [5000,10000,15000]) {
+  const artifact=platform.compileFastlyNativePlatformCapabilitiesPlan(ackPlan,{cwd:path.resolve(__dirname,'../../..'),bindings:{kv:{jobs:'jobs'}},maxDurationMs});
+  const boundary=Math.min(maxDurationMs,10000);
+  for(const offset of [-1,0,1]) {
+    const store=createConditionalKvAuthority();store.stores.set('jobs',new Map());
+    const calls=[];
+    const outcome=mock.executeFastlyNativePlatformCapabilities(artifact,{conditionalKv:{authority:store,onCall(stage){
+      calls.push(stage);if(stage==='insert')return {readyDelayMs:boundary+offset};
+    }}});
+    const requestExpired=maxDurationMs<=10000&&offset>=0;
+    assert.equal(outcome.response.status,requestExpired?504:200,`${maxDurationMs}/${offset}`);
+    if(!requestExpired)assert.deepEqual(JSON.parse(outcome.response.body),offset<0?{status:'stored'}:{status:'unknown',reason:'timeout'});
+    assert.equal(calls.filter(s=>s==='insert').length,1,'no retry or compensating write');
+    assert.ok(calls.filter(s=>s==='insert_wait').length<=1,'one acknowledgement consumption at most');
+    assert.equal(outcome.trace.filter(x=>x.module==='fastly_http_resp'&&x.name==='send_downstream').length,1,'one terminal response');
+    assert.equal(outcome.kvEvidence.bodyFixtures.size,0,'owned read bodies released');
+    assert.ok(store.get('jobs','checkpoint'),'timeout does not roll back accepted storage');
+  }
+}
+console.log('ok - STAB-02 nine Fastly Native request/member deadline and single-settlement boundaries');
+
 // A noninterruptible final body write must be checked before response handoff.
 const responseExpired = mock.executeFastlyNativePlatformCapabilities(native, {
   conditionalKv: {authority}, hostcallDelayMs: {'fastly_http_body.write': 10000}

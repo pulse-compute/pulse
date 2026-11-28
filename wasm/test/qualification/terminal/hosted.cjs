@@ -8,9 +8,30 @@ const {load,hash,terminalCases,assertCoverage,assertHarness}=require('./bundle.c
 const {websocket}=require('./local.cjs');
 const {readTarEntries}=require('../../../../scripts/pack-release.cjs');
 const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+// Runner evidence only. A still-pending client request does not establish that
+// the gateway has subscribed, and publish acceptance does not prove delivery.
+async function holdPublish({request,publish,body,evidence,save,wait=delay,now=()=>performance.now()}) {
+ const start=now();let settled=false;
+ const mark=fields=>{Object.assign(evidence,fields);save();};
+ mark({status:'running',requestStartedMs:0});
+ const pending=Promise.resolve().then(request).then(response=>{
+  settled=true;mark({responseSettledMs:now()-start,responseStatus:response.status,
+   responseKind:response.body===body?'published':response.body==='timed-out'?'hold-timeout':'unexpected'});
+  return response;
+ },error=>{settled=true;mark({responseSettledMs:now()-start,responseKind:'rejected'});throw error;});
+ pending.catch(()=>{});
+ try {
+  await wait(1000);
+  mark({pendingBeforePublish:!settled});assert.equal(settled,false,'Response was not held');
+  mark({publishStartedMs:now()-start});
+  const status=await publish();mark({publishCompletedMs:now()-start,publishStatus:status});
+  assert.deepEqual(await pending,{status:200,body});
+  mark({status:'passed'});
+ } catch(error) {mark({status:'failed'});throw error;}
+}
 async function run(bundleDir,configFile,output){
  assert(!fs.existsSync(output),'Use a fresh transport receipt path');
- const bundle=load(bundleDir),receipt={version:'pulse.terminal-transport.v1',lane:'hosted',status:'blocked',bundleSha256:bundle.sha256,cases:[],deployments:[],cleanup:true};
+ const bundle=load(bundleDir),receipt={version:'pulse.terminal-transport.v1',lane:'hosted',status:'blocked',bundleSha256:bundle.sha256,cases:[],holds:[],deployments:[],cleanup:true};
  assertHarness(bundle,['hosted.cjs','local.cjs','bundle.cjs','origin.cjs','engines.json']);
  const save=()=>fs.writeFileSync(output,JSON.stringify(receipt,null,2)+'\n');
  if(!configFile||!process.env.FASTLY_API_TOKEN){receipt.reason='Scoped configuration and FASTLY_API_TOKEN are required';save();throw Error(receipt.reason);}
@@ -53,10 +74,10 @@ async function run(bundleDir,configFile,output){
    else {
     assert.deepEqual(await request('/handoff'),{status:200,body:'terminal-origin'});record('handoff');
     const channel='pulse-terminal-'+crypto.randomBytes(12).toString('hex'),body='published-'+crypto.randomBytes(12).toString('hex');
-    let settled=false;const pending=request('/handoff',{'x-pulse-terminal-hold':channel}).then(r=>{settled=true;return r;});pending.catch(()=>{});
-    await delay(1000);assert.equal(settled,false,'Response was not held');
-    await api(`/service/${c.serviceId}/publish/`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({items:[{channel,formats:{'http-response':{body}}}]})});
-    assert.deepEqual(await pending,{status:200,body});record('hold-publish');
+    const evidence={id:c.id};receipt.holds.push(evidence);
+    await holdPublish({body,evidence,save,request:()=>request('/handoff',{'x-pulse-terminal-hold':channel}),
+     publish:async()=>(await api(`/service/${c.serviceId}/publish/`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({items:[{channel,formats:{'http-response':{body}}}]})})).status});
+    record('hold-publish');
    }
    assert.deepEqual(await inspect(c),before);assert.equal(hash(fs.readFileSync(c.package)),packageSha256);save();
   }
@@ -64,4 +85,4 @@ async function run(bundleDir,configFile,output){
  } catch(error){receipt.status='failed';receipt.reason=error.message;throw error;}finally{controller.abort();save();}
 }
 if(require.main===module){const [bundle,config,output]=process.argv.slice(2);assert(bundle&&output,'Usage: hosted.cjs BUNDLE CONFIG OUTPUT');run(bundle,config==='-'?null:config,output).catch(error=>{console.error(error.message);process.exitCode=1;});}
-module.exports={run};
+module.exports={run,holdPublish};

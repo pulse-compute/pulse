@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const ts = require('typescript');
 const Module = require('node:module');
+const {getEventListeners} = require('node:events');
 const { compileCanonicalSource, loadCanonicalModule } = require('../../packages/compiler/src/canonical-api-compiler');
 const { buildCanonicalNativePlan } = require('../../packages/compiler/src/canonical-native-plan');
 const { compileCanonicalNativePlan } = require('../../packages/compiler/src/canonical-native-compiler');
@@ -14,11 +15,11 @@ const { createNodeKvReference } = require('../../../packages/provider-node/src/r
 const { executeNodeJavascriptApplication } = require('../../../packages/provider-node/src/javascript/runtime-host');
 const portable = require('../../../packages/runtime/src/host');
 const vectors = require('./k1/vectors.json');
-function deferred() { let resolve; const promise=new Promise(r=>{resolve=r;}); return {promise,resolve}; }
+function deferred() { let resolve,reject; const promise=new Promise((r,j)=>{resolve=r;reject=j;}); return {promise,resolve,reject}; }
 function clock() {
   let time=0, next=0; const timers=new Map();
   return {now:()=>time,setTimeout(fn,delay){const id=++next;timers.set(id,{fn,at:time+delay});return id;},clearTimeout(id){timers.delete(id);},
-    advance(ms){time+=ms;for(const [id,timer] of [...timers]) if(timer.at<=time){timers.delete(id);timer.fn();}},pending:()=>timers.size};
+    advance(ms,fire=true){time+=ms;if(fire)for(const [id,timer] of [...timers]) if(timer.at<=time){timers.delete(id);timer.fn();}},pending:()=>timers.size};
 }
 function permutations(xs) { return xs.length ? xs.flatMap((x,i)=>permutations(xs.filter((_,j)=>i!==j)).map(t=>[x,...t])) : [[]]; }
 async function main() {
@@ -104,13 +105,13 @@ async function main() {
       if(phase==='afterCommit') assert.equal((await lostRef.kv('catalog').getVersioned('private-key')).status,'found');
       cases++;
     }
-    for(const phase of ['prepare','afterCommit']) for(const mode of ['timeout','cancel']) {
+    for(const phase of ['prepare','afterCommit']) for(const mode of ['timeout','cancel','cancel-late-rejection']) {
       const reached=deferred(),release=deferred(),timer=clock(),abort=new AbortController();
       const slowRef=createNodeKvReference({kvInstanceId:'slow',kvHooks:{[phase]:()=>{reached.resolve();return release.promise;}}});
       const operation=invoke({operation:'create',key:'slow',value:{receipt:'accepted'}},slowRef,{kvClock:timer,signal:abort.signal});
       await reached.promise;
       if(mode==='timeout') timer.advance(10001); else abort.abort();
-      if(mode==='cancel') {
+      if(mode.startsWith('cancel')) {
         if(target==='javascript') await assert.rejects(operation,error=>error===abort.signal.reason);
         else await assert.rejects(operation,error=>error.code==='PULSE_RUNTIME_EFFECT_ABORTED');
       }
@@ -119,9 +120,65 @@ async function main() {
         assert.deepEqual(result.body,{status:phase==='prepare'?'not-stored':'unknown',reason:'timeout'});
         assert.ok(result.trace.some(e=>e.type==='kv-lifecycle' && e.dispatched===(phase==='afterCommit')));
       }
-      release.resolve(); await new Promise(r=>setImmediate(r));
+      if(mode==='cancel-late-rejection')release.reject(Error('late provider rejection'));else release.resolve();
+      await new Promise(r=>setImmediate(r));
       assert.equal(timer.pending(),0,'deadline timers disposed');
-      assert.equal((await slowRef.kv('catalog').getVersioned('slow')).status,phase==='prepare'?'not-found':'found');cases++;
+      assert.equal(getEventListeners(abort.signal,'abort').length,0,'source abort listeners disposed');
+      assert.equal(slowRef.legacyStores().get('catalog')?.has('slow')??false,phase==='afterCommit');cases++;
+    }
+    // Completion must sample the monotonic deadline even when the event loop
+    // has not run an overdue timer. Rejections cannot bypass that boundary.
+    for(const phase of ['prepare','afterCommit']) for(const elapsed of [9999,10000,10001]) for(const rejects of [false,true]) {
+      const timer=clock();let calls=0;
+      const delayed=createNodeKvReference({kvInstanceId:'boundary',kvHooks:{[phase]:()=>{
+        calls++;timer.advance(elapsed,false);if(rejects)throw Error('provider acknowledgement lost');
+      }}});
+      const result=await invoke({operation:'create',key:'boundary',value:1},delayed,{kvClock:timer});
+      const expired=elapsed>=10000;
+      assert.deepEqual(result.body, expired
+        ? {status:phase==='prepare'?'not-stored':'unknown',reason:'timeout'}
+        : rejects ? {status:phase==='prepare'?'not-stored':'unknown',reason:phase==='prepare'?'unavailable':'transport'}
+        : {status:'stored'}, `${target}/${phase}/${elapsed}/reject=${rejects}`);
+      assert.equal(result.trace.filter(e=>e.type==='kv-lifecycle').length,1,'single KV settlement');
+      timer.advance(1);assert.equal(calls,1);assert.equal(timer.pending(),0);
+      assert.equal(delayed.legacyStores().get('catalog')?.has('boundary')??false,
+        phase==='afterCommit'||(!expired&&!rejects));cases++;
+    }
+    // Sixteen callers share one authority. Losing contenders finish while the
+    // winning write's acknowledgement is held; expiry must not retry or undo it.
+    {
+      const timer=clock(),entered=deferred(),release=deferred();let commits=0;
+      const shared=createNodeKvReference({kvInstanceId:'contention',kvHooks:{afterCommit:()=>{
+        commits++;entered.resolve();return release.promise;
+      }}});
+      const winner=invoke({operation:'create',key:'shared',value:{writer:0}},shared,{kvClock:timer});
+      await entered.promise;
+      const losers=await Promise.all(Array.from({length:15},(_,i)=>invoke({operation:'create',key:'shared',value:{writer:i+1}},shared,{kvClock:timer})));
+      assert.ok(losers.every(r=>r.body.status==='conflict'));
+      timer.advance(10000);
+      const timedOut=await winner;assert.deepEqual(timedOut.body,{status:'unknown',reason:'timeout'});
+      const before=await shared.kv('catalog').getVersioned('shared');
+      release.resolve();await new Promise(r=>setImmediate(r));
+      assert.equal(commits,1);assert.deepEqual(await shared.kv('catalog').getVersioned('shared'),before);
+      assert.deepEqual(before.value,{writer:0});assert.equal(timer.pending(),0);
+      assert.equal(timedOut.trace.filter(e=>e.type==='kv-lifecycle').length,1,'late ACK must not settle twice');cases++;
+    }
+    // Whole-request expiry remains fatal when it precedes or coincides with the
+    // KV member deadline; a shorter member deadline can return typed uncertainty.
+    if(target!=='generator')for(const maxDurationMs of [5000,10000,15000]) {
+      const timer=clock(),entered=deferred(),release=deferred();let commits=0;
+      const ref=createNodeKvReference({kvInstanceId:'overlap',kvHooks:{afterCommit:()=>{
+        commits++;entered.resolve();return release.promise;
+      }}});
+      const pending=invoke({operation:'create',key:'overlap',value:1},ref,{maxDurationMs,requestClock:timer,kvClock:timer});
+      const outcome=pending.then(value=>({value}),error=>({error}));
+      await entered.promise;timer.advance(Math.min(maxDurationMs,10000));
+      const result=await outcome;
+      if(maxDurationMs<=10000)assert.equal(result.error?.code,'PULSE_REQUEST_DEADLINE_EXCEEDED');
+      else assert.deepEqual(result.value.body,{status:'unknown',reason:'timeout'});
+      release.resolve();await new Promise(r=>setImmediate(r));
+      assert.equal(commits,1);assert.equal((await ref.kv('catalog').getVersioned('overlap')).status,'found');
+      assert.equal(timer.pending(),0);cases++;
     }
     // Admission with an already expired host request deadline never enters provider work.
     let prepared=0; const expiredRef=createNodeKvReference({kvInstanceId:'expired',kvHooks:{prepare:()=>{prepared++;}}});
