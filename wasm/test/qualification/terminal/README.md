@@ -47,6 +47,15 @@ coverage. Hosted `cleanup: true` concerns runner-owned activity, not retirement
 of externally provisioned services: retain a separate owner-scoped deployment
 cleanup receipt. Do not reuse historical hosted results for a new source.
 
+Hosted `holds` entries retain monotonic offsets for request settlement and publish
+start/completion, the response classification, and publish HTTP status. A pending
+client request does not prove the gateway has subscribed; publish HTTP success
+does not prove delivery. A `hold-timeout` records the origin's HTTP 200
+`timed-out` fallback separately from a rejected request or a request-deadline
+504. The runner still publishes once after the existing one-second pending
+check, requires the exact published body, and retains failed attempts. These
+client-side phases cannot by themselves attribute delay to the provider.
+
 The [RC-H04 checkpoint](../../release/rc-h04/README.md) records a concrete
 sandbox socket failure and distinguishes the outstanding deployed inputs from
 credential availability. The existing CI lane can run this local matrix on

@@ -226,6 +226,13 @@ async function executeConditionalKv(effect, prepare, execution = {}, options = {
         if (normalized.status === 'found' || normalized.status === 'listed') registerKvRedactions(normalized, execution.registerRedactionValue);
         return normalized;
       } catch (error) {
+        // An overdue timer may not have fired yet (for example after event-loop
+        // contention). A rejected preparation/acknowledgement crosses the same
+        // deadline fence as a successful one; retain dispatch uncertainty.
+        if (clock.now() >= admitted.deadline) {
+          controller.abort();
+          return kvFailure(admitted, 'timeout', dispatched);
+        }
         return kvFailure(admitted, dispatched ? 'transport' : error && writeReasons.has(error.kvReason) ? error.kvReason : 'unavailable', dispatched);
       }
     });

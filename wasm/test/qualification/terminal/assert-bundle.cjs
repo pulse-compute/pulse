@@ -32,3 +32,36 @@ try {
  const changedData=structuredClone(data);changedData.artifacts[0].file='../escaped';put('installed.json',JSON.stringify(changedData));assert.throws(()=>load(root));
  console.log('ok - terminal receipt binding, pins, coverage, tamper and containment rejection');
 }finally{fs.rmSync(root,{recursive:true,force:true});}
+
+// Injected runner schedules test evidence capture, not gateway behavior.
+async function holdEvidence() {
+ const {holdPublish}=require('./hosted.cjs');
+ const deferred=()=>{let resolve,reject;const promise=new Promise((r,j)=>{resolve=r;reject=j;});return {promise,resolve,reject};};
+ for(const mode of ['published','hold-timeout','early','publish-failure','disconnect']) {
+  const response=deferred(),evidence={},snapshots=[];let time=0,publishes=0;
+  const run=holdPublish({body:'expected',evidence,save:()=>snapshots.push(structuredClone(evidence)),now:()=>time,
+   request:()=>response.promise,
+   wait:async ms=>{assert.equal(ms,1000);time=1000;if(mode==='early'){response.resolve({status:200,body:'unexpected'});await new Promise(r=>setImmediate(r));}},
+   publish:async()=>{
+    publishes++;
+    if(mode==='publish-failure')throw Error('publish failed');
+    time=1500;
+    if(mode==='disconnect')response.reject(Error('client disconnected'));
+    else response.resolve({status:200,body:mode==='hold-timeout'?'timed-out':'expected'});
+    await new Promise(r=>setImmediate(r));time=2000;return 200;
+   }});
+  if(mode==='published')await run;else await assert.rejects(run);
+  if(mode==='publish-failure'){response.reject(Error('late request rejection'));await new Promise(r=>setImmediate(r));}
+  assert.equal(evidence.status,mode==='published'?'passed':'failed');
+  assert.equal(publishes,mode==='early'?0:1,'no retry or timeout increase');
+  assert.ok(snapshots.some(s=>s.requestStartedMs===0&&s.status==='running'));
+  if(mode==='hold-timeout'){
+   assert.equal(evidence.responseKind,'hold-timeout');assert.equal(evidence.responseStatus,200);
+   assert.equal(evidence.publishStatus,200);assert.equal(evidence.pendingBeforePublish,true);
+   assert.ok(evidence.responseSettledMs<evidence.publishCompletedMs,'retain response-before-publish-completion ordering');
+  }
+  if(mode==='publish-failure'||mode==='disconnect')assert.equal(evidence.responseKind,'rejected');
+ }
+ console.log('ok - five terminal hold schedules retain phase evidence without relaxing success criteria');
+}
+holdEvidence().catch(error=>{console.error(error);process.exitCode=1;});

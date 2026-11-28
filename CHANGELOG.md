@@ -4,6 +4,9 @@ Pulse follows semantic versioning for public releases. The repository begins its
 
 ## Unreleased
 
+- Recheck conditional KV deadlines on rejected provider completions, including
+  overdue timers. Preserve write uncertainty and add contention, cancellation,
+  request/member deadline, and terminal qualification evidence regressions.
 - Fix public handler result declarations for supported Assets, S3 opaque-body,
   and GRIP responses. Add strict installed-consumer coverage without widening
   Native source admission or changing response ownership.
